@@ -39,4 +39,4 @@ jobs:
           REMOTE_PORT: ${{ secrets.REMOTE_PORT }}        # SSH 端口
           SOURCE: "docs/.vitepress/dist/"
           TARGET: ${{ secrets.REMOTE_TARGET }}           # 目标路径
-          ARGS: "-avz --delete"
+          ARGS: "-avz --delete --exclude .well-known --exclude .user.ini"
