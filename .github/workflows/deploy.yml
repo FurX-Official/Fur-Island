@@ -1,0 +1,42 @@
+name: Deploy Fur-Island Website
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: Deploy
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20        # 写死 18 或 20
+          # cache: 'npm'          # 先注释掉，排除缓存干扰
+
+      - name: Clean install
+        run: |
+          rm -rf node_modules package-lock.json
+          npm install
+
+
+      - name: Fix vitepress permission
+        run: chmod +x ./node_modules/.bin/vitepress
+
+      - name: Build docs
+        run: npm run docs:build
+
+      - name: Deploy to server
+        uses: easingthemes/ssh-deploy@v2.1.5
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+          REMOTE_HOST: ${{ secrets.REMOTE_HOST }}        # 服务器 IP
+          REMOTE_USER: ${{ secrets.REMOTE_USER }}        # 用户名
+          REMOTE_PORT: ${{ secrets.REMOTE_PORT }}        # SSH 端口
+          SOURCE: "docs/.vitepress/dist/"
+          TARGET: ${{ secrets.REMOTE_TARGET }}           # 目标路径
+          ARGS: "-avz --delete"
