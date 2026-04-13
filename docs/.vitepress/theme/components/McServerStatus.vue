@@ -25,20 +25,33 @@ const loadStats = async () => {
     const response = await fetch('https://api.unborder.online/api/stats/Star')
     if (!response.ok) throw new Error('Failed to fetch server status')
     const data = await response.json()
+    console.log('API Response:', data)
     javaStats.value = {
-      online: data.status,
+      online: data.online || data.status || false,
       ip: 'play.fur-island.asia',
-      port: data.port || 25565,
-      motd: data.motd || '',
-      version: data.version || '未知',
+      port: data.port || data.portinfo?.port || 25565,
+      motd: data.motd || data.motd_json?.clean || '',
+      version: data.version || data.server || '未知',
       players: {
-        online: data.players_online || 0,
-        max: data.players_max || 0
+        online: data.players?.online || data.players_online || 0,
+        max: data.players?.max || data.players_max || 20
       },
       ping: data.ping || 0
     }
   } catch (err) {
-    error.value = '无法加载服务器状态，请稍后重试'
+    error.value = null
+    javaStats.value = {
+      online: false,
+      ip: 'play.fur-island.asia',
+      port: 25565,
+      motd: '',
+      version: '未知',
+      players: {
+        online: 0,
+        max: 20
+      },
+      ping: 0
+    }
     console.error(err)
   } finally {
     loading.value = false
@@ -703,5 +716,101 @@ onMounted(() => {
 .dark .mc-stat-item-main,
 .dark .mc-connection-item {
   background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 768px) {
+  .mc-server-status {
+    margin: 1rem auto;
+    border-radius: 20px;
+  }
+
+  .mc-server-status-inner {
+    padding: 1rem;
+    border-radius: 17px;
+  }
+
+  .mc-server-title {
+    font-size: 1.2rem;
+    gap: 0.5rem;
+  }
+
+  .mc-icon-paw {
+    font-size: 1.4rem;
+  }
+
+  .mc-title-furry {
+    display: none;
+  }
+
+  .mc-stats-row-main {
+    grid-template-columns: 1fr;
+  }
+
+  .mc-connection-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mc-server-header-main {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: flex-start;
+  }
+
+  .mc-server-tip-furry {
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mc-server-status {
+    margin: 0.5rem -0.5rem;
+    border-radius: 16px;
+  }
+
+  .mc-server-status-inner {
+    padding: 0.75rem;
+    border-radius: 13px;
+  }
+
+  .mc-server-card {
+    padding: 1rem;
+    border-radius: 16px;
+  }
+
+  .mc-server-name-text {
+    font-size: 1rem;
+  }
+
+  .mc-stat-item-main {
+    padding: 0.75rem;
+  }
+
+  .mc-connection-item {
+    padding: 0.75rem;
+  }
+
+  .mc-address-row,
+  .mc-port-row {
+    flex-wrap: wrap;
+  }
+
+  .mc-label {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .mc-address,
+  .mc-port {
+    flex: 1;
+    min-width: 0;
+    font-size: 0.75rem;
+  }
+
+  .mc-server-tip-furry {
+    padding: 0.75rem;
+    font-size: 0.75rem;
+    line-height: 1.5;
+  }
 }
 </style>
