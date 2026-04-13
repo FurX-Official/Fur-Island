@@ -17,6 +17,7 @@ interface ServerStats {
 const javaStats = ref<ServerStats | null>(null)
 const loading = ref(false)
 const error = ref<string | null>(null)
+const copied = ref<string | null>(null)
 
 const loadStats = async () => {
   loading.value = true
@@ -61,6 +62,29 @@ const loadStats = async () => {
 const formatMotd = (motd: string) => {
   if (!motd || motd === 'No MOTD') return ''
   return motd.replace(/§[0-9a-fklmnor]/g, '')
+}
+
+const copyToClipboard = async (text: string, type: string) => {
+  try {
+    await navigator.clipboard.writeText(text)
+    copied.value = type
+    setTimeout(() => {
+      copied.value = null
+    }, 2000)
+  } catch (err) {
+    const textArea = document.createElement('textarea')
+    textArea.value = text
+    textArea.style.position = 'fixed'
+    textArea.style.left = '-9999px'
+    document.body.appendChild(textArea)
+    textArea.select()
+    document.execCommand('copy')
+    document.body.removeChild(textArea)
+    copied.value = type
+    setTimeout(() => {
+      copied.value = null
+    }, 2000)
+  }
 }
 
 onMounted(() => {
@@ -155,41 +179,51 @@ onMounted(() => {
                   <span class="mc-type-badge java">Java 版</span>
                 </div>
                 <div class="mc-address-row">
-                  <span class="mc-label">地址</span>
-                  <code class="mc-address">play.fur-island.asia</code>
-                  <button 
-                    class="mc-copy-btn" 
-                    @click="navigator.clipboard.writeText('play.fur-island.asia')"
-                    title="复制地址"
-                  >
-                    📋
-                  </button>
-                </div>
-                <div class="mc-port-row">
-                  <span class="mc-label">端口</span>
-                  <span class="mc-port-text">默认 (无需输入)</span>
-                </div>
+                <span class="mc-label">地址</span>
+                <code class="mc-address">play.fur-island.asia</code>
+                <button 
+                  class="mc-copy-btn" 
+                  :class="{ success: copied === 'java-address' }"
+                  @click="copyToClipboard('play.fur-island.asia', 'java-address')"
+                  title="复制地址"
+                >
+                  {{ copied === 'java-address' ? '✓' : '📋' }}
+                </button>
               </div>
+              <div class="mc-port-row">
+                <span class="mc-label">端口</span>
+                <span class="mc-port-text">默认 (无需输入)</span>
+              </div>
+            </div>
 
-              <div class="mc-connection-item">
-                <div class="mc-connection-header">
-                  <span class="mc-type-badge bedrock">基岩版</span>
-                </div>
-                <div class="mc-address-row">
-                  <span class="mc-label">地址</span>
-                  <code class="mc-address">play.fur-island.asia</code>
-                  <button 
-                    class="mc-copy-btn" 
-                    @click="navigator.clipboard.writeText('play.fur-island.asia')"
-                    title="复制地址"
-                  >
-                    📋
-                  </button>
-                </div>
-                <div class="mc-port-row">
-                  <span class="mc-label">端口</span>
-                  <code class="mc-port">51650</code>
-                </div>
+            <div class="mc-connection-item">
+              <div class="mc-connection-header">
+                <span class="mc-type-badge bedrock">基岩版</span>
+              </div>
+              <div class="mc-address-row">
+                <span class="mc-label">地址</span>
+                <code class="mc-address">play.fur-island.asia</code>
+                <button 
+                  class="mc-copy-btn" 
+                  :class="{ success: copied === 'bedrock-address' }"
+                  @click="copyToClipboard('play.fur-island.asia', 'bedrock-address')"
+                  title="复制地址"
+                >
+                  {{ copied === 'bedrock-address' ? '✓' : '📋' }}
+                </button>
+              </div>
+              <div class="mc-port-row">
+                <span class="mc-label">端口</span>
+                <code class="mc-port">51650</code>
+                <button 
+                  class="mc-copy-btn" 
+                  :class="{ success: copied === 'bedrock-port' }"
+                  @click="copyToClipboard('51650', 'bedrock-port')"
+                  title="复制端口"
+                >
+                  {{ copied === 'bedrock-port' ? '✓' : '📋' }}
+                </button>
+              </div>
               </div>
             </div>
           </div>
@@ -211,7 +245,7 @@ onMounted(() => {
 
 <style scoped>
 .mc-server-status {
-  max-width: 800px;
+  max-width: 900px;
   margin: 2rem auto;
   position: relative;
   padding: 3px;
@@ -226,7 +260,6 @@ onMounted(() => {
   animation: furry-gradient 4s ease infinite;
   box-shadow: 0 0 40px rgba(255, 154, 158, 0.3);
   transition: all 0.5s ease;
-  cursor: pointer;
 }
 
 .mc-server-status:hover {
@@ -640,6 +673,24 @@ onMounted(() => {
   transform: scale(1.05);
 }
 
+.mc-copy-btn.success {
+  background: linear-gradient(135deg, #10b981, #34d399);
+  color: white;
+  animation: copy-success 0.3s ease;
+}
+
+@keyframes copy-success {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.2);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
 .mc-motd {
   margin-top: 1.25rem;
   padding-top: 1rem;
@@ -716,6 +767,13 @@ onMounted(() => {
 .dark .mc-stat-item-main,
 .dark .mc-connection-item {
   background: rgba(255, 255, 255, 0.05);
+}
+
+@media (max-width: 960px) {
+  .mc-server-status {
+    max-width: 100%;
+    margin: 1rem 0.5rem;
+  }
 }
 
 @media (max-width: 768px) {
