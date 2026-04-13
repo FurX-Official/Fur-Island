@@ -71,18 +71,18 @@ onMounted(() => {
   <div class="mc-server-status">
     <div class="mc-server-status-inner">
       <div class="mc-server-header">
-      <h3 class="mc-server-title">
-        <span class="mc-icon-paw">🐾</span>
-        <span class="mc-title-furry">欢迎来到</span>
-        <span class="mc-title-main">Fur-Island</span>
-        <span class="mc-icon-paw">🐾</span>
-      </h3>
-      <button 
-        @click="loadStats" 
-        class="mc-refresh-btn"
-        :disabled="loading"
-        title="刷新状态"
-      >
+        <h3 class="mc-server-title">
+          <span class="mc-icon-paw">🐾</span>
+          <span class="mc-title-furry">欢迎来到</span>
+          <span class="mc-title-main">Fur-Island</span>
+          <span class="mc-icon-paw">🐾</span>
+        </h3>
+        <button 
+          @click="loadStats" 
+          class="mc-refresh-btn"
+          :disabled="loading"
+          title="刷新状态"
+        >
         <svg 
           class="mc-refresh-icon" 
           :class="{ spinning: loading }" 
@@ -242,11 +242,6 @@ onMounted(() => {
   background: var(--vp-c-bg);
   position: relative;
   z-index: 1;
-}
-
-@keyframes furry-gradient {
-  0%, 100% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
 }
 
 @keyframes furry-gradient {
