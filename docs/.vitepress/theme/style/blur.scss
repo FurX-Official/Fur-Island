@@ -173,19 +173,27 @@ $feature-shadow: 0 10px 30px 0 rgba(0, 0, 0, $shadow-opacity);
   }
 }
 
-// 浏览器兼容性回退
-@supports not (backdrop-filter: blur(10px)) {
+// 浏览器兼容性回退 - Firefox/Safari 旧版本
+@supports not (backdrop-filter: blur(10px)) and not (-webkit-backdrop-filter: blur(10px)) {
   :root {
     .VPNavBar:not(.has-sidebar):not(.home.top),
     .DocSearch-Button,
     .curtain,
     .VPLocalNav,
     .VPNavBar:not(.home.top) .content-body {
-      background-color: rgba(255, 255, 255, 0.9);
-      
-      .dark & {
-        background-color: rgba(0, 0, 0, 0.8);
-      }
+      background-color: rgba(255, 255, 255, 0.92);
+      border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+    }
+  }
+  
+  .dark {
+    .VPNavBar:not(.has-sidebar):not(.home.top),
+    .DocSearch-Button,
+    .curtain,
+    .VPLocalNav,
+    .VPNavBar:not(.home.top) .content-body {
+      background-color: rgba(30, 30, 32, 0.92);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     }
   }
 }
