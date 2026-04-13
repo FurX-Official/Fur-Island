@@ -17,17 +17,14 @@ interface ServerStats {
 }
 
 const javaStats = ref<ServerStats | null>(null)
-const bedrockStats = ref<ServerStats | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 
-const javaAddress = 'play.fur-island.asia'
-const bedrockAddress = 'play.fur-island.asia:51650:bedrock'
 const apiBase = 'https://api.unborder.online'
 
-async function fetchServerStatus(address: string): Promise<ServerStats | null> {
+async function fetchServerStats(): Promise<ServerStats | null> {
   try {
-    const response = await fetch(`${apiBase}/api/stats/direct/${address}`, {
+    const response = await fetch(`${apiBase}/api/stats/Star`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
@@ -41,7 +38,7 @@ async function fetchServerStatus(address: string): Promise<ServerStats | null> {
     
     return await response.json()
   } catch (err) {
-    console.error(`Failed to fetch ${address}:`, err)
+    console.error('Failed to fetch server stats:', err)
     return null
   }
 }
@@ -51,13 +48,8 @@ async function loadStats() {
   error.value = null
   
   try {
-    const [java, bedrock] = await Promise.all([
-      fetchServerStatus(javaAddress),
-      fetchServerStatus(bedrockAddress)
-    ])
-    
-    javaStats.value = java
-    bedrockStats.value = bedrock
+    const stats = await fetchServerStats()
+    javaStats.value = stats
   } catch (err) {
     error.value = '加载服务器状态失败，请稍后重试'
     console.error(err)
@@ -113,101 +105,96 @@ onMounted(() => {
       <span>正在加载服务器状态...</span>
     </div>
 
-    <div v-else class="mc-server-grid">
-      <!-- Java 版服务器 -->
+    <div v-else class="mc-server-single">
       <div class="mc-server-card" :class="{ offline: !javaStats?.online }">
-        <div class="mc-server-type">
-          <span class="mc-type-badge java">Java 版</span>
+        <div class="mc-server-header-main">
+          <div class="mc-server-name">
+            <span class="mc-server-icon">🌍</span>
+            <span class="mc-server-name-text">{{ javaStats?.name || 'Star' }} 服务器</span>
+          </div>
           <span class="mc-status-indicator" :class="{ online: javaStats?.online }">
             <span class="mc-status-dot"></span>
             {{ javaStats?.online ? '在线' : '离线' }}
           </span>
         </div>
-        
-        <div class="mc-server-info">
-          <div class="mc-address-row">
-            <span class="mc-label">地址</span>
-            <code class="mc-address">{{ javaAddress }}</code>
-            <button 
-              class="mc-copy-btn" 
-              @click="navigator.clipboard.writeText(javaAddress)"
-              title="复制地址"
-            >
-              📋
-            </button>
-          </div>
-          
-          <div v-if="javaStats?.online" class="mc-stats-row">
-            <div class="mc-stat-item">
-              <span class="mc-stat-label">玩家</span>
-              <span class="mc-stat-value">
-                👥 {{ javaStats.players.online }} / {{ javaStats.players.max }}
-              </span>
-            </div>
-            <div class="mc-stat-item">
-              <span class="mc-stat-label">延迟</span>
-              <span class="mc-stat-value">
-                📡 {{ javaStats.ping }}ms
-              </span>
-            </div>
-          </div>
-          
-          <div v-if="javaStats?.online && javaStats.version" class="mc-version-row">
-            <span class="mc-version">版本: {{ javaStats.version }}</span>
-          </div>
-          
-          <div v-if="javaStats?.online && javaStats.motd" class="mc-motd">
-            {{ formatMotd(javaStats.motd) }}
-          </div>
-        </div>
-      </div>
 
-      <!-- 基岩版服务器 -->
-      <div class="mc-server-card" :class="{ offline: !bedrockStats?.online }">
-        <div class="mc-server-type">
-          <span class="mc-type-badge bedrock">基岩版</span>
-          <span class="mc-status-indicator" :class="{ online: bedrockStats?.online }">
-            <span class="mc-status-dot"></span>
-            {{ bedrockStats?.online ? '在线' : '离线' }}
-          </span>
+        <div v-if="javaStats?.online" class="mc-stats-row-main">
+          <div class="mc-stat-item-main">
+            <span class="mc-stat-icon">👥</span>
+            <div class="mc-stat-content">
+              <span class="mc-stat-label-main">在线玩家</span>
+              <span class="mc-stat-value-main">{{ javaStats.players.online }} / {{ javaStats.players.max }}</span>
+            </div>
+          </div>
+          <div class="mc-stat-item-main">
+            <span class="mc-stat-icon">📡</span>
+            <div class="mc-stat-content">
+              <span class="mc-stat-label-main">延迟</span>
+              <span class="mc-stat-value-main">{{ javaStats.ping }}ms</span>
+            </div>
+          </div>
+          <div class="mc-stat-item-main">
+            <span class="mc-stat-icon">📦</span>
+            <div class="mc-stat-content">
+              <span class="mc-stat-label-main">版本</span>
+              <span class="mc-stat-value-main">{{ javaStats.version }}</span>
+            </div>
+          </div>
         </div>
-        
-        <div class="mc-server-info">
-          <div class="mc-address-row">
-            <span class="mc-label">地址</span>
-            <code class="mc-address">play.fur-island.asia</code>
-            <button 
-              class="mc-copy-btn" 
-              @click="navigator.clipboard.writeText('play.fur-island.asia')"
-              title="复制地址"
-            >
-              📋
-            </button>
-          </div>
+
+        <div class="mc-connection-section">
+          <h4 class="mc-section-title">🔌 连接信息</h4>
           
-          <div class="mc-port-row">
-            <span class="mc-label">端口</span>
-            <code class="mc-port">51650</code>
-          </div>
-          
-          <div v-if="bedrockStats?.online" class="mc-stats-row">
-            <div class="mc-stat-item">
-              <span class="mc-stat-label">玩家</span>
-              <span class="mc-stat-value">
-                👥 {{ bedrockStats.players.online }} / {{ bedrockStats.players.max }}
-              </span>
+          <div class="mc-connection-grid">
+            <!-- Java 版连接 -->
+            <div class="mc-connection-item">
+              <div class="mc-connection-header">
+                <span class="mc-type-badge java">Java 版</span>
+              </div>
+              <div class="mc-address-row">
+                <span class="mc-label">地址</span>
+                <code class="mc-address">play.fur-island.asia</code>
+                <button 
+                  class="mc-copy-btn" 
+                  @click="navigator.clipboard.writeText('play.fur-island.asia')"
+                  title="复制地址"
+                >
+                  📋
+                </button>
+              </div>
+              <div class="mc-port-row">
+                <span class="mc-label">端口</span>
+                <span class="mc-port-text">默认 (无需输入)</span>
+              </div>
             </div>
-            <div class="mc-stat-item">
-              <span class="mc-stat-label">延迟</span>
-              <span class="mc-stat-value">
-                📡 {{ bedrockStats.ping }}ms
-              </span>
+
+            <!-- 基岩版连接 -->
+            <div class="mc-connection-item">
+              <div class="mc-connection-header">
+                <span class="mc-type-badge bedrock">基岩版</span>
+              </div>
+              <div class="mc-address-row">
+                <span class="mc-label">地址</span>
+                <code class="mc-address">play.fur-island.asia</code>
+                <button 
+                  class="mc-copy-btn" 
+                  @click="navigator.clipboard.writeText('play.fur-island.asia')"
+                  title="复制地址"
+                >
+                  📋
+                </button>
+              </div>
+              <div class="mc-port-row">
+                <span class="mc-label">端口</span>
+                <code class="mc-port">51650</code>
+              </div>
             </div>
           </div>
-          
-          <div v-if="bedrockStats?.online && bedrockStats.version" class="mc-version-row">
-            <span class="mc-version">版本: {{ bedrockStats.version }}</span>
-          </div>
+        </div>
+
+        <div v-if="javaStats?.online && javaStats.motd && javaStats.motd !== 'No MOTD'" class="mc-motd">
+          <span class="mc-motd-label">📝 服务器消息</span>
+          <p class="mc-motd-text">{{ formatMotd(javaStats.motd) }}</p>
         </div>
       </div>
     </div>
@@ -332,15 +319,6 @@ onMounted(() => {
   border-color: var(--vp-c-danger-soft);
 }
 
-.mc-server-type {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1rem;
-  padding-bottom: 0.75rem;
-  border-bottom: 1px solid var(--vp-c-divider);
-}
-
 .mc-type-badge {
   padding: 0.25rem 0.75rem;
   border-radius: 20px;
@@ -389,12 +367,6 @@ onMounted(() => {
   50% { opacity: 0.5; }
 }
 
-.mc-server-info {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
-}
-
 .mc-address-row,
 .mc-port-row {
   display: flex;
@@ -432,46 +404,120 @@ onMounted(() => {
   background: var(--vp-c-bg-mute);
 }
 
-.mc-stats-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 0.5rem;
-  margin-top: 0.25rem;
+.mc-server-header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--vp-c-divider);
 }
 
-.mc-stat-item {
+.mc-server-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mc-server-icon {
+  font-size: 1.5rem;
+}
+
+.mc-server-name-text {
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
+.mc-stats-row-main {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.mc-stat-item-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem;
+  background: var(--vp-c-bg-mute);
+  border-radius: 8px;
+}
+
+.mc-stat-icon {
+  font-size: 1.5rem;
+}
+
+.mc-stat-content {
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
 }
 
-.mc-stat-label {
+.mc-stat-label-main {
   font-size: 0.7rem;
   color: var(--vp-c-text-2);
 }
 
-.mc-stat-value {
-  font-size: 0.875rem;
+.mc-stat-value-main {
+  font-size: 0.95rem;
   font-weight: 600;
 }
 
-.mc-version-row {
-  margin-top: 0.25rem;
+.mc-connection-section {
+  margin-bottom: 1rem;
 }
 
-.mc-version {
-  font-size: 0.75rem;
+.mc-section-title {
+  margin: 0 0 1rem 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.mc-connection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.mc-connection-item {
+  padding: 1rem;
+  background: var(--vp-c-bg-mute);
+  border-radius: 8px;
+}
+
+.mc-connection-header {
+  margin-bottom: 0.75rem;
+}
+
+.mc-port-text {
+  flex: 1;
+  font-size: 0.875rem;
   color: var(--vp-c-text-2);
 }
 
 .mc-motd {
-  margin-top: 0.5rem;
-  padding: 0.5rem;
+  margin-top: 1rem;
+  padding: 0.75rem 1rem;
   background: var(--vp-c-bg-mute);
-  border-radius: 6px;
+  border-radius: 8px;
+}
+
+.mc-motd-label {
+  display: block;
   font-size: 0.8rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--vp-c-text-1);
+}
+
+.mc-motd-text {
+  margin: 0;
+  font-size: 0.85rem;
   color: var(--vp-c-text-2);
-  line-height: 1.4;
+  line-height: 1.5;
 }
 
 .mc-server-tip {
@@ -490,7 +536,9 @@ onMounted(() => {
 
 .dark .mc-address,
 .dark .mc-port,
-.dark .mc-motd {
+.dark .mc-motd,
+.dark .mc-stat-item-main,
+.dark .mc-connection-item {
   background: var(--vp-c-bg-mute);
 }
 
@@ -498,9 +546,14 @@ onMounted(() => {
   .mc-server-status {
     padding: 1rem;
   }
-  
-  .mc-server-grid {
+
+  .mc-stats-row-main {
     grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .mc-server-name-text {
+    font-size: 1rem;
   }
 }
 </style>
