@@ -174,7 +174,7 @@ $feature-shadow: 0 10px 30px 0 rgba(0, 0, 0, $shadow-opacity);
 }
 
 // 浏览器兼容性回退 - Firefox/Safari 旧版本
-@supports not (backdrop-filter: blur(10px)) and not (-webkit-backdrop-filter: blur(10px)) {
+@supports not (backdrop-filter: blur(10px)) {
   :root {
     .VPNavBar:not(.has-sidebar):not(.home.top),
     .DocSearch-Button,
