@@ -1,3 +1,5 @@
+@use "sass:map";
+
 // 文件：_marker-effects.scss
 // 高亮标记效果样式
 
@@ -36,7 +38,7 @@ $marker-z-index: -1;
 }
 
 // 混合宏：创建标记效果
-@mixin marker-effect($color: map-get($marker-colors, 'evy'), $height: 0.5em) {
+@mixin marker-effect($color: map.get($marker-colors, 'evy'), $height: 0.5em) {
   &::after {
     content: '';
     position: absolute;
