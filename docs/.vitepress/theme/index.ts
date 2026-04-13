@@ -1,6 +1,6 @@
 /* .vitepress/theme/index.ts */
 import DefaultTheme from 'vitepress/theme'
-@use './style/index'
+import './style/index.scss'
 
 export default {
   extends: DefaultTheme,
