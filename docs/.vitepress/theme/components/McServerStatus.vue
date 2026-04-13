@@ -71,8 +71,10 @@ onMounted(() => {
   <div class="mc-server-status">
     <div class="mc-server-header">
       <h3 class="mc-server-title">
-        <span class="mc-icon">⛏️</span>
-        Fur-Island 服务器
+        <span class="mc-icon-paw">🐾</span>
+        <span class="mc-title-furry">欢迎来到</span>
+        <span class="mc-title-main">Fur-Island</span>
+        <span class="mc-icon-paw">🐾</span>
       </h3>
       <button 
         @click="loadStats" 
@@ -109,8 +111,8 @@ onMounted(() => {
       <div class="mc-server-card" :class="{ offline: !javaStats?.online }">
         <div class="mc-server-header-main">
           <div class="mc-server-name">
-            <span class="mc-server-icon">🌍</span>
-            <span class="mc-server-name-text">{{ javaStats?.name || 'Star' }} 服务器</span>
+            <span class="mc-server-icon">🐾</span>
+            <span class="mc-server-name-text">Fur-Island 服务器</span>
           </div>
           <span class="mc-status-indicator" :class="{ online: javaStats?.online }">
             <span class="mc-status-dot"></span>
@@ -120,30 +122,30 @@ onMounted(() => {
 
         <div v-if="javaStats?.online" class="mc-stats-row-main">
           <div class="mc-stat-item-main">
-            <span class="mc-stat-icon">👥</span>
+            <span class="mc-stat-icon-furry">🦊</span>
             <div class="mc-stat-content">
-              <span class="mc-stat-label-main">在线玩家</span>
+              <span class="mc-stat-label-main">岛上小伙伴</span>
               <span class="mc-stat-value-main">{{ javaStats.players.online }} / {{ javaStats.players.max }}</span>
             </div>
           </div>
           <div class="mc-stat-item-main">
-            <span class="mc-stat-icon">📡</span>
+            <span class="mc-stat-icon-furry">💖</span>
             <div class="mc-stat-content">
-              <span class="mc-stat-label-main">延迟</span>
+              <span class="mc-stat-label-main">连接心跳</span>
               <span class="mc-stat-value-main">{{ javaStats.ping }}ms</span>
             </div>
           </div>
           <div class="mc-stat-item-main">
-            <span class="mc-stat-icon">📦</span>
+            <span class="mc-stat-icon-furry">🏠</span>
             <div class="mc-stat-content">
-              <span class="mc-stat-label-main">版本</span>
+              <span class="mc-stat-label-main">服务版本</span>
               <span class="mc-stat-value-main">{{ javaStats.version }}</span>
             </div>
           </div>
         </div>
 
         <div class="mc-connection-section">
-          <h4 class="mc-section-title">🔌 连接信息</h4>
+          <h4 class="mc-section-title">🐾 登岛方式</h4>
           
           <div class="mc-connection-grid">
             <!-- Java 版连接 -->
@@ -199,8 +201,9 @@ onMounted(() => {
       </div>
     </div>
 
-    <div class="mc-server-tip">
-      💡 Java 版无需输入端口，基岩版请使用端口 51650 连接
+    <div class="mc-server-tip-furry">
+      <span class="mc-tip-icon">✨</span>
+      用爪子踏上 Fur-Island 吧！Java 版无需端口，基岩版记得带上端口 51650 哦~
     </div>
   </div>
 </template>
@@ -210,6 +213,30 @@ onMounted(() => {
   max-width: 800px;
   margin: 2rem auto;
   padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.mc-server-status::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, 
+    #ff9a9e 0%, 
+    #fecfef 25%, 
+    #a8edea 50%, 
+    #fed6e3 75%, 
+    #ff9a9e 100%);
+  background-size: 200% 100%;
+  animation: furry-gradient 3s ease infinite;
+}
+
+@keyframes furry-gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 .mc-server-header {
@@ -222,14 +249,41 @@ onMounted(() => {
 .mc-server-title {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.75rem;
   margin: 0;
-  font-size: 1.25rem;
-  font-weight: 600;
+  font-size: 1.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a8edea 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.mc-icon {
-  font-size: 1.5rem;
+.mc-icon-paw {
+  font-size: 1.75rem;
+  animation: paw-bounce 2s ease-in-out infinite;
+}
+
+.mc-icon-paw:first-child {
+  animation-delay: -0.5s;
+}
+
+.mc-icon-paw:last-child {
+  animation-delay: -1s;
+}
+
+@keyframes paw-bounce {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-3px) rotate(5deg); }
+}
+
+.mc-title-furry {
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.mc-title-main {
+  letter-spacing: 0.05em;
 }
 
 .mc-refresh-btn {
@@ -302,16 +356,42 @@ onMounted(() => {
 }
 
 .mc-server-card {
-  padding: 1.25rem;
-  border-radius: 12px;
+  padding: 1.5rem;
+  border-radius: 20px;
   background: var(--vp-c-bg-soft);
-  border: 1px solid var(--vp-c-divider);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+  position: relative;
   transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.mc-server-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 20px;
+  padding: 2px;
+  background: linear-gradient(135deg, 
+    rgba(255, 154, 158, 0.5) 0%, 
+    rgba(254, 207, 239, 0.5) 50%, 
+    rgba(168, 237, 234, 0.5) 100%);
+  -webkit-mask: 
+    linear-gradient(#fff 0 0) content-box, 
+    linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
 }
 
 .mc-server-card:hover {
-  border-color: var(--vp-c-brand-1);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(255, 154, 158, 0.15);
+}
+
+.mc-server-card:hover::before {
+  opacity: 1;
 }
 
 .mc-server-card.offline {
@@ -328,13 +408,17 @@ onMounted(() => {
 }
 
 .mc-type-badge.java {
-  background: rgba(59, 130, 246, 0.15);
-  color: #3b82f6;
+  background: linear-gradient(135deg, 
+    rgba(255, 154, 158, 0.2) 0%, 
+    rgba(254, 207, 239, 0.2) 100%);
+  color: #e87a90;
 }
 
 .mc-type-badge.bedrock {
-  background: rgba(16, 185, 129, 0.15);
-  color: #10b981;
+  background: linear-gradient(135deg, 
+    rgba(168, 237, 234, 0.2) 0%, 
+    rgba(254, 214, 227, 0.2) 100%);
+  color: #56c5bf;
 }
 
 .mc-status-indicator {
@@ -347,24 +431,33 @@ onMounted(() => {
 }
 
 .mc-status-indicator.online {
-  color: #10b981;
+  color: #ff9a9e;
+  font-weight: 600;
 }
 
 .mc-status-dot {
-  width: 8px;
-  height: 8px;
+  width: 10px;
+  height: 10px;
   border-radius: 50%;
   background: var(--vp-c-text-3);
+  box-shadow: 0 0 0 0 rgba(255, 154, 158, 0.4);
 }
 
 .mc-status-indicator.online .mc-status-dot {
-  background: #10b981;
-  animation: pulse 2s ease-in-out infinite;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  animation: furry-pulse 2s ease-in-out infinite;
 }
 
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+@keyframes furry-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(255, 154, 158, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(255, 154, 158, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(255, 154, 158, 0);
+  }
 }
 
 .mc-address-row,
@@ -441,13 +534,43 @@ onMounted(() => {
   display: flex;
   align-items: center;
   gap: 0.75rem;
-  padding: 0.75rem;
+  padding: 1rem;
   background: var(--vp-c-bg-mute);
-  border-radius: 8px;
+  border-radius: 12px;
+  border: 1px solid transparent;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.mc-stat-icon {
-  font-size: 1.5rem;
+.mc-stat-item-main::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, 
+    rgba(255, 154, 158, 0) 0%, 
+    rgba(255, 154, 158, 0.08) 100%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.mc-stat-item-main:hover {
+  border-color: rgba(255, 154, 158, 0.3);
+  transform: translateY(-2px);
+}
+
+.mc-stat-item-main:hover::before {
+  opacity: 1;
+}
+
+.mc-stat-icon-furry {
+  font-size: 1.75rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+  transition: transform 0.3s ease;
+}
+
+.mc-stat-item-main:hover .mc-stat-icon-furry {
+  transform: scale(1.15) rotate(10deg);
 }
 
 .mc-stat-content {
@@ -520,14 +643,42 @@ onMounted(() => {
   line-height: 1.5;
 }
 
-.mc-server-tip {
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  background: var(--vp-c-brand-soft);
-  border-radius: 8px;
-  font-size: 0.875rem;
-  color: var(--vp-c-brand-1);
+.mc-server-tip-furry {
+  margin-top: 1.5rem;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(135deg, 
+    rgba(255, 154, 158, 0.15) 0%, 
+    rgba(168, 237, 234, 0.15) 100%);
+  border-radius: 16px;
+  border: 1px solid rgba(255, 154, 158, 0.3);
+  font-size: 0.9rem;
   text-align: center;
+  line-height: 1.6;
+  position: relative;
+  overflow: hidden;
+}
+
+.mc-server-tip-furry::before {
+  content: '🐾';
+  position: absolute;
+  top: -5px;
+  left: 10px;
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
+
+.mc-server-tip-furry::after {
+  content: '🐾';
+  position: absolute;
+  bottom: -5px;
+  right: 10px;
+  font-size: 0.7rem;
+  opacity: 0.5;
+}
+
+.mc-tip-icon {
+  margin-right: 0.5rem;
+  font-size: 1.1rem;
 }
 
 .dark .mc-server-card {
