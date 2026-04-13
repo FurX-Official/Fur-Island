@@ -2,64 +2,52 @@
 import { ref, onMounted } from 'vue'
 
 interface ServerStats {
-  name: string
   online: boolean
-  type: 'java' | 'bedrock'
+  ip: string
+  port: number
+  motd: string
   version: string
   players: {
     online: number
     max: number
   }
   ping: number
-  motd: string
-  icon?: string
-  timestamp: number
 }
 
 const javaStats = ref<ServerStats | null>(null)
-const loading = ref(true)
+const loading = ref(false)
 const error = ref<string | null>(null)
 
-const apiBase = 'https://api.unborder.online'
-
-async function fetchServerStats(): Promise<ServerStats | null> {
-  try {
-    const response = await fetch(`${apiBase}/api/stats/Star`, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json',
-      },
-      mode: 'cors',
-    })
-    
-    if (!response.ok) {
-      throw new Error(`HTTP ${response.status}`)
-    }
-    
-    return await response.json()
-  } catch (err) {
-    console.error('Failed to fetch server stats:', err)
-    return null
-  }
-}
-
-async function loadStats() {
+const loadStats = async () => {
   loading.value = true
   error.value = null
-  
   try {
-    const stats = await fetchServerStats()
-    javaStats.value = stats
+    const response = await fetch('https://api.unborder.online/api/stats/Star')
+    if (!response.ok) throw new Error('Failed to fetch server status')
+    const data = await response.json()
+    javaStats.value = {
+      online: data.status,
+      ip: 'play.fur-island.asia',
+      port: data.port || 25565,
+      motd: data.motd || '',
+      version: data.version || '未知',
+      players: {
+        online: data.players_online || 0,
+        max: data.players_max || 0
+      },
+      ping: data.ping || 0
+    }
   } catch (err) {
-    error.value = '加载服务器状态失败，请稍后重试'
+    error.value = '无法加载服务器状态，请稍后重试'
     console.error(err)
   } finally {
     loading.value = false
   }
 }
 
-function formatMotd(motd: string): string {
-  return motd.replace(/§[0-9a-fk-or]/g, '').trim()
+const formatMotd = (motd: string) => {
+  if (!motd || motd === 'No MOTD') return ''
+  return motd.replace(/§[0-9a-fklmnor]/g, '')
 }
 
 onMounted(() => {
@@ -83,127 +71,126 @@ onMounted(() => {
           :disabled="loading"
           title="刷新状态"
         >
-        <svg 
-          class="mc-refresh-icon" 
-          :class="{ spinning: loading }" 
-          viewBox="0 0 24 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-        >
-          <path d="M23 4v6h-6" />
-          <path d="M1 20v-6h6" />
-          <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
-        </svg>
-      </button>
-    </div>
-
-    <div v-if="error" class="mc-error">
-      <span class="mc-error-icon">⚠️</span>
-      {{ error }}
-    </div>
-
-    <div v-if="loading" class="mc-loading">
-      <div class="mc-spinner"></div>
-      <span>正在加载服务器状态...</span>
-    </div>
-
-    <div v-else class="mc-server-single">
-      <div class="mc-server-card" :class="{ offline: !javaStats?.online }">
-        <div class="mc-server-header-main">
-          <div class="mc-server-name">
-            <span class="mc-server-icon">🐾</span>
-            <span class="mc-server-name-text">Fur-Island 服务器</span>
-          </div>
-          <span class="mc-status-indicator" :class="{ online: javaStats?.online }">
-            <span class="mc-status-dot"></span>
-            {{ javaStats?.online ? '在线' : '离线' }}
-          </span>
-        </div>
-
-        <div v-if="javaStats?.online" class="mc-stats-row-main">
-          <div class="mc-stat-item-main">
-            <span class="mc-stat-icon-furry">🦊</span>
-            <div class="mc-stat-content">
-              <span class="mc-stat-label-main">岛上小伙伴</span>
-              <span class="mc-stat-value-main">{{ javaStats.players.online }} / {{ javaStats.players.max }}</span>
-            </div>
-          </div>
-          <div class="mc-stat-item-main">
-            <span class="mc-stat-icon-furry">💖</span>
-            <div class="mc-stat-content">
-              <span class="mc-stat-label-main">连接心跳</span>
-              <span class="mc-stat-value-main">{{ javaStats.ping }}ms</span>
-            </div>
-          </div>
-          <div class="mc-stat-item-main">
-            <span class="mc-stat-icon-furry">🏠</span>
-            <div class="mc-stat-content">
-              <span class="mc-stat-label-main">服务版本</span>
-              <span class="mc-stat-value-main">{{ javaStats.version }}</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="mc-connection-section">
-          <h4 class="mc-section-title">🐾 登岛方式</h4>
-          
-          <div class="mc-connection-grid">
-            <!-- Java 版连接 -->
-            <div class="mc-connection-item">
-              <div class="mc-connection-header">
-                <span class="mc-type-badge java">Java 版</span>
-              </div>
-              <div class="mc-address-row">
-                <span class="mc-label">地址</span>
-                <code class="mc-address">play.fur-island.asia</code>
-                <button 
-                  class="mc-copy-btn" 
-                  @click="navigator.clipboard.writeText('play.fur-island.asia')"
-                  title="复制地址"
-                >
-                  📋
-                </button>
-              </div>
-              <div class="mc-port-row">
-                <span class="mc-label">端口</span>
-                <span class="mc-port-text">默认 (无需输入)</span>
-              </div>
-            </div>
-
-            <!-- 基岩版连接 -->
-            <div class="mc-connection-item">
-              <div class="mc-connection-header">
-                <span class="mc-type-badge bedrock">基岩版</span>
-              </div>
-              <div class="mc-address-row">
-                <span class="mc-label">地址</span>
-                <code class="mc-address">play.fur-island.asia</code>
-                <button 
-                  class="mc-copy-btn" 
-                  @click="navigator.clipboard.writeText('play.fur-island.asia')"
-                  title="复制地址"
-                >
-                  📋
-                </button>
-              </div>
-              <div class="mc-port-row">
-                <span class="mc-label">端口</span>
-                <code class="mc-port">51650</code>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="javaStats?.online && javaStats.motd && javaStats.motd !== 'No MOTD'" class="mc-motd">
-          <span class="mc-motd-label">📝 服务器消息</span>
-          <p class="mc-motd-text">{{ formatMotd(javaStats.motd) }}</p>
-        </div>
+          <svg 
+            class="mc-refresh-icon" 
+            :class="{ spinning: loading }" 
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M23 4v6h-6" />
+            <path d="M1 20v-6h6" />
+            <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15" />
+          </svg>
+        </button>
       </div>
 
-      <div class="mc-server-tip-furry">
-        <span class="mc-tip-icon">✨</span>
-        用爪子踏上 Fur-Island 吧！Java 版无需端口，基岩版记得带上端口 51650 哦~
+      <div v-if="error" class="mc-error">
+        <span class="mc-error-icon">⚠️</span>
+        {{ error }}
+      </div>
+
+      <div v-if="loading" class="mc-loading">
+        <div class="mc-spinner"></div>
+        <span>正在加载服务器状态...</span>
+      </div>
+
+      <div v-else class="mc-server-single">
+        <div class="mc-server-card" :class="{ offline: !javaStats?.online }">
+          <div class="mc-server-header-main">
+            <div class="mc-server-name">
+              <span class="mc-server-icon">🐾</span>
+              <span class="mc-server-name-text">Fur-Island 服务器</span>
+            </div>
+            <span class="mc-status-indicator" :class="{ online: javaStats?.online }">
+              <span class="mc-status-dot"></span>
+              {{ javaStats?.online ? '在线' : '离线' }}
+            </span>
+          </div>
+
+          <div v-if="javaStats?.online" class="mc-stats-row-main">
+            <div class="mc-stat-item-main">
+              <span class="mc-stat-icon-furry">🦊</span>
+              <div class="mc-stat-content">
+                <span class="mc-stat-label-main">岛上小伙伴</span>
+                <span class="mc-stat-value-main">{{ javaStats.players.online }} / {{ javaStats.players.max }}</span>
+              </div>
+            </div>
+            <div class="mc-stat-item-main">
+              <span class="mc-stat-icon-furry">💖</span>
+              <div class="mc-stat-content">
+                <span class="mc-stat-label-main">连接心跳</span>
+                <span class="mc-stat-value-main">{{ javaStats.ping }}ms</span>
+              </div>
+            </div>
+            <div class="mc-stat-item-main">
+              <span class="mc-stat-icon-furry">🏠</span>
+              <div class="mc-stat-content">
+                <span class="mc-stat-label-main">服务版本</span>
+                <span class="mc-stat-value-main">{{ javaStats.version }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mc-connection-section">
+            <h4 class="mc-section-title">🐾 登岛方式</h4>
+            
+            <div class="mc-connection-grid">
+              <div class="mc-connection-item">
+                <div class="mc-connection-header">
+                  <span class="mc-type-badge java">Java 版</span>
+                </div>
+                <div class="mc-address-row">
+                  <span class="mc-label">地址</span>
+                  <code class="mc-address">play.fur-island.asia</code>
+                  <button 
+                    class="mc-copy-btn" 
+                    @click="navigator.clipboard.writeText('play.fur-island.asia')"
+                    title="复制地址"
+                  >
+                    📋
+                  </button>
+                </div>
+                <div class="mc-port-row">
+                  <span class="mc-label">端口</span>
+                  <span class="mc-port-text">默认 (无需输入)</span>
+                </div>
+              </div>
+
+              <div class="mc-connection-item">
+                <div class="mc-connection-header">
+                  <span class="mc-type-badge bedrock">基岩版</span>
+                </div>
+                <div class="mc-address-row">
+                  <span class="mc-label">地址</span>
+                  <code class="mc-address">play.fur-island.asia</code>
+                  <button 
+                    class="mc-copy-btn" 
+                    @click="navigator.clipboard.writeText('play.fur-island.asia')"
+                    title="复制地址"
+                  >
+                    📋
+                  </button>
+                </div>
+                <div class="mc-port-row">
+                  <span class="mc-label">端口</span>
+                  <code class="mc-port">51650</code>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div v-if="javaStats?.online && javaStats.motd && javaStats.motd !== 'No MOTD'" class="mc-motd">
+            <span class="mc-motd-label">📝 服务器消息</span>
+            <p class="mc-motd-text">{{ formatMotd(javaStats.motd) }}</p>
+          </div>
+        </div>
+
+        <div class="mc-server-tip-furry">
+          <span class="mc-tip-icon">✨</span>
+          用爪子踏上 Fur-Island 吧！Java 版无需端口，基岩版记得带上端口 51650 哦~
+        </div>
       </div>
     </div>
   </div>
@@ -300,25 +287,28 @@ onMounted(() => {
   padding: 0.5rem;
   border-radius: 8px;
   border: none;
-  background: var(--vp-c-brand-1, #18794e);
-  color: white;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
   cursor: pointer;
   transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .mc-refresh-btn:hover:not(:disabled) {
-  background: var(--vp-c-brand-2, #156d45);
-  transform: rotate(15deg);
+  background: var(--vp-c-brand-1);
+  color: white;
 }
 
 .mc-refresh-btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
 .mc-refresh-icon {
-  width: 20px;
-  height: 20px;
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .mc-refresh-icon.spinning {
@@ -335,14 +325,14 @@ onMounted(() => {
   align-items: center;
   justify-content: center;
   gap: 0.75rem;
-  padding: 3rem;
+  padding: 2rem;
   color: var(--vp-c-text-2);
 }
 
 .mc-spinner {
-  width: 24px;
-  height: 24px;
-  border: 3px solid var(--vp-c-divider);
+  width: 1.5rem;
+  height: 1.5rem;
+  border: 2px solid var(--vp-c-divider);
   border-top-color: var(--vp-c-brand-1);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
@@ -354,15 +344,14 @@ onMounted(() => {
   gap: 0.5rem;
   padding: 1rem;
   background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
   border-radius: 8px;
-  color: var(--vp-c-danger-1);
+  color: #ef4444;
+  text-align: center;
+  justify-content: center;
 }
 
-.mc-server-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1rem;
+.mc-error-icon {
+  font-size: 1.25rem;
 }
 
 .mc-server-card {
@@ -405,30 +394,32 @@ onMounted(() => {
 }
 
 .mc-server-card.offline {
-  opacity: 0.7;
-  border-color: var(--vp-c-danger-soft);
+  filter: grayscale(50%);
+  opacity: 0.8;
 }
 
-.mc-type-badge {
-  padding: 0.25rem 0.75rem;
-  border-radius: 20px;
-  font-size: 0.75rem;
+.mc-server-header-main {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.mc-server-name {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mc-server-icon {
+  font-size: 1.5rem;
+}
+
+.mc-server-name-text {
   font-weight: 600;
-  text-transform: uppercase;
-}
-
-.mc-type-badge.java {
-  background: linear-gradient(135deg, 
-    rgba(255, 154, 158, 0.2) 0%, 
-    rgba(254, 207, 239, 0.2) 100%);
-  color: #e87a90;
-}
-
-.mc-type-badge.bedrock {
-  background: linear-gradient(135deg, 
-    rgba(168, 237, 234, 0.2) 0%, 
-    rgba(254, 214, 227, 0.2) 100%);
-  color: #56c5bf;
+  font-size: 1.1rem;
 }
 
 .mc-status-indicator {
@@ -436,7 +427,6 @@ onMounted(() => {
   align-items: center;
   gap: 0.5rem;
   font-size: 0.875rem;
-  font-weight: 500;
   color: var(--vp-c-text-2);
 }
 
@@ -470,74 +460,32 @@ onMounted(() => {
   }
 }
 
-.mc-address-row,
-.mc-port-row {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.mc-label {
+.mc-type-badge {
+  padding: 0.25rem 0.75rem;
+  border-radius: 999px;
   font-size: 0.75rem;
-  color: var(--vp-c-text-2);
-  min-width: 40px;
-}
-
-.mc-address,
-.mc-port {
-  flex: 1;
-  padding: 0.25rem 0.5rem;
-  background: var(--vp-c-bg-mute);
-  border-radius: 6px;
-  font-family: 'Monaco', 'Menlo', monospace;
-  font-size: 0.875rem;
-}
-
-.mc-copy-btn {
-  padding: 0.25rem 0.5rem;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  font-size: 1rem;
-  border-radius: 4px;
-  transition: background 0.2s;
-}
-
-.mc-copy-btn:hover {
-  background: var(--vp-c-bg-mute);
-}
-
-.mc-server-header-main {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 1.25rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid var(--vp-c-divider);
-}
-
-.mc-server-name {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.mc-server-icon {
-  font-size: 1.5rem;
-}
-
-.mc-server-name-text {
   font-weight: 600;
-  font-size: 1.1rem;
+}
+
+.mc-type-badge.java {
+  background: linear-gradient(135deg, 
+    rgba(255, 154, 158, 0.2) 0%, 
+    rgba(254, 207, 239, 0.2) 100%);
+  color: #e87a90;
+}
+
+.mc-type-badge.bedrock {
+  background: linear-gradient(135deg, 
+    rgba(168, 237, 234, 0.2) 0%, 
+    rgba(254, 214, 227, 0.2) 100%);
+  color: #56c5bf;
 }
 
 .mc-stats-row-main {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 0.75rem;
   margin-bottom: 1.5rem;
-  padding-bottom: 1.25rem;
-  border-bottom: 1px solid var(--vp-c-divider);
 }
 
 .mc-stat-item-main {
@@ -590,60 +538,106 @@ onMounted(() => {
 }
 
 .mc-stat-label-main {
-  font-size: 0.7rem;
+  font-size: 0.75rem;
   color: var(--vp-c-text-2);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
 .mc-stat-value-main {
-  font-size: 0.95rem;
-  font-weight: 600;
+  font-weight: 700;
+  font-size: 1.1rem;
+  color: var(--vp-c-text-1);
 }
 
 .mc-connection-section {
-  margin-bottom: 1rem;
+  margin-top: 1.5rem;
 }
 
 .mc-section-title {
   margin: 0 0 1rem 0;
-  font-size: 0.95rem;
+  font-size: 1rem;
   font-weight: 600;
+  color: var(--vp-c-text-1);
 }
 
 .mc-connection-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1rem;
 }
 
 .mc-connection-item {
   padding: 1rem;
   background: var(--vp-c-bg-mute);
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
 .mc-connection-header {
   margin-bottom: 0.75rem;
 }
 
-.mc-port-text {
+.mc-address-row,
+.mc-port-row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.mc-address-row {
+  margin-bottom: 0.5rem;
+}
+
+.mc-label {
+  width: 40px;
+  font-size: 0.75rem;
+  color: var(--vp-c-text-2);
+}
+
+.mc-address,
+.mc-port {
   flex: 1;
+  padding: 0.375rem 0.75rem;
+  background: var(--vp-c-bg-soft);
+  border-radius: 6px;
+  font-family: 'Fira Code', 'Consolas', monospace;
+  font-size: 0.875rem;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.mc-port-text {
   font-size: 0.875rem;
   color: var(--vp-c-text-2);
 }
 
+.mc-copy-btn {
+  padding: 0.375rem 0.5rem;
+  border: none;
+  border-radius: 6px;
+  background: var(--vp-c-brand-soft);
+  color: var(--vp-c-brand-1);
+  cursor: pointer;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+}
+
+.mc-copy-btn:hover {
+  background: var(--vp-c-brand-1);
+  color: white;
+  transform: scale(1.05);
+}
+
 .mc-motd {
-  margin-top: 1rem;
-  padding: 0.75rem 1rem;
-  background: var(--vp-c-bg-mute);
-  border-radius: 8px;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--vp-c-divider);
 }
 
 .mc-motd-label {
   display: block;
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.75rem;
+  color: var(--vp-c-text-2);
   margin-bottom: 0.5rem;
-  color: var(--vp-c-text-1);
 }
 
 .mc-motd-text {
@@ -708,21 +702,6 @@ onMounted(() => {
 .dark .mc-motd,
 .dark .mc-stat-item-main,
 .dark .mc-connection-item {
-  background: var(--vp-c-bg-mute);
-}
-
-@media (max-width: 640px) {
-  .mc-server-status {
-    padding: 1rem;
-  }
-
-  .mc-stats-row-main {
-    grid-template-columns: 1fr;
-    gap: 0.75rem;
-  }
-
-  .mc-server-name-text {
-    font-size: 1rem;
-  }
+  background: rgba(255, 255, 255, 0.05);
 }
 </style>
