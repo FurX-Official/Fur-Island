@@ -40,4 +40,5 @@ features:
   - title: 🗺️ 动态地图
     details: 实时在线地图查看服务器世界，探索未知的远方，规划你的下一次冒险目的地。
 ---
+<McServerStatus />
 
