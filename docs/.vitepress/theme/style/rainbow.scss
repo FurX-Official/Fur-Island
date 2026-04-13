@@ -1,3 +1,6 @@
+@use "sass:math";
+@use "sass:list";
+
 // 文件：_animations.scss
 // 彩虹动画定义
 
@@ -6,7 +9,7 @@
   // 生成彩虹动画关键帧的函数
   // 这个函数会生成从蓝到紫的平滑过渡
   $color-steps: 80; // 总关键帧数
-  $step-percent: 100% / $color-steps; // 每步的百分比
+  $step-percent: math.div(100%, $color-steps); // 每步的百分比
 
   // 定义彩虹色序列
   $rainbow-colors: (
@@ -25,11 +28,11 @@
   // 生成关键帧
   @for $i from 0 through $color-steps {
     $current-percent: $i * $step-percent;
-    $current-index: $i % length($rainbow-colors);
-    $next-index: ($i + 1) % length($rainbow-colors);
+    $current-index: $i % list.length($rainbow-colors);
+    $next-index: ($i + 1) % list.length($rainbow-colors);
     
-    $prev-color: nth($rainbow-colors, $current-index + 1);
-    $next-color: nth($rainbow-colors, $next-index + 1);
+    $prev-color: list.nth($rainbow-colors, $current-index + 1);
+    $next-color: list.nth($rainbow-colors, $next-index + 1);
     
     #{$current-percent} {
       --rainbow-prev: #{$prev-color};

@@ -1,3 +1,5 @@
+@use "sass:map";
+
 // 文件：_custom-blocks.scss
 // 自定义块样式 - 支持多种类型的信息块
 
@@ -120,20 +122,20 @@ $custom-icons: (
 // 生成 CSS 自定义属性
 :root, .dark {
   @each $type, $themes in $custom-blocks {
-    $light: map-get($themes, 'light');
-    $dark: map-get($themes, 'dark');
+    $light: map.get($themes, 'light');
+    $dark: map.get($themes, 'dark');
     
-    --custom-block-#{$type}-left: #{map-get($light, 'left')};
-    --custom-block-#{$type}-bg: #{map-get($light, 'bg')};
+    --custom-block-#{$type}-left: #{map.get($light, 'left')};
+    --custom-block-#{$type}-bg: #{map.get($light, 'bg')};
   }
 }
 
 .dark {
   @each $type, $themes in $custom-blocks {
-    $dark: map-get($themes, 'dark');
+    $dark: map.get($themes, 'dark');
     
-    --custom-block-#{$type}-left: #{map-get($dark, 'left')};
-    --custom-block-#{$type}-bg: #{map-get($dark, 'bg')};
+    --custom-block-#{$type}-left: #{map.get($dark, 'left')};
+    --custom-block-#{$type}-bg: #{map.get($dark, 'bg')};
   }
 }
 
@@ -144,7 +146,7 @@ $custom-icons: (
     background-color: var(--custom-block-#{$type}-bg);
     
     // 图标
-    @include block-icon(map-get($custom-icons, $type));
+    @include block-icon(map.get($custom-icons, $type));
     
     // 边框动画
     @if $type == 'note' or $type == 'important' or $type == 'caution' {
