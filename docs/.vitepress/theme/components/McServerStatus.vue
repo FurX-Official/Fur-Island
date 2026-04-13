@@ -69,7 +69,8 @@ onMounted(() => {
 
 <template>
   <div class="mc-server-status">
-    <div class="mc-server-header">
+    <div class="mc-server-status-inner">
+      <div class="mc-server-header">
       <h3 class="mc-server-title">
         <span class="mc-icon-paw">🐾</span>
         <span class="mc-title-furry">欢迎来到</span>
@@ -199,11 +200,11 @@ onMounted(() => {
           <p class="mc-motd-text">{{ formatMotd(javaStats.motd) }}</p>
         </div>
       </div>
-    </div>
 
-    <div class="mc-server-tip-furry">
-      <span class="mc-tip-icon">✨</span>
-      用爪子踏上 Fur-Island 吧！Java 版无需端口，基岩版记得带上端口 51650 哦~
+      <div class="mc-server-tip-furry">
+        <span class="mc-tip-icon">✨</span>
+        用爪子踏上 Fur-Island 吧！Java 版无需端口，基岩版记得带上端口 51650 哦~
+      </div>
     </div>
   </div>
 </template>
@@ -212,26 +213,40 @@ onMounted(() => {
 .mc-server-status {
   max-width: 800px;
   margin: 2rem auto;
-  padding: 1.5rem;
   position: relative;
-  overflow: hidden;
-}
-
-.mc-server-status::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, 
+  padding: 3px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, 
     #ff9a9e 0%, 
     #fecfef 25%, 
     #a8edea 50%, 
     #fed6e3 75%, 
     #ff9a9e 100%);
-  background-size: 200% 100%;
-  animation: furry-gradient 3s ease infinite;
+  background-size: 200% 200%;
+  animation: furry-gradient 4s ease infinite;
+  box-shadow: 0 0 40px rgba(255, 154, 158, 0.3);
+  transition: all 0.5s ease;
+  cursor: pointer;
+}
+
+.mc-server-status:hover {
+  box-shadow: 0 0 60px rgba(255, 154, 158, 0.5),
+              0 0 100px rgba(168, 237, 234, 0.3);
+  transform: translateY(-2px);
+  animation-duration: 2s;
+}
+
+.mc-server-status-inner {
+  padding: 1.5rem;
+  border-radius: 21px;
+  background: var(--vp-c-bg);
+  position: relative;
+  z-index: 1;
+}
+
+@keyframes furry-gradient {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
 @keyframes furry-gradient {
@@ -679,6 +694,14 @@ onMounted(() => {
 .mc-tip-icon {
   margin-right: 0.5rem;
   font-size: 1.1rem;
+}
+
+.dark .mc-server-status {
+  box-shadow: 0 0 60px rgba(255, 154, 158, 0.4);
+}
+
+.dark .mc-server-status-inner {
+  background: var(--vp-c-bg);
 }
 
 .dark .mc-server-card {
