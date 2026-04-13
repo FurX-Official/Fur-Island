@@ -64,19 +64,38 @@ const formatMotd = (motd: string) => {
   return motd.replace(/§[0-9a-fklmnor]/g, '')
 }
 
-const copyToClipboard = async (text: string, type: string) => {
+const copyToClipboard = async (text: string, type: string, event: Event) => {
+  event.preventDefault()
+  event.stopPropagation()
+  console.log('Copying:', text, type)
   try {
-    await navigator.clipboard.writeText(text)
+    if (navigator.clipboard && window.isSecureContext) {
+      await navigator.clipboard.writeText(text)
+    } else {
+      const textArea = document.createElement('textarea')
+      textArea.value = text
+      textArea.style.position = 'fixed'
+      textArea.style.left = '-9999px'
+      textArea.style.top = '-9999px'
+      document.body.appendChild(textArea)
+      textArea.focus()
+      textArea.select()
+      document.execCommand('copy')
+      document.body.removeChild(textArea)
+    }
     copied.value = type
     setTimeout(() => {
       copied.value = null
     }, 2000)
   } catch (err) {
+    console.error('Copy failed:', err)
     const textArea = document.createElement('textarea')
     textArea.value = text
     textArea.style.position = 'fixed'
     textArea.style.left = '-9999px'
+    textArea.style.top = '-9999px'
     document.body.appendChild(textArea)
+    textArea.focus()
     textArea.select()
     document.execCommand('copy')
     document.body.removeChild(textArea)
@@ -184,7 +203,7 @@ onMounted(() => {
                 <button 
                   class="mc-copy-btn" 
                   :class="{ success: copied === 'java-address' }"
-                  @click="copyToClipboard('play.fur-island.asia', 'java-address')"
+                  @click="copyToClipboard('play.fur-island.asia', 'java-address', $event)"
                   title="复制地址"
                 >
                   {{ copied === 'java-address' ? '✓' : '📋' }}
@@ -206,7 +225,7 @@ onMounted(() => {
                 <button 
                   class="mc-copy-btn" 
                   :class="{ success: copied === 'bedrock-address' }"
-                  @click="copyToClipboard('play.fur-island.asia', 'bedrock-address')"
+                  @click="copyToClipboard('play.fur-island.asia', 'bedrock-address', $event)"
                   title="复制地址"
                 >
                   {{ copied === 'bedrock-address' ? '✓' : '📋' }}
@@ -218,7 +237,7 @@ onMounted(() => {
                 <button 
                   class="mc-copy-btn" 
                   :class="{ success: copied === 'bedrock-port' }"
-                  @click="copyToClipboard('51650', 'bedrock-port')"
+                  @click="copyToClipboard('51650', 'bedrock-port', $event)"
                   title="复制端口"
                 >
                   {{ copied === 'bedrock-port' ? '✓' : '📋' }}
@@ -245,10 +264,10 @@ onMounted(() => {
 
 <style scoped>
 .mc-server-status {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 2rem auto;
   position: relative;
-  padding: 3px;
+  padding: 4px;
   border-radius: 24px;
   background: linear-gradient(135deg, 
     #ff9a9e 0%, 
@@ -529,8 +548,8 @@ onMounted(() => {
 
 .mc-stats-row-main {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-  gap: 0.75rem;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
   margin-bottom: 1.5rem;
 }
 
@@ -609,8 +628,8 @@ onMounted(() => {
 
 .mc-connection-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem;
 }
 
 .mc-connection-item {
@@ -662,9 +681,12 @@ onMounted(() => {
   border-radius: 6px;
   background: var(--vp-c-brand-soft);
   color: var(--vp-c-brand-1);
-  cursor: pointer;
+  cursor: pointer !important;
   font-size: 0.875rem;
   transition: all 0.2s ease;
+  position: relative;
+  z-index: 10;
+  pointer-events: auto !important;
 }
 
 .mc-copy-btn:hover {
@@ -769,10 +791,10 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.05);
 }
 
-@media (max-width: 960px) {
+@media (max-width: 1060px) {
   .mc-server-status {
     max-width: 100%;
-    margin: 1rem 0.5rem;
+    margin: 1rem 1rem;
   }
 }
 
@@ -801,11 +823,13 @@ onMounted(() => {
   }
 
   .mc-stats-row-main {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.75rem;
   }
 
   .mc-connection-grid {
     grid-template-columns: 1fr;
+    gap: 1rem;
   }
 
   .mc-server-header-main {
@@ -817,6 +841,12 @@ onMounted(() => {
   .mc-server-tip-furry {
     padding: 0.75rem 1rem;
     font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .mc-stats-row-main {
+    grid-template-columns: 1fr;
   }
 }
 
