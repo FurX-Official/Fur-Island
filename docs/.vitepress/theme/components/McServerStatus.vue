@@ -387,17 +387,13 @@ onMounted(() => {
         </div>
 
         <div class="mc-quick-links">
-          <a href="https://map.fur-island.asia" target="_blank" class="mc-link-card map-link">
-            <span class="mc-link-icon">🗺️</span>
-            <span class="mc-link-text">服务器活地图</span>
-          </a>
-          <a href="https://qm.qq.com/q/xxxxxx" target="_blank" class="mc-link-card qq-link">
+          <a href="https://qm.qq.com/q/yaW9FObDhu" target="_blank" class="mc-link-card qq-link">
             <span class="mc-link-icon">🐧</span>
             <span class="mc-link-text">QQ 交流群</span>
           </a>
-          <a href="https://discord.gg/xxxxxx" target="_blank" class="mc-link-card discord-link">
+          <a href="https://discord.gg/sRcjnRnV" target="_blank" class="mc-link-card discord-link">
             <span class="mc-link-icon">💬</span>
-            <span class="mc-link-text">Discord</span>
+            <span class="mc-link-text">DC 频道</span>
           </a>
         </div>
 
@@ -1188,7 +1184,7 @@ onMounted(() => {
 
 .mc-quick-links {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(2, 1fr);
   gap: 1rem;
   margin-top: 1.5rem;
 }
