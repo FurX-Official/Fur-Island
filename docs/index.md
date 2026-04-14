@@ -3,9 +3,9 @@
 layout: home
 
 hero:
-  name: "My Awesome Project"
-  text: "A VitePress Site"
-  tagline: My great project tagline
+  name: "Fur Island"
+  text: "与毛毛一起共绘方块世界！"
+  tagline: "生存 · 互动 · 创作"
   actions:
     - theme: brand
       text: Markdown Examples

@@ -3,7 +3,7 @@ import { defineConfig } from 'vitepress'
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
   title: "Fur Island",
-  description: "与毛毛一起共贿方块世界！",
+  description: "与毛毛一起共绘方块世界！",
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
@@ -22,7 +22,9 @@ export default defineConfig({
     ],
 
     socialLinks: [
-      { icon: 'github', link: 'https://github.com/FurX-Official/Fur-Island/' }
+      { icon: 'github', link: 'https://github.com/FurX-Official/Fur-Island/' },
+      { icon: 'qq', link: 'https://qm.qq.com/q/RLnf8Z7vmq' },
+      { icon: 'discord', link: 'https://discord.gg/RLnf8Z7vmq' }
     ]
   }
 })
