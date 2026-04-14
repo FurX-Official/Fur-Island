@@ -2,6 +2,7 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
+  cleanUrls:true,
   title: "Fur Island",
   description: "与毛毛一起共绘方块世界！",
   themeConfig: {
