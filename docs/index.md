@@ -8,8 +8,8 @@ hero:
   tagline: "生存 · 互动 · 创作"
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: 加入QQ群
+      link: https://qm.qq.com/q/RLnf8Z7vmq
     - theme: alt
       text: API Examples
       link: /api-examples
