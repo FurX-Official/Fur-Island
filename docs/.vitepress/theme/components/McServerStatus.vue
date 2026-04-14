@@ -264,11 +264,11 @@ onMounted(() => {
 
 <style scoped>
 .mc-server-status {
-  max-width: 1000px;
+  max-width: 1200px;
   margin: 2rem auto;
   position: relative;
-  padding: 4px;
-  border-radius: 24px;
+  padding: 5px;
+  border-radius: 28px;
   background: linear-gradient(135deg, 
     #ff9a9e 0%, 
     #fecfef 25%, 
@@ -277,20 +277,20 @@ onMounted(() => {
     #ff9a9e 100%);
   background-size: 200% 200%;
   animation: furry-gradient 4s ease infinite;
-  box-shadow: 0 0 40px rgba(255, 154, 158, 0.3);
+  box-shadow: 0 0 50px rgba(255, 154, 158, 0.35);
   transition: all 0.5s ease;
 }
 
 .mc-server-status:hover {
-  box-shadow: 0 0 60px rgba(255, 154, 158, 0.5),
-              0 0 100px rgba(168, 237, 234, 0.3);
-  transform: translateY(-2px);
+  box-shadow: 0 0 80px rgba(255, 154, 158, 0.5),
+              0 0 120px rgba(168, 237, 234, 0.35);
+  transform: translateY(-3px);
   animation-duration: 2s;
 }
 
 .mc-server-status-inner {
-  padding: 1.5rem;
-  border-radius: 21px;
+  padding: 2rem;
+  border-radius: 23px;
   background: var(--vp-c-bg);
   position: relative;
   z-index: 1;
@@ -420,8 +420,8 @@ onMounted(() => {
 }
 
 .mc-server-card {
-  padding: 1.5rem;
-  border-radius: 20px;
+  padding: 2rem;
+  border-radius: 24px;
   background: var(--vp-c-bg-soft);
   border: 2px solid transparent;
   background-clip: padding-box;
@@ -556,10 +556,10 @@ onMounted(() => {
 .mc-stat-item-main {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 1rem;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
   background: var(--vp-c-bg-mute);
-  border-radius: 12px;
+  border-radius: 16px;
   border: 1px solid transparent;
   transition: all 0.3s ease;
   position: relative;
@@ -633,9 +633,9 @@ onMounted(() => {
 }
 
 .mc-connection-item {
-  padding: 1rem;
+  padding: 1.5rem;
   background: var(--vp-c-bg-mute);
-  border-radius: 12px;
+  border-radius: 16px;
 }
 
 .mc-connection-header {
@@ -734,16 +734,16 @@ onMounted(() => {
 }
 
 .mc-server-tip-furry {
-  margin-top: 1.5rem;
-  padding: 1rem 1.5rem;
+  margin-top: 2rem;
+  padding: 1.25rem 2rem;
   background: linear-gradient(135deg, 
     rgba(255, 154, 158, 0.15) 0%, 
     rgba(168, 237, 234, 0.15) 100%);
-  border-radius: 16px;
+  border-radius: 20px;
   border: 1px solid rgba(255, 154, 158, 0.3);
-  font-size: 0.9rem;
+  font-size: 1rem;
   text-align: center;
-  line-height: 1.6;
+  line-height: 1.7;
   position: relative;
   overflow: hidden;
 }
@@ -772,7 +772,7 @@ onMounted(() => {
 }
 
 .dark .mc-server-status {
-  box-shadow: 0 0 60px rgba(255, 154, 158, 0.4);
+  box-shadow: 0 0 80px rgba(255, 154, 158, 0.45);
 }
 
 .dark .mc-server-status-inner {
@@ -791,10 +791,10 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.05);
 }
 
-@media (max-width: 1060px) {
+@media (max-width: 1260px) {
   .mc-server-status {
     max-width: 100%;
-    margin: 1rem 1rem;
+    margin: 1rem 1.5rem;
   }
 }
 
@@ -802,11 +802,17 @@ onMounted(() => {
   .mc-server-status {
     margin: 1rem auto;
     border-radius: 20px;
+    padding: 4px;
   }
 
   .mc-server-status-inner {
-    padding: 1rem;
+    padding: 1.25rem;
     border-radius: 17px;
+  }
+
+  .mc-server-card {
+    padding: 1.25rem;
+    border-radius: 20px;
   }
 
   .mc-server-title {
@@ -827,9 +833,17 @@ onMounted(() => {
     gap: 0.75rem;
   }
 
+  .mc-stat-item-main {
+    padding: 1rem;
+  }
+
   .mc-connection-grid {
     grid-template-columns: 1fr;
     gap: 1rem;
+  }
+
+  .mc-connection-item {
+    padding: 1.25rem;
   }
 
   .mc-server-header-main {
@@ -839,8 +853,8 @@ onMounted(() => {
   }
 
   .mc-server-tip-furry {
-    padding: 0.75rem 1rem;
-    font-size: 0.8rem;
+    padding: 1rem 1.25rem;
+    font-size: 0.9rem;
   }
 }
 
@@ -854,10 +868,11 @@ onMounted(() => {
   .mc-server-status {
     margin: 0.5rem -0.5rem;
     border-radius: 16px;
+    padding: 3px;
   }
 
   .mc-server-status-inner {
-    padding: 0.75rem;
+    padding: 1rem;
     border-radius: 13px;
   }
 
@@ -871,11 +886,14 @@ onMounted(() => {
   }
 
   .mc-stat-item-main {
-    padding: 0.75rem;
+    padding: 0.875rem 1rem;
+    gap: 0.75rem;
+    border-radius: 12px;
   }
 
   .mc-connection-item {
-    padding: 0.75rem;
+    padding: 1rem;
+    border-radius: 12px;
   }
 
   .mc-address-row,
@@ -896,9 +914,10 @@ onMounted(() => {
   }
 
   .mc-server-tip-furry {
-    padding: 0.75rem;
-    font-size: 0.75rem;
-    line-height: 1.5;
+    padding: 1rem;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    border-radius: 16px;
   }
 }
 </style>
