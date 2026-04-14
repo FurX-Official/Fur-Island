@@ -18,10 +18,77 @@ const javaStats = ref<ServerStats | null>(null)
 const loading = ref(false)
 const error = ref<string | null>(null)
 const copied = ref<string | null>(null)
+const isDark = ref(false)
+const isHovering = ref(false)
+const gradientIndex = ref(0)
+const season = ref<'spring' | 'summer' | 'autumn' | 'winter' | 'holiday'>('summer')
+const particles = ref<Array<{ id: number; x: number; y: number; delay: number }>>([])
+const pawPrints = ref<Array<{ id: number; x: number; delay: number }>>([])
+
+const furryIcons = ['🦊', '🐺', '🐱', '🦁', '🐯', '🐻', '🐼', '🦝', '🐨', '🐵', '🐶', '🐰', '🐲', '🦄', '🐮']
+const currentFurryIcon = ref('🦊')
+
+const gradients = [
+  ['#ff9a9e', '#fecfef', '#a8edea', '#fed6e3'],
+  ['#a8edea', '#fed6e3', '#ffecd2', '#fcb69f'],
+  ['#667eea', '#764ba2', '#f093fb', '#f5576c'],
+  ['#4facfe', '#00f2fe', '#43e97b', '#38f9d7'],
+  ['#fa709a', '#fee140', '#f093fb', '#f5576c']
+]
+
+const rippleEffect = ref<{ x: number; y: number; visible: boolean } | null>(null)
+
+const randomFurryIcon = () => {
+      currentFurryIcon.value = furryIcons[Math.floor(Math.random() * furryIcons.length)]
+    }
+    
+    const generateParticles = () => {
+      particles.value = Array.from({ length: 8 }, (_, i) => ({
+        id: i,
+        x: 20 + Math.random() * 60,
+        y: 10 + Math.random() * 80,
+        delay: Math.random() * 2
+      }))
+    }
+    
+    const detectSeason = () => {
+      const month = new Date().getMonth()
+      const day = new Date().getDate()
+      
+      if ((month === 11 && day >= 20) || (month === 0 && day <= 5)) {
+        season.value = 'holiday'
+      } else if (month >= 11 || month <= 1) {
+        season.value = 'winter'
+      } else if (month >= 2 && month <= 4) {
+        season.value = 'spring'
+      } else if (month >= 8 && month <= 10) {
+        season.value = 'autumn'
+      } else {
+        season.value = 'summer'
+      }
+    }
+    
+    const checkDarkMode = () => {
+      isDark.value = document.documentElement.classList.contains('dark')
+    }
+    
+    const handleRipple = (event: MouseEvent) => {
+      const rect = (event.currentTarget as HTMLElement).getBoundingClientRect()
+      rippleEffect.value = {
+        x: event.clientX - rect.left,
+        y: event.clientY - rect.top,
+        visible: true
+      }
+      setTimeout(() => {
+        rippleEffect.value = null
+      }, 600)
+    }
 
 const loadStats = async () => {
   loading.value = true
   error.value = null
+  randomFurryIcon()
+  gradientIndex.value = (gradientIndex.value + 1) % gradients.length
   try {
     const response = await fetch('https://api.unborder.online/api/stats/Star')
     if (!response.ok) throw new Error('Failed to fetch server status')
@@ -106,17 +173,83 @@ const copyToClipboard = async (text: string, type: string, event: Event) => {
   }
 }
 
+const spawnPawPrint = () => {
+  if (pawPrints.value.length >= 5) return
+  const newPrint = {
+    id: Date.now(),
+    x: 10 + Math.random() * 80,
+    delay: Math.random() * 0.3
+  }
+  pawPrints.value.push(newPrint)
+  setTimeout(() => {
+    pawPrints.value = pawPrints.value.filter(p => p.id !== newPrint.id)
+  }, 2000)
+}
+
 onMounted(() => {
   loadStats()
+  detectSeason()
+  checkDarkMode()
+  generateParticles()
+  randomFurryIcon()
+  
+  const observer = new MutationObserver(() => {
+    checkDarkMode()
+  })
+  observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+  
+  const interval = setInterval(() => {
+    gradientIndex.value = (gradientIndex.value + 1) % gradients.length
+  }, 15000)
+  
+  return () => {
+    observer.disconnect()
+    clearInterval(interval)
+  }
 })
 </script>
 
 <template>
-  <div class="mc-server-status">
+  <div 
+    class="mc-server-status" 
+    :class="[
+      `theme-${isDark ? 'dark' : 'light'}`,
+      `season-${season}`,
+      `gradient-${gradientIndex}`
+    ]"
+    @mouseenter="isHovering = true"
+    @mouseleave="isHovering = false"
+    @mousemove="isHovering && spawnPawPrint()"
+    @click="handleRipple"
+  >
+    <div class="mc-particles">
+      <div 
+        v-for="particle in particles" 
+        :key="particle.id"
+        class="mc-particle"
+        :style="{ left: particle.x + '%', top: particle.y + '%', animationDelay: particle.delay + 's' }"
+      ></div>
+    </div>
+    
+    <div class="mc-paw-prints">
+      <div 
+        v-for="print in pawPrints" 
+        :key="print.id"
+        class="mc-paw-print"
+        :style="{ left: print.x + '%', animationDelay: print.delay + 's' }"
+      >🐾</div>
+    </div>
+    
+    <div 
+      v-if="rippleEffect" 
+      class="mc-ripple"
+      :style="{ left: rippleEffect.x + 'px', top: rippleEffect.y + 'px' }"
+    ></div>
+    
     <div class="mc-server-status-inner">
       <div class="mc-server-header">
         <h3 class="mc-server-title">
-          <span class="mc-icon-paw">🐾</span>
+          <span class="mc-icon-furry">{{ currentFurryIcon }}</span>
           <span class="mc-title-furry">欢迎来到</span>
           <span class="mc-title-main">Fur-Island</span>
           <span class="mc-icon-paw">🐾</span>
@@ -157,7 +290,7 @@ onMounted(() => {
           <div class="mc-server-header-main">
             <div class="mc-server-name">
               <span class="mc-server-icon">🐾</span>
-              <span class="mc-server-name-text">Fur-Island 服务器</span>
+              <span class="mc-server-name-text">Fur-Island</span>
             </div>
             <span class="mc-status-indicator" :class="{ online: javaStats?.online }">
               <span class="mc-status-dot"></span>
@@ -253,9 +386,24 @@ onMounted(() => {
           </div>
         </div>
 
+        <div class="mc-quick-links">
+          <a href="https://map.fur-island.asia" target="_blank" class="mc-link-card map-link">
+            <span class="mc-link-icon">🗺️</span>
+            <span class="mc-link-text">服务器活地图</span>
+          </a>
+          <a href="https://qm.qq.com/q/xxxxxx" target="_blank" class="mc-link-card qq-link">
+            <span class="mc-link-icon">🐧</span>
+            <span class="mc-link-text">QQ 交流群</span>
+          </a>
+          <a href="https://discord.gg/xxxxxx" target="_blank" class="mc-link-card discord-link">
+            <span class="mc-link-icon">💬</span>
+            <span class="mc-link-text">Discord</span>
+          </a>
+        </div>
+
         <div class="mc-server-tip-furry">
           <span class="mc-tip-icon">✨</span>
-          用爪子踏上 Fur-Island 吧！Java 版无需端口，基岩版记得带上端口 51650 哦~
+          Java 版无需端口，基岩版记得带上端口 51650 哦~
         </div>
       </div>
     </div>
@@ -263,29 +411,179 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.mc-particles,
+.mc-paw-prints {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  overflow: hidden;
+  border-radius: 28px;
+  z-index: 0;
+}
+
+.mc-particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 154, 158, 0.8), transparent);
+  animation: particle-float 3s ease-in-out infinite;
+  filter: blur(2px);
+}
+
+@keyframes particle-float {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.3;
+  }
+  50% {
+    transform: translateY(-15px) scale(1.5);
+    opacity: 0.8;
+  }
+}
+
+.mc-paw-print {
+  position: absolute;
+  font-size: 1.5rem;
+  opacity: 0;
+  animation: paw-fall 2s ease-out forwards;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+}
+
+@keyframes paw-fall {
+  0% {
+    transform: translateY(-30px) rotate(-20deg) scale(0.5);
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(100px) rotate(30deg) scale(0.3);
+    opacity: 0;
+  }
+}
+
+.mc-ripple {
+  position: absolute;
+  width: 100px;
+  height: 100px;
+  margin-left: -50px;
+  margin-top: -50px;
+  border-radius: 50%;
+  background: radial-gradient(circle, 
+    rgba(255, 154, 158, 0.3) 0%, 
+    rgba(168, 237, 234, 0.2) 50%, 
+    transparent 70%);
+  animation: ripple-expand 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  pointer-events: none;
+  z-index: 100;
+}
+
+@keyframes ripple-expand {
+  0% {
+    transform: scale(0);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
 .mc-server-status {
   max-width: 1200px;
   margin: 2rem auto;
   position: relative;
   padding: 5px;
   border-radius: 28px;
+  overflow: hidden;
+  transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+  user-select: none;
+}
+
+.mc-server-status::before {
+  content: '';
+  position: absolute;
+  inset: 0;
   background: linear-gradient(135deg, 
     #ff9a9e 0%, 
     #fecfef 25%, 
     #a8edea 50%, 
     #fed6e3 75%, 
     #ff9a9e 100%);
-  background-size: 200% 200%;
-  animation: furry-gradient 4s ease infinite;
-  box-shadow: 0 0 50px rgba(255, 154, 158, 0.35);
+  background-size: 400% 400%;
+  animation: gradient-shift 8s ease infinite;
   transition: all 0.5s ease;
 }
 
+.mc-server-status.gradient-1::before {
+  background: linear-gradient(135deg, 
+    #a8edea 0%, #fed6e3 25%, #ffecd2 50%, #fcb69f 100%);
+  background-size: 400% 400%;
+}
+
+.mc-server-status.gradient-2::before {
+  background: linear-gradient(135deg, 
+    #667eea 0%, #764ba2 25%, #f093fb 50%, #f5576c 100%);
+  background-size: 400% 400%;
+}
+
+.mc-server-status.gradient-3::before {
+  background: linear-gradient(135deg, 
+    #4facfe 0%, #00f2fe 25%, #43e97b 50%, #38f9d7 100%);
+  background-size: 400% 400%;
+}
+
+.mc-server-status.gradient-4::before {
+  background: linear-gradient(135deg, 
+    #fa709a 0%, #fee140 25%, #f093fb 50%, #f5576c 100%);
+  background-size: 400% 400%;
+}
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.mc-server-status.theme-dark::before {
+  filter: brightness(0.85) saturate(1.2);
+}
+
+.mc-server-status::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  box-shadow: 0 0 50px rgba(255, 154, 158, 0.35);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+}
+
+.mc-server-status.theme-dark::after {
+  box-shadow: 0 0 80px rgba(255, 154, 158, 0.45);
+  opacity: 0.5;
+}
+
+.season-spring .mc-particle {
+  background: radial-gradient(circle, rgba(255, 183, 197, 0.8), transparent);
+}
+
+.season-winter .mc-particle {
+  background: radial-gradient(circle, rgba(200, 230, 255, 0.8), transparent);
+}
+
+.season-autumn .mc-particle {
+  background: radial-gradient(circle, rgba(255, 180, 100, 0.8), transparent);
+}
+
 .mc-server-status:hover {
-  box-shadow: 0 0 80px rgba(255, 154, 158, 0.5),
-              0 0 120px rgba(168, 237, 234, 0.35);
-  transform: translateY(-3px);
-  animation-duration: 2s;
+  transform: translateY(-5px) scale(1.01);
+}
+
+.mc-server-status:hover::after {
+  box-shadow: 0 0 100px rgba(255, 154, 158, 0.6),
+              0 0 150px rgba(168, 237, 234, 0.4);
+  opacity: 1;
 }
 
 .mc-server-status-inner {
@@ -321,9 +619,26 @@ onMounted(() => {
   background-clip: text;
 }
 
+.mc-icon-furry {
+  font-size: 2rem;
+  animation: furry-bounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 2px 10px rgba(255, 154, 158, 0.6));
+  transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mc-server-status:hover .mc-icon-furry {
+  transform: scale(1.2) rotate(10deg);
+}
+
+@keyframes furry-bounce {
+  0%, 100% { transform: translateY(0) scale(1); }
+  50% { transform: translateY(-5px) scale(1.1); }
+}
+
 .mc-icon-paw {
   font-size: 1.75rem;
   animation: paw-bounce 2s ease-in-out infinite;
+  filter: drop-shadow(0 2px 8px rgba(255, 154, 158, 0.5));
 }
 
 .mc-icon-paw:first-child {
@@ -345,7 +660,27 @@ onMounted(() => {
 }
 
 .mc-title-main {
-  letter-spacing: 0.05em;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 50%, #a8edea 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  font-weight: 800;
+  font-size: 1.8rem;
+  position: relative;
+  letter-spacing: 2px;
+  filter: drop-shadow(0 0 15px rgba(255, 154, 158, 0.4));
+  text-shadow: none;
+  animation: title-fur 3s ease-in-out infinite;
+}
+
+@keyframes title-fur {
+  0%, 100% {
+    filter: drop-shadow(0 0 12px rgba(255, 154, 158, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 0 25px rgba(255, 154, 158, 0.6))
+            drop-shadow(0 0 40px rgba(168, 237, 234, 0.3));
+  }
 }
 
 .mc-refresh-btn {
@@ -426,8 +761,36 @@ onMounted(() => {
   border: 2px solid transparent;
   background-clip: padding-box;
   position: relative;
-  transition: all 0.3s ease;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
   overflow: hidden;
+  backdrop-filter: blur(20px);
+}
+
+@supports (backdrop-filter: blur(20px)) {
+  .mc-server-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(circle at 20% 80%, rgba(255, 154, 158, 0.08) 0%, transparent 50%),
+      radial-gradient(circle at 80% 20%, rgba(168, 237, 234, 0.08) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+}
+
+.mc-server-card::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.03'/%3E%3C/svg%3E");
+  opacity: 0.5;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.mc-server-status:hover .mc-server-card {
+  transform: scale(1.02);
 }
 
 .mc-server-card::before {
@@ -501,16 +864,48 @@ onMounted(() => {
 }
 
 .mc-status-dot {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
   border-radius: 50%;
   background: var(--vp-c-text-3);
   box-shadow: 0 0 0 0 rgba(255, 154, 158, 0.4);
+  position: relative;
+}
+
+.mc-status-dot::before,
+.mc-status-dot::after {
+  content: '';
+  position: absolute;
+  inset: -50%;
+  border-radius: 50%;
+  border: 2px solid rgba(239, 68, 68, 0.3);
+  animation: particle-ring 2s ease-out infinite;
+}
+
+.mc-status-dot::after {
+  animation-delay: 1s;
 }
 
 .mc-status-indicator.online .mc-status-dot {
-  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  background: radial-gradient(circle, #ff9a9e 40%, #fecfef 100%);
+  box-shadow: 0 0 20px rgba(255, 154, 158, 0.7);
   animation: furry-pulse 2s ease-in-out infinite;
+}
+
+.mc-status-indicator.online .mc-status-dot::before,
+.mc-status-indicator.online .mc-status-dot::after {
+  border-color: rgba(255, 154, 158, 0.4);
+}
+
+@keyframes particle-ring {
+  0% {
+    transform: scale(0.8);
+    opacity: 0.8;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
 }
 
 @keyframes furry-pulse {
@@ -791,11 +1186,131 @@ onMounted(() => {
   background: rgba(255, 255, 255, 0.05);
 }
 
+.mc-quick-links {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.mc-link-card {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  padding: 1.25rem;
+  border-radius: 20px;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid transparent;
+}
+
+.mc-link-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+
+.map-link::before {
+  background: linear-gradient(135deg, rgba(79, 172, 254, 0.2), rgba(0, 242, 254, 0.1));
+}
+
+.qq-link::before {
+  background: linear-gradient(135deg, rgba(18, 169, 234, 0.2), rgba(102, 126, 234, 0.1));
+}
+
+.discord-link::before {
+  background: linear-gradient(135deg, rgba(114, 137, 218, 0.2), rgba(88, 101, 242, 0.1));
+}
+
+.mc-link-icon {
+  font-size: 1.5rem;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mc-link-text {
+  font-weight: 600;
+  position: relative;
+  z-index: 1;
+}
+
+.mc-link-card:hover {
+  transform: translateY(-4px) scale(1.05);
+  border-color: rgba(255, 154, 158, 0.3);
+}
+
+.mc-link-card:hover::before {
+  opacity: 1;
+}
+
+.mc-link-card:hover .mc-link-icon {
+  transform: scale(1.3) rotate(10deg);
+}
+
+.mc-link-card:active {
+  transform: translateY(-2px) scale(0.98);
+}
+
+.mc-stat-item-main,
+.mc-connection-item,
+.mc-copy-btn,
+.mc-refresh-btn {
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.mc-stat-item-main:hover,
+.mc-connection-item:hover {
+  transform: translateY(-3px) scale(1.03);
+}
+
+.mc-stat-item-main:active,
+.mc-connection-item:active {
+  transform: translateY(-1px) scale(0.98);
+}
+
+.mc-copy-btn:hover,
+.mc-refresh-btn:hover {
+  transform: scale(1.1);
+}
+
+.mc-copy-btn:active,
+.mc-refresh-btn:active {
+  transform: scale(0.95);
+}
+
 @media (max-width: 1260px) {
   .mc-server-status {
     max-width: 100%;
     margin: 1rem 1.5rem;
   }
+}
+
+.season-spring .mc-paw-print {
+  animation-name: paw-fall, cherry-blossom;
+}
+
+.season-winter .mc-paw-print:after {
+  content: '❄️';
+  position: absolute;
+  font-size: 1rem;
+  animation: snow-fall 2s linear infinite;
+}
+
+@keyframes snow-fall {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(10px); }
+}
+
+@keyframes cherry-blossom {
+  0%, 100% { filter: hue-rotate(0deg); }
+  50% { filter: hue-rotate(10deg) saturate(1.2); }
 }
 
 @media (max-width: 768px) {
@@ -808,6 +1323,15 @@ onMounted(() => {
   .mc-server-status-inner {
     padding: 1.25rem;
     border-radius: 17px;
+  }
+
+  .mc-quick-links {
+    grid-template-columns: 1fr;
+    gap: 0.75rem;
+  }
+
+  .mc-link-card {
+    padding: 1rem;
   }
 
   .mc-server-card {
