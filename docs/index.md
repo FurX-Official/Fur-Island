@@ -4,8 +4,8 @@ layout: home
 
 hero:
   name: "Fur Island"
-  text: "与毛毛一起共绘方块世界！"
-  tagline: "生存 · 互动 · 创作"
+  text: "与毛毛一起"
+  tagline: "共绘方块世界！"
   actions:
     - theme: brand
       text: Markdown Examples
