@@ -41,332 +41,355 @@ const copyAddress = () => {
 </script>
 
 <template>
-  <div class="server-status">
-    <div class="glow-layer"></div>
+  <div class="server-wrapper">
     <div class="server-card">
-      <div class="server-info-section">
-        <div class="icon-wrap">
-          <span class="icon">🌟</span>
-          <span class="status-pulse" :class="{ online: serverData?.online }">
-            <span class="pulse-dot"></span>
-            <span class="pulse-ring"></span>
-          </span>
+      <div class="card-border top"></div>
+      <div class="card-border right"></div>
+      <div class="card-border bottom"></div>
+      <div class="card-border left"></div>
+      
+      <div class="card-content">
+        <div class="server-head">
+          <div class="icon-box">
+            <span class="minecraft-icon">�</span>
+            <div class="status-indicator" :class="{ online: serverData?.online }">
+              <span class="light"></span>
+              <span class="scan-line"></span>
+            </div>
+          </div>
+          <div class="title-group">
+            <h1 class="server-name">
+              <span class="glitch" data-text="暖绒星港">暖绒星港</span>
+            </h1>
+            <p class="ip-text" @click="copyAddress">
+              <code>play.fur-island.asia</code>
+              <span class="port-tag">JE : BE</span>
+            </p>
+          </div>
         </div>
-        <div class="text-content">
-          <h2>暖绒星港</h2>
-          <p class="server-ip" @click="copyAddress">
-            play.fur-island.asia
-            <span class="copy-hint">点击复制</span>
-          </p>
-        </div>
-      </div>
 
-      <div class="stats-grid">
-        <div class="stat">
-          <span class="value players">{{ loading ? '—' : serverData?.players?.online }}</span>
-          <span class="stat-label">在线玩家</span>
+        <div class="data-panel">
+          <div class="data-item">
+            <div class="data-value">{{ loading ? '----' : (serverData?.players?.online || 0).toString().padStart(2, '0') }}</div>
+            <div class="data-label">玩家在线</div>
+          </div>
+          <div class="divider-line"></div>
+          <div class="data-item">
+            <div class="data-value">{{ loading ? '---' : serverData?.ping }}<span class="unit">ms</span></div>
+            <div class="data-label">网络延迟</div>
+          </div>
+          <div class="divider-line"></div>
+          <div class="data-item">
+            <div class="data-value status" :class="{ online: serverData?.online }">
+            {{ loading ? '----' : (serverData?.online ? 'ONLINE' : 'OFFLINE') }}
+            </div>
+            <div class="data-label">服务器状态</div>
+          </div>
         </div>
-        <div class="stat">
-          <span class="value ping">{{ loading ? '—' : serverData?.ping }}ms</span>
-          <span class="stat-label">网络延迟</span>
-        </div>
-        <div class="stat">
-          <span class="value version">双端互通</span>
-          <span class="stat-label">JE + BE</span>
-        </div>
-      </div>
 
-      <button class="connect-btn" @click="copyAddress">
-        <span>加入服务器</span>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M5 12h14M12 5l7 7-7 7"/>
-        </svg>
-      </button>
+        <button class="action-btn" @click="copyAddress">
+          <span class="btn-text">复制地址</span>
+          <div class="btn-glow"></div>
+        </button>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.server-status {
-  position: relative;
+.server-wrapper {
   margin: 48px auto;
-  max-width: 700px;
-}
-
-.glow-layer {
-  position: absolute;
-  inset: -20px;
-  background: radial-gradient(
-    circle at center,
-    rgba(251, 146, 60, 0.15) 0%,
-    transparent 70%
-  );
-  filter: blur(30px);
-  opacity: 0.6;
-  z-index: 0;
-  pointer-events: none;
+  max-width: 100%;
 }
 
 .server-card {
   position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 32px;
-  padding: 24px 28px;
-  background: 
-    radial-gradient(
-      100% 100% at 0% 0%,
-      rgba(255, 255, 255, 0.9) 0%,
-      rgba(255, 255, 255, 0.7) 100%
-    );
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.8);
-  box-shadow: 
-    0 0 0 1px rgba(251, 146, 60, 0.1),
-    0 8px 32px rgba(251, 146, 60, 0.12);
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+  border-radius: 16px;
+  padding: 32px 40px;
   overflow: hidden;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 
+    0 0 60px rgba(6, 182, 212, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
 
   &::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, 
-      transparent 0%, 
-      rgba(251, 146, 60, 0.6) 50%, 
-      transparent 100%
-    );
-  }
-
-  &:hover {
-    transform: translateY(-3px);
-    box-shadow: 
-      0 0 0 1px rgba(251, 146, 60, 0.2),
-      0 20px 60px rgba(251, 146, 60, 0.2);
-  }
-
-  :deep(.dark) & {
+    inset: 0;
     background: 
-      radial-gradient(
-        100% 100% at 0% 0%,
-        rgba(50, 50, 70, 0.9) 0%,
-        rgba(30, 30, 50, 0.7) 100%
+      repeating-linear-gradient(
+        0deg,
+        transparent 0px,
+        transparent 2px,
+        rgba(6, 182, 212, 0.03) 2px,
+        rgba(6, 182, 212, 0.03) 4px
       );
-    border-color: rgba(255, 255, 255, 0.08);
+    pointer-events: none;
+    opacity: 0.5;
   }
 }
 
-.server-info-section {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.icon-wrap {
-  position: relative;
-  width: 60px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
-  border-radius: 16px;
-  font-size: 28px;
-  box-shadow: 
-    0 4px 16px rgba(251, 146, 60, 0.3);
-
-  :deep(.dark) & {
-    background: linear-gradient(135deg, #7c2d12 0%, #451a03 100%);
-  }
-}
-
-.status-pulse {
+.card-border {
   position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 16px;
-  height: 16px;
+  background: linear-gradient(90deg, #06b6d4, #8b5cf6);
+  opacity: 0.6;
+
+  &.top, &.bottom {
+    height: 2px;
+    left: 30px;
+    right: 30px;
+  }
+
+  &.top { top: 0; }
+  &.bottom { bottom: 0; }
+
+  &.left, &.right {
+    width: 2px;
+    top: 30px;
+    bottom: 30px;
+  }
+
+  &.left { left: 0; }
+  &.right { right: 0; }
+}
+
+.card-content {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.server-head {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.icon-box {
+  position: relative;
+  width: 72px;
+  height: 72px;
   display: flex;
   align-items: center;
   justify-content: center;
+  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  border-radius: 16px;
+  font-size: 36px;
+  border: 1px solid rgba(6, 182, 212, 0.3);
+  box-shadow: 
+    0 0 30px rgba(6, 182, 212, 0.2),
+    inset 0 0 20px rgba(6, 182, 212, 0.05);
+}
 
-  .pulse-dot {
-    width: 10px;
-    height: 10px;
-    background: #9ca3af;
+.status-indicator {
+  position: absolute;
+  bottom: 8px;
+  right: 8px;
+  width: 14px;
+  height: 14px;
+
+  .light {
+    position: absolute;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
+    background: #475569;
     z-index: 2;
   }
 
-  .pulse-ring {
+  .scan-line {
     position: absolute;
-    width: 10px;
-    height: 10px;
+    inset: -4px;
     border-radius: 50%;
-    background: #9ca3af;
+    border: 2px solid #475569;
     opacity: 0;
   }
 
   &.online {
-    .pulse-dot {
-      background: #10b981;
+    .light {
+      background: #22c55e;
+      box-shadow: 0 0 10px #22c55e;
     }
-    .pulse-ring {
-      background: #10b981;
-      animation: pulse-ring 2s infinite;
+    .scan-line {
+      border-color: #22c55e;
+      animation: scan 2s infinite;
     }
   }
 }
 
-@keyframes pulse-ring {
-  0% { transform: scale(0.8); opacity: 0.7; }
+@keyframes scan {
+  0% { transform: scale(0.5); opacity: 1; }
   100% { transform: scale(2); opacity: 0; }
 }
 
-.text-content h2 {
-  margin: 0;
-  font-size: 22px;
-  font-weight: 700;
-  background: linear-gradient(135deg, #ea580c 0%, #d97706 100%);
+.title-group {
+  .server-name {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 800;
+    font-family: 'Courier New', monospace;
+    line-height: 1.1;
+  }
+
+  .glitch {
+    background: linear-gradient(90deg, #06b6d4, #8b5cf6, #06b6d4);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shine 3s linear infinite;
+  }
+}
+
+@keyframes shine {
+  to { background-position: 200% center; }
+}
+
+.ip-text {
+  margin: 6px 0 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+
+  code {
+    font-family: 'Courier New', monospace;
+    font-size: 15px;
+    color: #94a3b8;
+    transition: color 0.2s;
+  }
+
+  .port-tag {
+    font-size: 11px;
+    padding: 3px 10px;
+    background: rgba(6, 182, 212, 0.15);
+    color: #06b6d4;
+    border-radius: 6px;
+    font-weight: 600;
+    letter-spacing: 1px;
+  }
+
+  &:hover code {
+    color: #06b6d4;
+  }
+}
+
+.data-panel {
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.data-item {
+  text-align: center;
+  padding: 0 32px;
+}
+
+.data-value {
+  font-family: 'Courier New', monospace;
+  font-size: 32px;
+  font-weight: 800;
+  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  letter-spacing: 0.3px;
-}
+  letter-spacing: -1px;
 
-.server-ip {
-  margin: 4px 0 0;
-  font-size: 14px;
-  color: #78716c;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  transition: all 0.2s;
-
-  .copy-hint {
-    font-size: 11px;
-    padding: 2px 8px;
-    background: rgba(251, 146, 60, 0.1);
-    border-radius: 6px;
-    opacity: 0;
-    transition: opacity 0.2s;
-    color: #d97706;
-    font-weight: 500;
+  .unit {
+    font-size: 18px;
+    opacity: 0.7;
   }
 
-  &:hover {
-    color: #ea580c;
+  &.status {
+    font-size: 20px;
 
-    .copy-hint {
-      opacity: 1;
+    &.online {
+      background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    &:not(.online) {
+      background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
   }
-
-  :deep(.dark) & {
-    color: #a8a29e;
-  }
 }
 
-.stats-grid {
-  display: flex;
-  gap: 32px;
-}
-
-.stat {
-  text-align: center;
-  min-width: 70px;
-}
-
-.value {
-  display: block;
-  font-size: 28px;
-  font-weight: 800;
-  line-height: 1.1;
-  letter-spacing: -0.3px;
-
-  &.players {
-    background: linear-gradient(135deg, #0891b2 0%, #06b6d4 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  &.ping {
-    background: linear-gradient(135deg, #059669 0%, #10b981 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-
-  &.version {
-    background: linear-gradient(135deg, #7c3aed 0%, #8b5cf6 100%);
-    font-size: 18px;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
-}
-
-.stat-label {
-  display: block;
+.data-label {
   font-size: 12px;
-  color: #94a3b8;
-  font-weight: 500;
-  margin-top: 3px;
-
-  :deep(.dark) & {
-    color: #64748b;
-  }
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+  font-weight: 600;
 }
 
-.connect-btn {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 12px 24px;
-  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
-  color: white;
+.divider-line {
+  width: 1px;
+  height: 50px;
+  background: linear-gradient(180deg, 
+    transparent 0%, 
+    rgba(6, 182, 212, 0.3) 50%, 
+    transparent 100%
+  );
+}
+
+.action-btn {
+  position: relative;
+  padding: 14px 28px;
+  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
   border: none;
-  border-radius: 14px;
+  border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
+  color: white;
   cursor: pointer;
+  overflow: hidden;
   transition: all 0.3s ease;
   box-shadow: 
-    0 4px 16px rgba(249, 115, 22, 0.4);
-  will-change: transform;
+    0 4px 20px rgba(6, 182, 212, 0.4);
 
-  span {
-    transform: translateX(0);
-    transition: transform 0.2s;
+  .btn-text {
+    position: relative;
+    z-index: 2;
   }
 
-  svg {
-    transform: translateX(0);
-    opacity: 0.8;
-    transition: all 0.2s;
+  .btn-glow {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(
+      circle at center,
+      rgba(255, 255, 255, 0.2) 0%,
+      transparent 70%
+    );
+    opacity: 0;
+    transition: opacity 0.3s;
   }
 
   &:hover {
-    transform: scale(1.03);
+    transform: translateY(-2px);
     box-shadow: 
-      0 6px 24px rgba(249, 115, 22, 0.5);
+      0 8px 30px rgba(6, 182, 212, 0.5);
 
-    svg {
-      transform: translateX(3px);
+    .btn-glow {
       opacity: 1;
     }
   }
 
   &:active {
-    transform: scale(0.98);
+    transform: translateY(0);
+  }
+}
+
+:deep(.dark) & {
+  .server-card {
+    background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
   }
 }
 </style>
