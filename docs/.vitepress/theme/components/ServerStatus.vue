@@ -122,7 +122,6 @@ const copyAddress = () => {
 }
 
 .server-card {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -132,19 +131,7 @@ const copyAddress = () => {
   border-radius: 20px;
   border: 1px solid var(--fur-border);
   box-shadow: var(--fur-shadow-medium);
-  overflow: hidden;
   transition: all var(--fur-transition-normal);
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 3px;
-    background: var(--fur-gradient-primary);
-    opacity: 0.6;
-  }
 
   &:hover {
     transform: translateY(-2px);
