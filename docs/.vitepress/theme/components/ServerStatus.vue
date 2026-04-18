@@ -16,6 +16,7 @@ interface ServerData {
 
 const serverData = ref<ServerData | null>(null)
 const loading = ref(true)
+const copied = ref(false)
 
 const fetchServerStatus = async () => {
   try {
@@ -37,283 +38,240 @@ onMounted(() => {
 
 const copyAddress = () => {
   navigator.clipboard.writeText('play.fur-island.asia')
+  copied.value = true
+  setTimeout(() => copied.value = false, 2000)
 }
 </script>
 
 <template>
-  <div class="server-wrapper">
+  <div class="server-container">
     <div class="server-card">
-      <div class="card-border top"></div>
-      <div class="card-border right"></div>
-      <div class="card-border bottom"></div>
-      <div class="card-border left"></div>
-      
-      <div class="card-content">
-        <div class="server-head">
-          <div class="icon-box">
-            <span class="minecraft-icon">�</span>
-            <div class="status-indicator" :class="{ online: serverData?.online }">
-              <span class="light"></span>
-              <span class="scan-line"></span>
-            </div>
-          </div>
-          <div class="title-group">
-            <h1 class="server-name">
-              <span class="glitch" data-text="暖绒星港">暖绒星港</span>
-            </h1>
-            <p class="ip-text" @click="copyAddress">
-              <code>play.fur-island.asia</code>
-              <span class="port-tag">JE : BE</span>
-            </p>
-          </div>
+      <div class="left-section">
+        <div class="icon-wrapper">
+          <span class="main-icon">🏝️</span>
+          <span class="status-badge" :class="{ online: serverData?.online }">
+            <span class="dot"></span>
+          </span>
         </div>
-
-        <div class="data-panel">
-          <div class="data-item">
-            <div class="data-value">{{ loading ? '----' : (serverData?.players?.online || 0).toString().padStart(2, '0') }}</div>
-            <div class="data-label">玩家在线</div>
-          </div>
-          <div class="divider-line"></div>
-          <div class="data-item">
-            <div class="data-value">{{ loading ? '---' : serverData?.ping }}<span class="unit">ms</span></div>
-            <div class="data-label">网络延迟</div>
-          </div>
-          <div class="divider-line"></div>
-          <div class="data-item">
-            <div class="data-value status" :class="{ online: serverData?.online }">
-            {{ loading ? '----' : (serverData?.online ? 'ONLINE' : 'OFFLINE') }}
-            </div>
-            <div class="data-label">服务器状态</div>
-          </div>
+        <div class="info-group">
+          <h2 class="server-title">暖绒星港</h2>
+          <p class="server-ip">
+            <span class="ip-text">play.fur-island.asia</span>
+            <span class="tag">Java</span>
+            <span class="tag bedrock">Bedrock</span>
+          </p>
         </div>
-
-        <button class="action-btn" @click="copyAddress">
-          <span class="btn-text">复制地址</span>
-          <div class="btn-glow"></div>
-        </button>
       </div>
+
+      <div class="stats-section">
+        <div class="stat">
+          <span class="stat-number">{{ loading ? '—' : serverData?.players?.online || 0 }}</span>
+          <span class="stat-text">在线玩家</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number">{{ loading ? '—' : serverData?.ping }}</span>
+          <span class="stat-text">毫秒延迟</span>
+        </div>
+        <div class="stat">
+          <span class="stat-number status-text" :class="{ online: serverData?.online }">
+            {{ loading ? '—' : (serverData?.online ? '运行中' : '离线') }}
+          </span>
+          <span class="stat-text">服务器状态</span>
+        </div>
+      </div>
+
+      <button class="copy-button" @click="copyAddress" :class="{ success: copied }">
+        <svg v-if="!copied" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+          <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+        </svg>
+        <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>{{ copied ? '已复制' : '复制IP' }}</span>
+      </button>
     </div>
   </div>
 </template>
 
 <style scoped lang="scss">
-.server-wrapper {
+.server-container {
   margin: 48px auto;
   max-width: 100%;
 }
 
 .server-card {
-  position: relative;
-  background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
-  border-radius: 16px;
-  padding: 32px 40px;
-  overflow: hidden;
-  box-shadow: 
-    0 0 60px rgba(6, 182, 212, 0.1),
-    inset 0 1px 0 rgba(255, 255, 255, 0.05);
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: 
-      repeating-linear-gradient(
-        0deg,
-        transparent 0px,
-        transparent 2px,
-        rgba(6, 182, 212, 0.03) 2px,
-        rgba(6, 182, 212, 0.03) 4px
-      );
-    pointer-events: none;
-    opacity: 0.5;
-  }
-}
-
-.card-border {
-  position: absolute;
-  background: linear-gradient(90deg, #06b6d4, #8b5cf6);
-  opacity: 0.6;
-
-  &.top, &.bottom {
-    height: 2px;
-    left: 30px;
-    right: 30px;
-  }
-
-  &.top { top: 0; }
-  &.bottom { bottom: 0; }
-
-  &.left, &.right {
-    width: 2px;
-    top: 30px;
-    bottom: 30px;
-  }
-
-  &.left { left: 0; }
-  &.right { right: 0; }
-}
-
-.card-content {
-  position: relative;
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 40px;
+  padding: 24px 32px;
+  background: linear-gradient(135deg, #fffbf7 0%, #fff7ed 100%);
+  border-radius: 20px;
+  border: 1px solid rgba(251, 146, 60, 0.2);
+  box-shadow: 
+    0 1px 2px rgba(0, 0, 0, 0.04),
+    0 4px 24px rgba(251, 146, 60, 0.08);
+  transition: all 0.3s ease;
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 
+      0 1px 2px rgba(0, 0, 0, 0.04),
+      0 8px 40px rgba(251, 146, 60, 0.15);
+  }
+
+  :deep(.dark) & {
+    background: linear-gradient(135deg, #292524 0%, #1c1917 100%);
+    border-color: rgba(251, 146, 60, 0.15);
+    box-shadow: 
+      0 1px 2px rgba(0, 0, 0, 0.2),
+      0 4px 24px rgba(0, 0, 0, 0.3);
+  }
 }
 
-.server-head {
+.left-section {
   display: flex;
   align-items: center;
-  gap: 20px;
+  gap: 16px;
 }
 
-.icon-box {
+.icon-wrapper {
   position: relative;
-  width: 72px;
-  height: 72px;
+  width: 56px;
+  height: 56px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+  background: linear-gradient(135deg, #ffedd5 0%, #fed7aa 100%);
   border-radius: 16px;
-  font-size: 36px;
-  border: 1px solid rgba(6, 182, 212, 0.3);
-  box-shadow: 
-    0 0 30px rgba(6, 182, 212, 0.2),
-    inset 0 0 20px rgba(6, 182, 212, 0.05);
+  font-size: 28px;
+  box-shadow: 0 4px 12px rgba(251, 146, 60, 0.25);
+
+  :deep(.dark) & {
+    background: linear-gradient(135deg, #7c2d12 0%, #451a03 100%);
+  }
 }
 
-.status-indicator {
+.status-badge {
   position: absolute;
-  bottom: 8px;
-  right: 8px;
-  width: 14px;
-  height: 14px;
+  bottom: 4px;
+  right: 4px;
+  width: 16px;
+  height: 16px;
+  background: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
 
-  .light {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    background: #475569;
-    z-index: 2;
+  :deep(.dark) & {
+    background: #292524;
   }
 
-  .scan-line {
-    position: absolute;
-    inset: -4px;
+  .dot {
+    width: 10px;
+    height: 10px;
     border-radius: 50%;
-    border: 2px solid #475569;
-    opacity: 0;
+    background: #a8a29e;
+    transition: all 0.3s ease;
   }
 
-  &.online {
-    .light {
-      background: #22c55e;
-      box-shadow: 0 0 10px #22c55e;
-    }
-    .scan-line {
-      border-color: #22c55e;
-      animation: scan 2s infinite;
-    }
+  &.online .dot {
+    background: #22c55e;
+    box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.2);
   }
 }
 
-@keyframes scan {
-  0% { transform: scale(0.5); opacity: 1; }
-  100% { transform: scale(2); opacity: 0; }
-}
-
-.title-group {
-  .server-name {
+.info-group {
+  .server-title {
     margin: 0;
-    font-size: 28px;
-    font-weight: 800;
-    font-family: 'Courier New', monospace;
-    line-height: 1.1;
+    font-size: 20px;
+    font-weight: 700;
+    color: #44403c;
+    line-height: 1.2;
+
+    :deep(.dark) & {
+      color: #f5f5f4;
+    }
   }
 
-  .glitch {
-    background: linear-gradient(90deg, #06b6d4, #8b5cf6, #06b6d4);
-    background-size: 200% auto;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    animation: shine 3s linear infinite;
+  .server-ip {
+    margin: 4px 0 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+
+    .ip-text {
+      font-size: 14px;
+      color: #78716c;
+      font-family: 'SF Mono', Monaco, monospace;
+
+      :deep(.dark) & {
+        color: #a8a29e;
+      }
+    }
+
+    .tag {
+      font-size: 10px;
+      padding: 3px 8px;
+      background: rgba(251, 146, 60, 0.12);
+      color: #c2410c;
+      border-radius: 6px;
+      font-weight: 600;
+      letter-spacing: 0.3px;
+
+      &.bedrock {
+        background: rgba(124, 58, 237, 0.12);
+        color: #6d28d9;
+      }
+    }
   }
 }
 
-@keyframes shine {
-  to { background-position: 200% center; }
-}
-
-.ip-text {
-  margin: 6px 0 0;
+.stats-section {
   display: flex;
-  align-items: center;
-  gap: 10px;
-  cursor: pointer;
-
-  code {
-    font-family: 'Courier New', monospace;
-    font-size: 15px;
-    color: #94a3b8;
-    transition: color 0.2s;
-  }
-
-  .port-tag {
-    font-size: 11px;
-    padding: 3px 10px;
-    background: rgba(6, 182, 212, 0.15);
-    color: #06b6d4;
-    border-radius: 6px;
-    font-weight: 600;
-    letter-spacing: 1px;
-  }
-
-  &:hover code {
-    color: #06b6d4;
-  }
-}
-
-.data-panel {
-  display: flex;
-  align-items: center;
   gap: 0;
 }
 
-.data-item {
+.stat {
   text-align: center;
   padding: 0 32px;
+  border-left: 1px solid rgba(251, 146, 60, 0.15);
+
+  &:first-child {
+    border-left: none;
+  }
+
+  :deep(.dark) & {
+    border-color: rgba(251, 146, 60, 0.1);
+  }
 }
 
-.data-value {
-  font-family: 'Courier New', monospace;
-  font-size: 32px;
-  font-weight: 800;
-  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+.stat-number {
+  display: block;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #ea580c 0%, #d97706 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  letter-spacing: -1px;
+  font-variant-numeric: tabular-nums;
 
-  .unit {
+  &.status-text {
     font-size: 18px;
-    opacity: 0.7;
-  }
-
-  &.status {
-    font-size: 20px;
 
     &.online {
-      background: linear-gradient(135deg, #10b981 0%, #34d399 100%);
+      background: linear-gradient(135deg, #059669 0%, #10b981 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
 
     &:not(.online) {
-      background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+      background: linear-gradient(135deg, #dc2626 0%, #ef4444 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -321,75 +279,47 @@ const copyAddress = () => {
   }
 }
 
-.data-label {
+.stat-text {
+  display: block;
   font-size: 12px;
-  color: #64748b;
-  text-transform: uppercase;
-  letter-spacing: 1px;
+  color: #78716c;
   margin-top: 4px;
-  font-weight: 600;
+  font-weight: 500;
+
+  :deep(.dark) & {
+    color: #a8a29e;
+  }
 }
 
-.divider-line {
-  width: 1px;
-  height: 50px;
-  background: linear-gradient(180deg, 
-    transparent 0%, 
-    rgba(6, 182, 212, 0.3) 50%, 
-    transparent 100%
-  );
-}
-
-.action-btn {
-  position: relative;
-  padding: 14px 28px;
-  background: linear-gradient(135deg, #06b6d4 0%, #0ea5e9 100%);
+.copy-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 20px;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
+  color: white;
   border: none;
   border-radius: 12px;
   font-size: 14px;
   font-weight: 600;
-  color: white;
   cursor: pointer;
-  overflow: hidden;
-  transition: all 0.3s ease;
-  box-shadow: 
-    0 4px 20px rgba(6, 182, 212, 0.4);
-
-  .btn-text {
-    position: relative;
-    z-index: 2;
-  }
-
-  .btn-glow {
-    position: absolute;
-    inset: 0;
-    background: radial-gradient(
-      circle at center,
-      rgba(255, 255, 255, 0.2) 0%,
-      transparent 70%
-    );
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.35);
+  min-width: 110px;
+  justify-content: center;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 
-      0 8px 30px rgba(6, 182, 212, 0.5);
-
-    .btn-glow {
-      opacity: 1;
-    }
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.45);
   }
 
   &:active {
     transform: translateY(0);
   }
-}
 
-:deep(.dark) & {
-  .server-card {
-    background: linear-gradient(135deg, #020617 0%, #0f172a 100%);
+  &.success {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
   }
 }
 </style>
