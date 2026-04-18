@@ -1,8 +1,4 @@
 .page-friends {
-  &__inner {
-    max-width: 100% !important;
-  }
-
   .VPDoc {
     padding-top: 24px !important;
   }
@@ -15,21 +11,7 @@
     max-width: 100% !important;
   }
 
-  .vp-doc h1 {
-    display: none !important;
-  }
-
-  .vp-doc > h1:first-child {
-    display: none !important;
-  }
-
-  .vp-doc__title {
-    display: none !important;
-  }
-}
-
-html .page-friends {
-  .vp-doc h1 {
+  .VPDoc .content-container > .vp-doc > h1:first-child {
     display: none !important;
   }
 }
