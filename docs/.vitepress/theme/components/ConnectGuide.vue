@@ -12,7 +12,7 @@ const javaSteps = [
   {
     step: 1,
     title: '启动 Minecraft',
-    desc: '打开 Minecraft 启动器，选择 1.19.x - 1.20.x 版本'
+    desc: '打开 Minecraft 启动器，选择 1.7.x - 26.1.x 版本'
   },
   {
     step: 2,
