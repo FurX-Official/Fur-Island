@@ -1,0 +1,30 @@
+$fur-orange: #ff9500;
+$fur-brown: #8b5a2b;
+$fur-cream: #f5e6d3;
+$fur-gold: #d4a574;
+$fur-tan: #e8c49a;
+$fur-dark-brown: #5d4037;
+$fur-pink: #ffb6c1;
+$fur-blue: #87ceeb;
+
+$vp-c-brand: $fur-orange !default;
+$vp-c-brand-light: #ffb347 !default;
+$vp-c-brand-lighter: #ffd700 !default;
+$vp-c-brand-dark: #e68a00 !default;
+$vp-c-brand-darker: #cc7a00 !default;
+
+$vp-c-bg: #faf8f5 !default;
+$vp-c-bg-alt: #f5eee6 !default;
+$vp-c-bg-soft: #fff9f0 !default;
+
+$fur-shadow-soft: 0 4px 20px rgba(139, 90, 43, 0.1);
+$fur-shadow-medium: 0 8px 30px rgba(139, 90, 43, 0.15);
+$fur-shadow-large: 0 12px 40px rgba(139, 90, 43, 0.2);
+
+$fur-radius-small: 8px;
+$fur-radius-medium: 16px;
+$fur-radius-large: 24px;
+$fur-radius-full: 9999px;
+
+$ease-out-back: cubic-bezier(0.34, 1.56, 0.64, 1);
+$ease-soft: cubic-bezier(0.4, 0, 0.2, 1);
