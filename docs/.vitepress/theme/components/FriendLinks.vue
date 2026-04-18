@@ -301,4 +301,14 @@ const friends = ref<FriendLink[]>([
     }
   }
 }
+
+:deep(.VPDoc) {
+  h1:first-child {
+    display: none;
+  }
+
+  .vp-doc > h1:first-child {
+    display: none;
+  }
+}
 </style>
