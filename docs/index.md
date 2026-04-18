@@ -1,5 +1,4 @@
 ---
-# https://vitepress.dev/reference/default-theme-home-page
 layout: home
 
 hero:
@@ -15,11 +14,12 @@ hero:
       link: https://map.fur-island.asia/
 
 features:
-  - title: Feature A
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
-    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+  - title: 🎮 纯生存体验
+    details: 无需担心破坏与偷窃，与小伙伴们安心建造属于自己的小窝
+  - title: 🐾 兽友聚集地
+    details: 友善和谐的社区氛围，认识更多志同道合的毛毛小伙伴
+  - title: 🌐 跨版本兼容
+    details: Java版与基岩版互通，随时随地都能加入游戏
 ---
 
+<ServerStatus />

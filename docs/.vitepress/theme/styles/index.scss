@@ -1,0 +1,12 @@
+:root {
+  --fur-primary: #e67e22;
+  --fur-secondary: #f39c12;
+  --fur-accent: #d35400;
+  --fur-bg-soft: #fdf6e3;
+  --fur-text: #5d4037;
+}
+
+html.dark {
+  --fur-bg-soft: #2d2a26;
+  --fur-text: #e0d8d0;
+}
