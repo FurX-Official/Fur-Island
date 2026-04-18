@@ -48,15 +48,26 @@ function enableDarkModeTransition() {
 
   const switchBtn = document.querySelector('.VPSwitchAppearance')
   if (!switchBtn) {
-    setTimeout(enableDarkModeTransition, 500)
+    setTimeout(enableDarkModeTransition, 300)
     return
   }
 
-  switchBtn.addEventListener('click', () => {
+  switchBtn.addEventListener('click', (e) => {
     if (!document.startViewTransition) return
-    document.startViewTransition(() => {
+    
+    e.stopImmediatePropagation()
+    
+    const transition = document.startViewTransition(async () => {
       document.documentElement.classList.toggle('dark')
-      return new Promise<void>(resolve => requestAnimationFrame(resolve))
+      await new Promise<void>(resolve => requestAnimationFrame(resolve))
+    })
+
+    transition.ready.then(() => {
+      document.documentElement.style.setProperty('--theme-transitioning', '1')
+    })
+
+    transition.finished.then(() => {
+      document.documentElement.style.removeProperty('--theme-transitioning')
     })
   }, true)
 }
