@@ -80,7 +80,7 @@ const copyAddress = () => {
 
     <div class="steps">
       <div
-        v-for="(step, index) in activeTab === 'java' ? javaSteps : bedrockSteps"
+        v-for="step in activeTab === 'java' ? javaSteps : bedrockSteps"
         :key="step.step"
         class="step-item"
       >
@@ -94,7 +94,6 @@ const copyAddress = () => {
             </span>
           </p>
         </div>
-        <div v-if="index < 3" class="step-line"></div>
       </div>
     </div>
   </div>
@@ -103,8 +102,8 @@ const copyAddress = () => {
 <style scoped lang="scss">
 .connect-guide {
   margin: 48px auto;
-  max-width: 800px;
-  padding: 32px;
+  max-width: 100%;
+  padding: 36px 48px;
   background: var(--fur-bg-card);
   border-radius: 20px;
   border: 1px solid var(--fur-border);
@@ -174,17 +173,41 @@ const copyAddress = () => {
 }
 
 .steps {
-  position: relative;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 }
 
 .step-item {
   position: relative;
   display: flex;
-  gap: 16px;
-  padding-bottom: 28px;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 20px 12px;
+  border-radius: 16px;
+  background: var(--fur-bg-soft);
+  transition: all var(--fur-transition-normal);
 
-  &:last-child {
-    padding-bottom: 0;
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--fur-shadow-medium);
+  }
+
+  :deep(.dark) & {
+    background: var(--fur-bg-soft);
+  }
+}
+
+@media (max-width: 768px) {
+  .steps {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .steps {
+    grid-template-columns: 1fr;
   }
 }
 
@@ -205,45 +228,30 @@ const copyAddress = () => {
 }
 
 .step-content {
-  flex: 1;
-  padding-top: 4px;
+  margin-top: 12px;
 
   .step-title {
-    margin: 0 0 4px;
-    font-size: 16px;
+    margin: 0 0 6px;
+    font-size: 15px;
     font-weight: 600;
     color: var(--fur-text-primary);
   }
 
   .step-desc {
     margin: 0;
-    font-size: 14px;
+    font-size: 13px;
     color: var(--fur-text-secondary);
+    line-height: 1.5;
 
     .copy-text {
-      margin-left: 6px;
+      display: block;
+      margin-top: 4px;
       color: var(--fur-primary);
       font-weight: 600;
       cursor: pointer;
-      text-decoration: underline;
-      text-underline-offset: 2px;
     }
   }
 }
 
-.step-line {
-  position: absolute;
-  left: 20px;
-  top: 48px;
-  bottom: 8px;
-  width: 2px;
-  background: repeating-linear-gradient(
-    180deg,
-    var(--fur-primary) 0px,
-    var(--fur-primary) 6px,
-    transparent 6px,
-    transparent 12px
-  );
-  opacity: 0.2;
-}
+
 </style>
