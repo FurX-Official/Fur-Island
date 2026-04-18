@@ -101,73 +101,94 @@ const copyAddress = () => {
 
 <style scoped lang="scss">
 .server-status-card {
-  background: linear-gradient(135deg, #ffedd5 0%, #fef3c7 100%);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 8px 32px rgba(230, 126, 34, 0.15);
-  border: 1px solid rgba(230, 126, 34, 0.2);
-  max-width: 500px;
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 20px;
+  padding: 28px;
+  box-shadow: 
+    0 8px 32px rgba(31, 38, 135, 0.08),
+    0 0 0 1px rgba(255, 255, 255, 0.8);
+  max-width: 520px;
   margin: 0 auto;
-  transition: all 0.3s ease;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #f472b6, #fb923c, #facc15);
+  }
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 12px 40px rgba(230, 126, 34, 0.25);
+    transform: translateY(-4px) scale(1.01);
+    box-shadow: 
+      0 20px 60px rgba(31, 38, 135, 0.12),
+      0 0 0 1px rgba(255, 255, 255, 0.9);
   }
 
   :deep(.dark) & {
-    background: linear-gradient(135deg, #4a3f35 0%, #3d342a 100%);
-    border-color: rgba(230, 126, 34, 0.3);
+    background: rgba(30, 30, 40, 0.7);
+    box-shadow: 
+      0 8px 32px rgba(0, 0, 0, 0.3),
+      0 0 0 1px rgba(255, 255, 255, 0.08);
+
+    &:hover {
+      box-shadow: 
+        0 20px 60px rgba(0, 0, 0, 0.4),
+        0 0 0 1px rgba(255, 255, 255, 0.12);
+    }
   }
 }
 
 .server-header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  margin-bottom: 20px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid rgba(230, 126, 34, 0.2);
-
-  :deep(.dark) & {
-    border-color: rgba(230, 126, 34, 0.25);
-  }
+  gap: 18px;
+  margin-bottom: 24px;
 }
 
 .server-icon {
   position: relative;
-  width: 56px;
-  height: 56px;
+  width: 64px;
+  height: 64px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: white;
-  border-radius: 12px;
-  font-size: 28px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+  border-radius: 16px;
+  font-size: 32px;
+  box-shadow: 0 4px 15px rgba(251, 146, 60, 0.3);
 
   :deep(.dark) & {
-    background: #2d2a26;
+    background: linear-gradient(135deg, #44403c 0%, #292524 100%);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
   }
 }
 
 .status-dot {
   position: absolute;
-  bottom: 4px;
-  right: 4px;
-  width: 12px;
-  height: 12px;
+  bottom: 6px;
+  right: 6px;
+  width: 14px;
+  height: 14px;
   border-radius: 50%;
-  border: 2px solid white;
-  transition: background-color 0.3s ease;
+  border: 3px solid white;
+  transition: all 0.3s ease;
 
   :deep(.dark) & {
-    border-color: #2d2a26;
+    border-color: #292524;
   }
 
   &.online {
     background: #22c55e;
-    box-shadow: 0 0 8px rgba(34, 197, 94, 0.5);
+    box-shadow: 0 0 12px rgba(34, 197, 94, 0.6);
+    animation: pulse 2s infinite;
   }
 
   &.offline {
@@ -175,115 +196,165 @@ const copyAddress = () => {
   }
 }
 
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.7; transform: scale(1.1); }
+}
+
 .server-info h3 {
   margin: 0;
-  font-size: 20px;
+  font-size: 22px;
   font-weight: 700;
-  color: #92400e;
+  background: linear-gradient(135deg, #ea580c, #d97706);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
   letter-spacing: 0.5px;
 
   :deep(.dark) & {
-    color: #fbbf24;
+    background: linear-gradient(135deg, #fb923c, #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
 
 .server-address {
-  margin: 4px 0 0;
-  font-size: 13px;
-  color: #b45309;
+  margin: 6px 0 0;
+  font-size: 14px;
+  color: #78716c;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
-  gap: 8px;
-  transition: color 0.2s;
+  gap: 10px;
+  transition: all 0.2s;
+  padding: 4px 12px;
+  background: rgba(251, 146, 60, 0.08);
+  border-radius: 8px;
+  border: 1px dashed rgba(251, 146, 60, 0.3);
 
   &:hover {
-    color: #92400e;
-    text-decoration: underline;
+    color: #ea580c;
+    background: rgba(251, 146, 60, 0.15);
+    border-color: rgba(251, 146, 60, 0.5);
   }
 
   :deep(.dark) & {
-    color: #f59e0b;
+    color: #a8a29e;
+    background: rgba(251, 146, 60, 0.1);
 
     &:hover {
-      color: #fbbf24;
+      color: #fb923c;
+      background: rgba(251, 146, 60, 0.2);
     }
   }
 }
 
 .port-badge {
-  background: rgba(230, 126, 34, 0.15);
-  padding: 2px 8px;
-  border-radius: 6px;
+  background: linear-gradient(135deg, #f97316, #facc15);
+  color: white;
+  padding: 3px 10px;
+  border-radius: 20px;
   font-size: 11px;
-  font-weight: 600;
-
-  :deep(.dark) & {
-    background: rgba(230, 126, 34, 0.25);
-  }
+  font-weight: 700;
+  letter-spacing: 0.3px;
 }
 
 .server-stats {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 14px;
+  margin-bottom: 20px;
 }
 
 .stat-item {
-  background: rgba(255, 255, 255, 0.7);
-  border-radius: 12px;
-  padding: 14px 12px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.7) 100%);
+  border-radius: 14px;
+  padding: 16px 12px;
   text-align: center;
-  transition: transform 0.2s;
+  transition: all 0.3s ease;
+  border: 1px solid rgba(251, 146, 60, 0.15);
+  position: relative;
+  overflow: hidden;
+
+  &::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #f97316, #facc15);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
 
   &:hover {
-    transform: scale(1.02);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(251, 146, 60, 0.2);
+
+    &::after {
+      opacity: 1;
+    }
   }
 
   :deep(.dark) & {
-    background: rgba(0, 0, 0, 0.2);
+    background: linear-gradient(135deg, rgba(60, 60, 80, 0.8) 0%, rgba(40, 40, 60, 0.6) 100%);
+    border: 1px solid rgba(251, 146, 60, 0.2);
   }
 }
 
 .stat-icon {
-  font-size: 20px;
-  margin-bottom: 4px;
+  font-size: 24px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .stat-content {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 3px;
 }
 
 .stat-value {
-  font-size: 22px;
+  font-size: 26px;
   font-weight: 800;
-  color: #92400e;
   line-height: 1;
+  background: linear-gradient(135deg, #ea580c, #d97706);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 
   :deep(.dark) & {
-    color: #fbbf24;
+    background: linear-gradient(135deg, #fb923c, #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   &.status-text {
     &.online {
-      color: #16a34a;
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
     &.offline {
-      color: #dc2626;
+      background: linear-gradient(135deg, #dc2626, #ef4444);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
     }
   }
 }
 
 .stat-label {
-  font-size: 11px;
-  color: #d97706;
+  font-size: 12px;
+  color: #78716c;
   font-weight: 600;
 
   :deep(.dark) & {
-    color: #f59e0b;
+    color: #a8a29e;
   }
 }
 
@@ -291,39 +362,41 @@ const copyAddress = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 12px;
-  border-top: 1px solid rgba(230, 126, 34, 0.15);
+  padding-top: 16px;
+  border-top: 1px solid rgba(251, 146, 60, 0.15);
 
   :deep(.dark) & {
-    border-color: rgba(230, 126, 34, 0.2);
+    border-top: 1px solid rgba(251, 146, 60, 0.2);
   }
 }
 
 .version-tag {
-  background: rgba(230, 126, 34, 0.2);
-  padding: 4px 10px;
-  border-radius: 8px;
-  font-size: 11px;
-  font-weight: 600;
-  color: #92400e;
+  background: linear-gradient(135deg, #f5f5f4 0%, #e7e5e4 100%);
+  color: #57534e;
+  padding: 6px 14px;
+  border-radius: 10px;
+  font-size: 12px;
+  font-weight: 700;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 
   :deep(.dark) & {
-    color: #fbbf24;
+    background: linear-gradient(135deg, #44403c 0%, #292524 100%);
+    color: #e7e5e4;
   }
 }
 
 .motd-text {
-  font-size: 12px;
-  color: #b45309;
+  font-size: 13px;
+  color: #78716c;
   font-style: italic;
   text-align: right;
-  max-width: 60%;
+  max-width: 65%;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 
   :deep(.dark) & {
-    color: #f59e0b;
+    color: #a8a29e;
   }
 }
 </style>
