@@ -15,7 +15,6 @@ export default {
 
     if (typeof window !== 'undefined') {
       onMounted(() => {
-        initCustomCursor()
         playClickSound()
       })
 
@@ -29,39 +28,6 @@ export default {
       )
     }
   }
-}
-
-function initCustomCursor() {
-  if (window.innerWidth < 768) return
-
-  const dot = document.createElement('div')
-  dot.id = 'custom-dot'
-  const ring = document.createElement('div')
-  ring.id = 'custom-ring'
-  document.body.appendChild(dot)
-  document.body.appendChild(ring)
-
-  let dotX = 0, dotY = 0, ringX = 0, ringY = 0, mouseX = 0, mouseY = 0
-
-  document.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX
-    mouseY = e.clientY
-  })
-
-  function animate() {
-    dotX += (mouseX - dotX) * 0.5
-    dotY += (mouseY - dotY) * 0.5
-    ringX += (mouseX - ringX) * 0.15
-    ringY += (mouseY - ringY) * 0.15
-
-    dot.style.left = dotX + 'px'
-    dot.style.top = dotY + 'px'
-    ring.style.left = ringX + 'px'
-    ring.style.top = ringY + 'px'
-
-    requestAnimationFrame(animate)
-  }
-  animate()
 }
 
 function playClickSound() {
