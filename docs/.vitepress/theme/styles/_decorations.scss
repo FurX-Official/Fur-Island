@@ -1,3 +1,5 @@
+@use 'variables' as *;
+
 * {
   scrollbar-width: thin;
   scrollbar-color: $fur-gold transparent;
