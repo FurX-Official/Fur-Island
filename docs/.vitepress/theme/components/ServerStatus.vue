@@ -93,26 +93,46 @@ const copyAddress = () => {
 
 <style scoped lang="scss">
 .server-status-card {
-  background: #ffffff;
+  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 1px 2px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e5e7eb;
+  box-shadow: 
+    0 4px 20px rgba(249, 115, 22, 0.08),
+    0 1px 3px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(249, 115, 22, 0.15);
   max-width: 100%;
-  margin: 0 auto;
-  transition: all 0.2s ease;
+  margin: 40px auto;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #f97316, #facc15, #f97316);
+  }
 
   &:hover {
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08), 0 1px 3px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
+    box-shadow: 
+      0 12px 40px rgba(249, 115, 22, 0.15),
+      0 4px 12px rgba(0, 0, 0, 0.08);
   }
 
   :deep(.dark) & {
-    background: #1f2937;
-    border-color: #374151;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+    border-color: rgba(249, 115, 22, 0.25);
+    box-shadow: 
+      0 4px 20px rgba(0, 0, 0, 0.3);
 
     &:hover {
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+      box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        0 4px 12px rgba(0, 0, 0, 0.3);
     }
   }
 }
@@ -138,17 +158,19 @@ const copyAddress = () => {
 
 .server-icon {
   position: relative;
-  width: 48px;
-  height: 48px;
+  width: 52px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #fff7ed;
-  border-radius: 12px;
-  font-size: 24px;
+  background: linear-gradient(135deg, #fff7ed 0%, #ffedd5 100%);
+  border-radius: 14px;
+  font-size: 26px;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.15);
 
   :deep(.dark) & {
-    background: #451a03;
+    background: linear-gradient(135deg, #7c2d12 0%, #451a03 100%);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -224,26 +246,28 @@ const copyAddress = () => {
 }
 
 .copy-btn {
-  padding: 8px 16px;
-  background: #f97316;
+  padding: 10px 20px;
+  background: linear-gradient(135deg, #f97316 0%, #ea580c 100%);
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   font-size: 13px;
-  font-weight: 500;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 12px rgba(249, 115, 22, 0.3);
 
   &:hover {
-    background: #ea580c;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 16px rgba(249, 115, 22, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
   }
 
   :deep(.dark) & {
-    background: #c2410c;
-
-    &:hover {
-      background: #9a3412;
-    }
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
   }
 }
 
@@ -256,35 +280,56 @@ const copyAddress = () => {
 .stat-item {
   text-align: center;
   padding: 16px 8px;
-  border-radius: 10px;
-  transition: background 0.2s;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  background: rgba(249, 115, 22, 0.03);
+  border: 1px solid rgba(249, 115, 22, 0.08);
 
   &:hover {
-    background: #f9fafb;
+    background: rgba(249, 115, 22, 0.08);
+    border-color: rgba(249, 115, 22, 0.15);
+    transform: translateY(-1px);
 
     :deep(.dark) & {
-      background: #374151;
+      background: rgba(249, 115, 22, 0.1);
     }
+  }
+
+  :deep(.dark) & {
+    background: rgba(249, 115, 22, 0.05);
+    border-color: rgba(249, 115, 22, 0.15);
   }
 }
 
 .stat-value {
   display: block;
-  font-size: 28px;
-  font-weight: 700;
-  color: #111827;
-  line-height: 1.2;
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.1;
+  background: linear-gradient(135deg, #ea580c, #d97706);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 
   :deep(.dark) & {
-    color: #f9fafb;
+    background: linear-gradient(135deg, #fb923c, #fbbf24);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   &.online {
-    color: #16a34a;
+    background: linear-gradient(135deg, #16a34a, #22c55e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 
   &.offline {
-    color: #dc2626;
+    background: linear-gradient(135deg, #dc2626, #ef4444);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
   }
 }
 
