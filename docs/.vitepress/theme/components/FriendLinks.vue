@@ -1,0 +1,304 @@
+<script setup lang="ts">
+import { ref } from 'vue'
+
+interface FriendLink {
+  name: string
+  desc: string
+  avatar: string
+  link: string
+  badge?: string
+}
+
+const friends = ref<FriendLink[]>([
+  {
+    name: '暖绒星港',
+    desc: '与毛毛一起共绘方块世界',
+    avatar: '🏝️',
+    link: 'https://fur-island.asia',
+    badge: '本站'
+  },
+  {
+    name: 'FurX Community',
+    desc: '兽人社区综合服务平台',
+    avatar: '🐾',
+    link: 'https://furx.org'
+  },
+  {
+    name: 'Minecraft 中文论坛',
+    desc: '国内最大的 Minecraft 社区',
+    avatar: '⛏️',
+    link: 'https://www.mcbbs.net'
+  },
+  {
+    name: 'UnBorder 联盟',
+    desc: '跨边境游戏服务器联盟',
+    avatar: '🌐',
+    link: 'https://unborder.online'
+  },
+  {
+    name: '兽云小屋',
+    desc: '温馨的兽人 Minecraft 服务器',
+    avatar: '☁️',
+    link: 'https://furscloud.top'
+  },
+  {
+    name: '星芒小镇',
+    desc: '星光璀璨的生存服务器',
+    avatar: '⭐',
+    link: '#'
+  },
+  {
+    name: '绒语森林',
+    desc: ' furry 主题服务器社区',
+    avatar: '🌲',
+    link: '#'
+  },
+  {
+    name: '月光海湾',
+    desc: '夜景主题创意生存服',
+    avatar: '🌙',
+    link: '#'
+  }
+])
+</script>
+
+<template>
+  <div class="friends-section">
+    <div class="friends-header">
+      <h2 class="friends-title">
+        <span class="title-icon">🤝</span>
+        友情链接
+      </h2>
+      <p class="friends-subtitle">感谢每一位志同道合的伙伴，共同打造更好的社区</p>
+    </div>
+
+    <div class="friends-grid">
+      <div
+        v-for="(friend, index) in friends"
+        :key="index"
+        class="friend-card"
+        @click="window.open(friend.link, '_blank')"
+      >
+        <div class="card-inner">
+          <div class="avatar-badge">
+            <span class="friend-avatar">{{ friend.avatar }}</span>
+            <div v-if="friend.badge" class="friend-badge">{{ friend.badge }}</div>
+          </div>
+
+          <div class="friend-info">
+            <h3 class="friend-name">{{ friend.name }}</h3>
+            <p class="friend-desc">{{ friend.desc }}</p>
+          </div>
+
+          <div class="link-arrow">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+              <polyline points="15 3 21 3 21 9"></polyline>
+              <line x1="10" y1="14" x2="21" y2="3"></line>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="join-notice">
+      <div class="notice-content">
+        <span class="notice-icon">💌</span>
+        <p>想要申请友情链接？欢迎加入我们的 QQ 群联系管理员，本站域名需 PR ≥ 2 且内容健康正向</p>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped lang="scss">
+.friends-section {
+  padding: 32px 0;
+}
+
+.friends-header {
+  text-align: center;
+  margin-bottom: 48px;
+
+  .friends-title {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0 0 12px 0;
+    background: var(--fur-gradient-primary);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+
+    .title-icon {
+      font-size: 36px;
+    }
+  }
+
+  .friends-subtitle {
+    font-size: 15px;
+    color: var(--fur-text-secondary);
+    margin: 0;
+  }
+}
+
+.friends-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 48px;
+}
+
+.friend-card {
+  background: var(--fur-bg-card);
+  border: 1px solid var(--fur-border);
+  border-radius: 16px;
+  padding: 20px;
+  cursor: pointer;
+  transition: all var(--fur-transition-normal);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--fur-gradient-primary);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--fur-shadow-large);
+    border-color: rgba(var(--fur-primary-rgb), 0.3);
+
+    &::before {
+      opacity: 0.8;
+    }
+
+    .link-arrow {
+      transform: translateX(4px);
+      color: var(--fur-primary);
+    }
+  }
+
+  :deep(.dark) & {
+    background: var(--fur-bg-card);
+  }
+}
+
+.card-inner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.avatar-badge {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.friend-avatar {
+  width: 52px;
+  height: 52px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, rgba(var(--fur-primary-rgb), 0.15) 0%, rgba(var(--fur-primary-rgb), 0.05) 100%);
+  border-radius: 14px;
+  font-size: 26px;
+  border: 1px solid rgba(var(--fur-primary-rgb), 0.1);
+}
+
+.friend-badge {
+  position: absolute;
+  top: -4px;
+  right: -4px;
+  font-size: 10px;
+  padding: 2px 8px;
+  background: var(--fur-gradient-primary);
+  color: white;
+  border-radius: 10px;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(var(--fur-primary-rgb), 0.3);
+}
+
+.friend-info {
+  flex: 1;
+  min-width: 0;
+
+  .friend-name {
+    margin: 0 0 4px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--fur-text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .friend-desc {
+    margin: 0;
+    font-size: 13px;
+    color: var(--fur-text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+}
+
+.link-arrow {
+  color: var(--fur-text-muted);
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.join-notice {
+  background: linear-gradient(135deg, rgba(var(--fur-primary-rgb), 0.08) 0%, rgba(var(--fur-primary-rgb), 0.03) 100%);
+  border: 1px solid rgba(var(--fur-primary-rgb), 0.15);
+  border-radius: 16px;
+  padding: 20px 24px;
+
+  .notice-content {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+
+    .notice-icon {
+      font-size: 24px;
+      flex-shrink: 0;
+    }
+
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--fur-text-secondary);
+      line-height: 1.6;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .friends-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .friends-header {
+    .friends-title {
+      font-size: 26px;
+    }
+  }
+
+  .join-notice {
+    .notice-content {
+      flex-direction: column;
+      text-align: center;
+    }
+  }
+}
+</style>

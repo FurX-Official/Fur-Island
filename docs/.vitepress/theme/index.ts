@@ -4,6 +4,7 @@ import type { App } from 'vue'
 import ServerStatus from './components/ServerStatus.vue'
 import BackToTop from './components/BackToTop.vue'
 import ConnectGuide from './components/ConnectGuide.vue'
+import FriendLinks from './components/FriendLinks.vue'
 import './styles/index.scss'
 
 enableDarkModeTransition()
@@ -14,6 +15,7 @@ export default {
     app.component('ServerStatus', ServerStatus)
     app.component('BackToTop', BackToTop)
     app.component('ConnectGuide', ConnectGuide)
+    app.component('FriendLinks', FriendLinks)
 
     if (typeof window !== 'undefined') {
       onMounted(() => {
