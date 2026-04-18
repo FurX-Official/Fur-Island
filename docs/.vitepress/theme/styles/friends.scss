@@ -1,0 +1,35 @@
+.page-friends {
+  &__inner {
+    max-width: 100% !important;
+  }
+
+  .VPDoc {
+    padding-top: 24px !important;
+  }
+
+  .VPDocAside {
+    display: none !important;
+  }
+
+  .VPDoc.has-aside .content-container {
+    max-width: 100% !important;
+  }
+
+  .vp-doc h1 {
+    display: none !important;
+  }
+
+  .vp-doc > h1:first-child {
+    display: none !important;
+  }
+
+  .vp-doc__title {
+    display: none !important;
+  }
+}
+
+html .page-friends {
+  .vp-doc h1 {
+    display: none !important;
+  }
+}
