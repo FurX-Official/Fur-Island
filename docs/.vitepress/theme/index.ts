@@ -7,8 +7,6 @@ import ConnectGuide from './components/ConnectGuide.vue'
 import FriendLinks from './components/FriendLinks.vue'
 import './styles/index.scss'
 
-enableDarkModeTransition()
-
 export default {
   ...Theme,
   enhanceApp({ app, router }: { app: App; router: any }) {
@@ -20,6 +18,7 @@ export default {
     if (typeof window !== 'undefined') {
       onMounted(() => {
         playClickSound()
+        enableDarkModeTransition()
       })
 
       watch(
@@ -47,34 +46,35 @@ function playClickSound() {
 
 function enableDarkModeTransition() {
   if (typeof window === 'undefined') return
+  if (!document.startViewTransition) return
 
-  const switchBtn = document.querySelector('.VPSwitchAppearance')
-  if (!switchBtn) {
-    setTimeout(enableDarkModeTransition, 300)
-    return
-  }
+  let isTransitioning = false
 
-  switchBtn.addEventListener('click', (e) => {
-    if (!document.startViewTransition) return
-    
-    e.preventDefault()
-    e.stopImmediatePropagation()
-    
-    const isDark = document.documentElement.classList.contains('dark')
-    const newTheme = isDark ? 'light' : 'dark'
-    localStorage.setItem('vitepress-theme-appearance', newTheme)
-    
-    const transition = document.startViewTransition(async () => {
-      document.documentElement.classList.toggle('dark')
-      await new Promise<void>(resolve => requestAnimationFrame(resolve))
+  const observer = new MutationObserver((mutations) => {
+    if (isTransitioning) return
+
+    for (const mutation of mutations) {
+      if (mutation.attributeName === 'class') {
+        isTransitioning = true
+        document.startViewTransition(() => {
+          return new Promise<void>((resolve) => {
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                resolve()
+                setTimeout(() => isTransitioning = false, 500)
+              })
+            })
+          })
+        })
+        break
+      }
+    }
+  })
+
+  setTimeout(() => {
+    observer.observe(document.documentElement, {
+      attributes: true,
+      attributeFilter: ['class']
     })
-
-    transition.ready.then(() => {
-      document.documentElement.style.setProperty('--theme-transitioning', '1')
-    })
-
-    transition.finished.then(() => {
-      document.documentElement.style.removeProperty('--theme-transitioning')
-    })
-  }, true)
+  }, 1000)
 }
