@@ -18,47 +18,11 @@ const friends = ref<FriendLink[]>([
     badge: '本站'
   },
   {
-    name: 'FurX Community',
-    desc: '兽人社区综合服务平台',
-    avatar: '🐾',
-    link: 'https://furx.org'
-  },
-  {
     name: 'Minecraft 中文论坛',
     desc: '国内最大的 Minecraft 社区',
     avatar: '⛏️',
     link: 'https://www.mcbbs.net'
   },
-  {
-    name: 'UnBorder 联盟',
-    desc: '跨边境游戏服务器联盟',
-    avatar: '🌐',
-    link: 'https://unborder.online'
-  },
-  {
-    name: '兽云小屋',
-    desc: '温馨的兽人 Minecraft 服务器',
-    avatar: '☁️',
-    link: 'https://furscloud.top'
-  },
-  {
-    name: '星芒小镇',
-    desc: '星光璀璨的生存服务器',
-    avatar: '⭐',
-    link: '#'
-  },
-  {
-    name: '绒语森林',
-    desc: ' furry 主题服务器社区',
-    avatar: '🌲',
-    link: '#'
-  },
-  {
-    name: '月光海湾',
-    desc: '夜景主题创意生存服',
-    avatar: '🌙',
-    link: '#'
-  }
 ])
 </script>
 
