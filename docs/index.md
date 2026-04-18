@@ -11,8 +11,8 @@ hero:
       text: 加入QQ群
       link: https://qm.qq.com/q/RLnf8Z7vmq
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: 网页地图
+      link: https://map.fur-island.asia/
 
 features:
   - title: Feature A
