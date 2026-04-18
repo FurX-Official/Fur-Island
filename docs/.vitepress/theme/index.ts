@@ -46,27 +46,17 @@ function playClickSound() {
 function enableDarkModeTransition() {
   if (typeof window === 'undefined') return
 
-  const observer = new MutationObserver((mutations) => {
-    for (const mutation of mutations) {
-      if (mutation.attributeName === 'class') {
-        const target = mutation.target as HTMLElement
-        if (!document.startViewTransition) return
-        
-        document.documentElement.style.viewTransitionName = 'root'
-        
-        document.startViewTransition(() => {
-          return new Promise<void>((resolve) => {
-            requestAnimationFrame(() => {
-              requestAnimationFrame(resolve)
-            })
-          })
-        })
-      }
-    }
-  })
+  const switchBtn = document.querySelector('.VPSwitchAppearance')
+  if (!switchBtn) {
+    setTimeout(enableDarkModeTransition, 500)
+    return
+  }
 
-  observer.observe(document.documentElement, {
-    attributes: true,
-    attributeFilter: ['class']
-  })
+  switchBtn.addEventListener('click', () => {
+    if (!document.startViewTransition) return
+    document.startViewTransition(() => {
+      document.documentElement.classList.toggle('dark')
+      return new Promise<void>(resolve => requestAnimationFrame(resolve))
+    })
+  }, true)
 }
