@@ -1,0 +1,41 @@
+:root {
+  --scroll-track: #f1f5f9;
+  --scroll-thumb: #cbd5e1;
+  --scroll-thumb-hover: #94a3b8;
+}
+
+html.dark {
+  --scroll-track: #1e293b;
+  --scroll-thumb: #475569;
+  --scroll-thumb-hover: #64748b;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scroll-track);
+  border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--fur-primary), var(--fur-secondary));
+  border-radius: 5px;
+  border: 2px solid var(--scroll-track);
+  transition: all 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(180deg, var(--fur-accent), var(--fur-primary));
+}
+
+::-webkit-scrollbar-corner {
+  background: var(--scroll-track);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--fur-primary) var(--scroll-track);
+}
