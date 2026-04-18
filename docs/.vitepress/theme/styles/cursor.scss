@@ -1,0 +1,70 @@
+
+@media (min-width: 768px) {
+  * {
+    cursor: none;
+  }
+
+  body {
+    &::before,
+    &::after {
+      content: '';
+      position: fixed;
+      border-radius: 50%;
+      pointer-events: none;
+      z-index: 99999;
+      transition: transform 0.1s ease, opacity 0.15s ease;
+    }
+
+    &::before {
+      width: 12px;
+      height: 12px;
+      background: var(--fur-primary);
+      transform: translate(-50%, -50%);
+      box-shadow: 0 0 10px rgba(var(--fur-primary-rgb), 0.5);
+    }
+
+    &::after {
+      width: 40px;
+      height: 40px;
+      border: 2px solid var(--fur-primary);
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.3;
+    }
+
+    &:active::before {
+      transform: translate(-50%, -50%) scale(0.8);
+    }
+
+    &:active::after {
+      transform: translate(-50%, -50%) scale(0.9);
+      opacity: 0.5;
+    }
+  }
+
+  a,
+  button,
+  [role="button"],
+  .clickable,
+  .VPImage,
+  .VPLink,
+  .VPButton {
+    &:hover {
+      ~ body::after {
+        transform: translate(-50%, -50%) scale(1.3);
+        opacity: 0.6;
+      }
+    }
+  }
+
+  #cursor-trail {
+    position: fixed;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: radial-gradient(circle, var(--fur-primary) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 99998;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+  }
+}

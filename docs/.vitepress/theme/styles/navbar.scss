@@ -1,0 +1,33 @@
+.VPNavBar {
+  &.has-top {
+    .VPNavBar:not(.home) &-container {
+      background: rgba(255, 255, 255, 0.8) !important;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-bottom: 1px solid rgba(var(--fur-primary-rgb), 0.1);
+    }
+  }
+
+  &-container {
+    transition: all var(--fur-transition-normal);
+  }
+
+  :deep(.dark) & {
+    &.has-top {
+      .VPNavBar:not(.home) &-container {
+        background: rgba(12, 10, 9, 0.85) !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+    }
+  }
+}
+
+.VPNavBarHome {
+  .title {
+    background: var(--fur-gradient-hero);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+  }
+}

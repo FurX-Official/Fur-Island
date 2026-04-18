@@ -1,0 +1,63 @@
+:root {
+  --fur-primary: #e67e22;
+  --fur-primary-light: #f39c12;
+  --fur-primary-dark: #d35400;
+  --fur-primary-rgb: 230, 126, 34;
+  
+  --fur-secondary: #8b5cf6;
+  --fur-secondary-light: #a78bfa;
+  --fur-secondary-rgb: 139, 92, 246;
+
+  --fur-success: #22c55e;
+  --fur-warning: #f59e0b;
+  --fur-danger: #ef4444;
+  --fur-info: #3b82f6;
+
+  --fur-gradient-primary: linear-gradient(135deg, var(--fur-primary) 0%, var(--fur-primary-light) 100%);
+  --fur-gradient-primary-reverse: linear-gradient(135deg, var(--fur-primary-light) 0%, var(--fur-primary-dark) 100%);
+  --fur-gradient-hero: linear-gradient(135deg, var(--fur-primary) 0%, var(--fur-secondary) 100%);
+
+  --fur-bg-page: #ffffff;
+  --fur-bg-soft: #fffbf7;
+  --fur-bg-card: #ffffff;
+  --fur-bg-hover: #fff7ed;
+  --fur-border: #fed7aa;
+  --fur-text-primary: #44403c;
+  --fur-text-secondary: #78716c;
+  --fur-text-muted: #a8a29e;
+
+  --fur-shadow-soft: 0 2px 8px rgba(var(--fur-primary-rgb), 0.08);
+  --fur-shadow-medium: 0 4px 20px rgba(var(--fur-primary-rgb), 0.12);
+  --fur-shadow-large: 0 8px 40px rgba(var(--fur-primary-rgb), 0.18);
+  --fur-shadow-glow: 0 4px 20px rgba(var(--fur-primary-rgb), 0.3);
+
+  --fur-transition-fast: 150ms ease;
+  --fur-transition-normal: 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  --fur-transition-slow: 400ms cubic-bezier(0.4, 0, 0.2, 1);
+
+  --vp-c-brand: var(--fur-primary);
+  --vp-c-brand-light: var(--fur-primary-light);
+  --vp-c-brand-lighter: var(--fur-primary-light);
+  --vp-c-brand-dark: var(--fur-primary-dark);
+  --vp-c-brand-darker: var(--fur-primary-dark);
+  --vp-button-brand-bg: var(--fur-primary);
+  --vp-button-brand-hover-bg: var(--fur-primary-dark);
+  --vp-button-brand-active-bg: var(--fur-primary-dark);
+  --vp-home-hero-name-color: transparent;
+  --vp-home-hero-name-background: var(--fur-gradient-hero);
+}
+
+html.dark {
+  --fur-bg-page: #0c0a09;
+  --fur-bg-soft: #1c1917;
+  --fur-bg-card: #292524;
+  --fur-bg-hover: #44403c;
+  --fur-border: #57534e;
+  --fur-text-primary: #f5f5f4;
+  --fur-text-secondary: #d6d3d1;
+  --fur-text-muted: #a8a29e;
+
+  --vp-c-bg: var(--fur-bg-page);
+  --vp-c-bg-soft: var(--fur-bg-soft);
+  --vp-c-bg-alt: var(--fur-bg-soft);
+}

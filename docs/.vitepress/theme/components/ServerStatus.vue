@@ -45,8 +45,22 @@ const copyAddress = () => {
 
 <template>
   <div class="server-container">
-    <div class="server-card">
-      <div class="left-section">
+    <div class="server-card" :class="{ loading }">
+      <div v-if="loading" class="skeleton-overlay">
+        <div class="skeleton-item skeleton-icon"></div>
+        <div class="skeleton-info">
+          <div class="skeleton-item skeleton-title"></div>
+          <div class="skeleton-item skeleton-ip"></div>
+        </div>
+        <div class="skeleton-stats">
+          <div class="skeleton-item skeleton-stat"></div>
+          <div class="skeleton-item skeleton-stat"></div>
+          <div class="skeleton-item skeleton-stat"></div>
+        </div>
+        <div class="skeleton-item skeleton-btn"></div>
+      </div>
+
+      <div v-else class="left-section">
         <div class="icon-wrapper">
           <span class="main-icon">🏝️</span>
           <span class="status-badge" :class="{ online: serverData?.online }">
@@ -63,24 +77,24 @@ const copyAddress = () => {
         </div>
       </div>
 
-      <div class="stats-section">
+      <div v-if="!loading" class="stats-section">
         <div class="stat">
-          <span class="stat-number">{{ loading ? '—' : serverData?.players?.online || 0 }}</span>
+          <span class="stat-number">{{ serverData?.players?.online || 0 }}</span>
           <span class="stat-text">在线玩家</span>
         </div>
         <div class="stat">
-          <span class="stat-number">{{ loading ? '—' : serverData?.ping }}</span>
+          <span class="stat-number">{{ serverData?.ping }}</span>
           <span class="stat-text">毫秒延迟</span>
         </div>
         <div class="stat">
           <span class="stat-number status-text" :class="{ online: serverData?.online }">
-            {{ loading ? '—' : (serverData?.online ? '运行中' : '离线') }}
+            {{ serverData?.online ? '运行中' : '离线' }}
           </span>
           <span class="stat-text">服务器状态</span>
         </div>
       </div>
 
-      <button class="copy-button" @click="copyAddress" :class="{ success: copied }">
+      <button v-if="!loading" class="copy-button" @click="copyAddress" :class="{ success: copied }">
         <svg v-if="!copied" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
           <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
@@ -320,6 +334,138 @@ const copyAddress = () => {
   &.success {
     background: linear-gradient(135deg, #10b981 0%, #059669 100%);
     box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35);
+  }
+}
+
+.server-card.loading {
+  min-height: 104px;
+  pointer-events: none;
+}
+
+.skeleton-overlay {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 40px;
+}
+
+.skeleton-item {
+  background: linear-gradient(
+    90deg,
+  rgba(var(--fur-primary-rgb), 0.1) 25%,
+  rgba(var(--fur-primary-rgb), 0.2) 50%,
+  rgba(var(--fur-primary-rgb), 0.1) 75%
+  );
+  background-size: 200% 100%;
+  border-radius: 12px;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton-icon {
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+}
+
+.skeleton-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.skeleton-title {
+  width: 140px;
+  height: 24px;
+}
+
+.skeleton-ip {
+  width: 180px;
+  height: 16px;
+}
+
+.skeleton-stats {
+  display: flex;
+  gap: 64px;
+}
+
+.skeleton-stat {
+  width: 70px;
+  height: 44px;
+}
+
+.skeleton-btn {
+  width: 110px;
+  height: 42px;
+}
+
+@media (max-width: 960px) {
+  .server-card {
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px;
+    align-items: stretch;
+  }
+
+  .left-section {
+    justify-content: center;
+  }
+
+  .stats-section {
+    justify-content: center;
+  }
+
+  .copy-button {
+    width: 100%;
+  }
+
+  .skeleton-overlay {
+    flex-direction: column;
+    gap: 24px;
+    align-items: stretch;
+  }
+
+  .skeleton-icon {
+    align-self: center;
+  }
+
+  .skeleton-stats {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .skeleton-btn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 640px) {
+  .stats-section {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .stat {
+    padding: 0 16px;
+  }
+
+  .stat-number {
+    font-size: 24px;
+  }
+
+  .skeleton-stats {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .skeleton-stat {
+    width: 80px;
   }
 }
 </style>

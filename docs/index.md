@@ -23,3 +23,9 @@ features:
 ---
 
 <ServerStatus />
+
+<ConnectGuide />
+
+<BackToTop />
+
+<CopyIPButton />

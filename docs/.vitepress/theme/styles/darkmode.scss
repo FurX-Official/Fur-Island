@@ -1,0 +1,32 @@
+html.dark {
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(2px 2px at 20px 30px, white, transparent),
+      radial-gradient(2px 2px at 40px 70px, rgba(255,255,255,0.8), transparent),
+      radial-gradient(1px 1px at 90px 40px, white, transparent),
+      radial-gradient(2px 2px at 160px 120px, rgba(255,255,255,0.9), transparent),
+      radial-gradient(1px 1px at 230px 80px, white, transparent),
+      radial-gradient(2px 2px at 300px 150px, rgba(255,255,255,0.7), transparent),
+      radial-gradient(1px 1px at 400px 60px, white, transparent),
+      radial-gradient(2px 2px at 500px 200px, rgba(255,255,255,0.8), transparent),
+      radial-gradient(1px 1px at 600px 100px, white, transparent),
+      radial-gradient(2px 2px at 700px 180px, rgba(255,255,255,0.6), transparent);
+    background-repeat: repeat;
+    background-size: 800px 300px;
+    opacity: 0.08;
+    pointer-events: none;
+    z-index: 0;
+    animation: twinkle 8s ease-in-out infinite;
+  }
+}
+
+@keyframes twinkle {
+  0%, 100% { opacity: 0.08; }
+  50% { opacity: 0.15; }
+}
