@@ -6,6 +6,8 @@ import BackToTop from './components/BackToTop.vue'
 import ConnectGuide from './components/ConnectGuide.vue'
 import './styles/index.scss'
 
+enableDarkModeTransition()
+
 export default {
   ...Theme,
   enhanceApp({ app, router }: { app: App; router: any }) {
@@ -38,5 +40,33 @@ function playClickSound() {
       audio.volume = 0.1
       audio.play().catch(() => {})
     }
+  })
+}
+
+function enableDarkModeTransition() {
+  if (typeof window === 'undefined') return
+
+  const observer = new MutationObserver((mutations) => {
+    for (const mutation of mutations) {
+      if (mutation.attributeName === 'class') {
+        const target = mutation.target as HTMLElement
+        if (!document.startViewTransition) return
+        
+        document.documentElement.style.viewTransitionName = 'root'
+        
+        document.startViewTransition(() => {
+          return new Promise<void>((resolve) => {
+            requestAnimationFrame(() => {
+              requestAnimationFrame(resolve)
+            })
+          })
+        })
+      }
+    }
+  })
+
+  observer.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ['class']
   })
 }
