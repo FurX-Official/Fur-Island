@@ -37,11 +37,13 @@ const friends = ref<FriendLink[]>([
     </div>
 
     <div class="friends-grid">
-      <div
+      <a
         v-for="(friend, index) in friends"
         :key="index"
         class="friend-card"
-        @click="window.open(friend.link, '_blank')"
+        :href="friend.link"
+        target="_blank"
+        rel="noopener noreferrer"
       >
         <div class="card-inner">
           <div class="avatar-badge">
@@ -62,7 +64,7 @@ const friends = ref<FriendLink[]>([
             </svg>
           </div>
         </div>
-      </div>
+      </a>
     </div>
 
     <div class="join-notice">
@@ -115,6 +117,8 @@ const friends = ref<FriendLink[]>([
 }
 
 .friend-card {
+  display: block;
+  text-decoration: none;
   background: var(--fur-bg-card);
   border: 1px solid var(--fur-border);
   border-radius: 16px;

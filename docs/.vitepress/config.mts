@@ -12,15 +12,7 @@ export default defineConfig({
       { text: '友情链接', link: '/friends' }
     ],
 
-    sidebar: [
-      {
-        text: '示例',
-        items: [
-          { text: 'Markdown 示例', link: '/markdown-examples' },
-          { text: 'Runtime 示例', link: '/api-examples' }
-        ]
-      }
-    ],
+    sidebar: false,
 
     socialLinks: [
       { icon: 'github', link: 'https://github.com/FurX-Official/Fur-Island/' },
