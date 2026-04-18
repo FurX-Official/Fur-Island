@@ -3,7 +3,6 @@ import { onMounted, watch, nextTick } from 'vue'
 import type { App } from 'vue'
 import ServerStatus from './components/ServerStatus.vue'
 import BackToTop from './components/BackToTop.vue'
-import CopyIPButton from './components/CopyIPButton.vue'
 import ConnectGuide from './components/ConnectGuide.vue'
 import './styles/index.scss'
 
@@ -12,7 +11,6 @@ export default {
   enhanceApp({ app, router }: { app: App; router: any }) {
     app.component('ServerStatus', ServerStatus)
     app.component('BackToTop', BackToTop)
-    app.component('CopyIPButton', CopyIPButton)
     app.component('ConnectGuide', ConnectGuide)
 
     if (typeof window !== 'undefined') {

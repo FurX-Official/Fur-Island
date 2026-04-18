@@ -27,5 +27,3 @@ features:
 <ConnectGuide />
 
 <BackToTop />
-
-<CopyIPButton />
