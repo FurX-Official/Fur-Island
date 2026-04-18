@@ -245,7 +245,6 @@ const copyAddress = () => {
     .ip-text {
       font-size: 14px;
       color: var(--fur-text-secondary);
-      font-family: var(--vp-font-family-mono);
     }
 
     .version-badge {
@@ -274,11 +273,18 @@ const copyAddress = () => {
 
 .stat-card {
   text-align: center;
-  padding: 12px 20px;
-  border-left: 1px solid var(--fur-border);
+  padding: 12px 24px;
+  position: relative;
 
-  &:first-child {
-    border-left: none;
+  &:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 1px;
+    height: 40px;
+    background: linear-gradient(to bottom, transparent, var(--fur-border), transparent);
   }
 
   .stat-value {

@@ -55,7 +55,12 @@ function enableDarkModeTransition() {
   switchBtn.addEventListener('click', (e) => {
     if (!document.startViewTransition) return
     
+    e.preventDefault()
     e.stopImmediatePropagation()
+    
+    const isDark = document.documentElement.classList.contains('dark')
+    const newTheme = isDark ? 'light' : 'dark'
+    localStorage.setItem('vitepress-theme-appearance', newTheme)
     
     const transition = document.startViewTransition(async () => {
       document.documentElement.classList.toggle('dark')
