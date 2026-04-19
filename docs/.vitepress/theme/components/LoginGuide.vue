@@ -100,8 +100,9 @@ const steps = ref([
       <h3 class="section-title">🎮 进入服务器</h3>
       <div class="limbo-cards">
         <div class="limbo-card verified">
-          <h4>🌟 正版玩家 / 皮肤站玩家</h4>
-          <p class="limbo-result">✅ 直接进入服务器，无需任何额外操作！</p>
+          <span class="verified-icon">✨</span>
+          <h4>正版玩家 / 皮肤站玩家</h4>
+          <p class="verified-text">✅ 直接进入服务器，无需任何额外操作！</p>
         </div>
         <div class="limbo-card offline">
           <h4>👤 离线玩家（需要注册）</h4>
@@ -338,18 +339,36 @@ const steps = ref([
     border: 1px solid var(--fur-border);
     border-radius: 14px;
     padding: 24px;
+    min-height: 320px;
 
     &.verified {
-      border-top: 3px solid #10b981;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
+        border-top: 3px solid #10b981;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        min-height: 200px;
 
-      h4 {
-        margin-bottom: 12px;
+        .verified-icon {
+          font-size: 52px;
+          margin-bottom: 16px;
+        }
+
+        h4 {
+          margin: 0 0 12px 0;
+          font-size: 18px;
+        }
+
+        .verified-text {
+          font-size: 15px;
+          color: #10b981;
+          font-weight: 600;
+          background: rgba(16, 185, 129, 0.1);
+          padding: 10px 20px;
+          border-radius: 10px;
+        }
       }
-    }
 
     &.offline {
       border-top: 3px solid #f59e0b;
@@ -361,11 +380,7 @@ const steps = ref([
       font-weight: 600;
     }
 
-    .limbo-result {
-      font-size: 15px;
-      color: #10b981;
-      font-weight: 600;
-    }
+
 
     p {
       margin: 0 0 16px 0;
