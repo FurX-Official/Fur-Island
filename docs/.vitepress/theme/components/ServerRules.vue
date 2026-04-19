@@ -27,12 +27,23 @@ const ruleCategories = ref([
   {
     icon: '⚔️',
     title: 'PVP 与互动',
-    color: '#ef4444',
+    color: '#f59e0b',
     rules: [
-      '非双方同意禁止恶意 PVP 追杀',
-      '禁止用陷阱、机关等方式恶意坑害玩家',
-      '玩家间交易请自行承担风险',
+      '服务器允许自由 PVP，请自行承担风险',
+      '禁止用陷阱、机关等方式恶意坑杀萌新',
+      '玩家间交易请自行承担风险与责任',
       '恶意围堵、囚禁其他玩家是不被允许的'
+    ]
+  },
+  {
+    icon: '⚡',
+    title: '生电说明',
+    color: '#8b5cf6',
+    rules: [
+      '服务器允许生电、红石机械相关建造',
+      '请勿建造过度卡顿的高频红石装置',
+      '刷怪塔、物品分类等生电装置均可使用',
+      '大型生电机组建议建在远离主区域位置'
     ]
   },
   {
@@ -40,10 +51,10 @@ const ruleCategories = ref([
     title: '游戏公平',
     color: '#10b981',
     rules: [
-      '禁止使用任何作弊客户端、外挂',
-      '禁止恶意利用服务器 Bug 获取不当利益',
-      '禁止建造刷物品、刷怪塔等破坏平衡的装置',
-      '禁止使用高速连点器、自动攻击等辅助'
+      '允许使用不影响平衡的辅助模组（如小地图）',
+      '禁止恶意利用服务器 Bug 复制物品等',
+      '禁止飞行、穿墙、杀戮光环等作弊功能',
+      '禁止高速连点器、自动攻击等破坏PVP平衡的辅助'
     ]
   },
   {
@@ -148,8 +159,8 @@ const ruleCategories = ref([
 
 .rules-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 20px;
   margin-bottom: 48px;
 }
 
