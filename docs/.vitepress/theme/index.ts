@@ -6,6 +6,7 @@ import BackToTop from './components/BackToTop.vue'
 import ConnectGuide from './components/ConnectGuide.vue'
 import FriendLinks from './components/FriendLinks.vue'
 import ServerRules from './components/ServerRules.vue'
+import LoginGuide from './components/LoginGuide.vue'
 import './styles/index.scss'
 
 export default {
@@ -16,6 +17,7 @@ export default {
     app.component('ConnectGuide', ConnectGuide)
     app.component('FriendLinks', FriendLinks)
     app.component('ServerRules', ServerRules)
+    app.component('LoginGuide', LoginGuide)
 
     if (typeof window !== 'undefined') {
       onMounted(() => {
