@@ -14,7 +14,8 @@ export default defineConfig({
         text: '📚 游戏指南',
         items: [
           { text: '🔑 登录教程', link: '/guides/login/' },
-          { text: '🏘️ 领地教程', link: '/guides/residence/' }
+          { text: '🏘️ 领地教程', link: '/guides/residence/' },
+          { text: '📢 举报教程', link: '/guides/report/' }
         ]
       },
       {
