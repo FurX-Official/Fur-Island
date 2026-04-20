@@ -1,0 +1,229 @@
+@keyframes gradient-border-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes breathe-glow {
+  0%, 100% {
+    box-shadow: 0 0 5px var(--fur-primary), 0 0 10px var(--fur-primary), 0 0 15px var(--fur-primary);
+  }
+  50% {
+    box-shadow: 0 0 10px var(--fur-primary), 0 0 20px var(--fur-primary), 0 0 30px var(--fur-primary);
+  }
+}
+
+@keyframes text-glow {
+  0%, 100% {
+    text-shadow: 0 0 5px var(--fur-primary), 0 0 10px var(--fur-primary);
+  }
+  50% {
+    text-shadow: 0 0 10px var(--fur-primary), 0 0 20px var(--fur-primary), 0 0 30px var(--fur-primary);
+  }
+}
+
+.gradient-border {
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: linear-gradient(45deg, #8b5cf6, #3b82f6, #ec4899, #10b981, #8b5cf6);
+    background-size: 400% 400%;
+    animation: gradient-border-rotate 3s ease infinite;
+    z-index: -1;
+    border-radius: inherit;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:hover::before {
+    opacity: 1;
+  }
+}
+
+.VPLinkCard,
+.VPFeature,
+.team-card,
+.friend-card,
+.changelog-item,
+.faq-item,
+.support-tier {
+  @extend .gradient-border;
+}
+
+.text-glow-effect {
+  transition: all 0.3s ease;
+
+  &:hover {
+    animation: text-glow 2s ease-in-out infinite;
+  }
+}
+
+h1, h2, h3, .VPLinkCard .title, .VPFeature .title {
+  @extend .text-glow-effect;
+}
+
+.ripple-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  transform: scale(0);
+  animation: ripple-animation 0.6s ease-out;
+  pointer-events: none;
+}
+
+@keyframes ripple-animation {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+button,
+.VPButton,
+.pwa-install-btn,
+.tool-btn,
+.copy-btn {
+  @extend .ripple-container;
+  cursor: pointer;
+}
+
+.image-hover-zoom {
+  overflow: hidden;
+
+  img {
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+  }
+
+  &:hover img {
+    transform: scale(1.08);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+  }
+}
+
+img {
+  border-radius: 12px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.02);
+    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2);
+  }
+}
+
+.wave-divider {
+  width: 100%;
+  height: 60px;
+  overflow: hidden;
+
+  svg {
+    width: 100%;
+    height: 100%;
+  }
+
+  &.wave-invert {
+    transform: rotate(180deg);
+  }
+}
+
+.jelly-btn {
+  transition: all 0.15s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+
+  &:active {
+    transform: scale(0.95) !important;
+  }
+
+  &:hover {
+    transform: scale(1.05);
+  }
+}
+
+button,
+.VPButton,
+.pwa-install-btn,
+.tool-btn {
+  @extend .jelly-btn;
+}
+
+.breathe-border {
+  animation: breathe-glow 2s ease-in-out infinite;
+}
+
+.card-3d-container {
+  perspective: 1000px;
+}
+
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  position: relative;
+
+  &-front,
+  &-back {
+    backface-visibility: hidden;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  &-back {
+    transform: rotateY(180deg);
+  }
+
+  &:hover {
+    transform: rotateY(180deg);
+  }
+}
+
+.reading-progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #8b5cf6, #3b82f6, #ec4899);
+  z-index: 99999;
+  transition: width 0.1s ease;
+  box-shadow: 0 0 10px var(--fur-primary);
+}
+
+.font-size-control {
+  position: fixed;
+  right: 20px;
+  bottom: 100px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  z-index: 9999;
+
+  button {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    border: none;
+    background: var(--fur-bg-card);
+    color: var(--fur-text);
+    font-size: 18px;
+    cursor: pointer;
+    box-shadow: var(--fur-shadow-card);
+    border: 1px solid var(--fur-border);
+
+    &:hover {
+      background: var(--fur-primary);
+      color: white;
+    }
+  }
+}

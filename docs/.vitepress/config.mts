@@ -20,8 +20,13 @@ export default defineConfig({
       {
         text: '实用工具',
         items: [
+          { text: '坐标转换', link: '/tools/coord' },
+          { text: '经验计算', link: '/tools/exp' },
           { text: 'UUID 转换器', link: '/tools/uuid' },
           { text: '游戏时间', link: '/tools/time' },
+          { text: '附魔大全', link: '/tools/enchant' },
+          { text: '药水酿造', link: '/tools/potion' },
+          { text: '村民交易', link: '/tools/villager' },
           { text: '端口检测', link: '/tools/port' }
         ]
       },

@@ -19,6 +19,12 @@ import TypewriterText from './components/TypewriterText.vue'
 import UuidConverter from './components/UuidConverter.vue'
 import GameTimeCalc from './components/GameTimeCalc.vue'
 import PortChecker from './components/PortChecker.vue'
+import AccordionPanel from './components/AccordionPanel.vue'
+import CoordCalculator from './components/CoordCalculator.vue'
+import ExpCalculator from './components/ExpCalculator.vue'
+import EnchantList from './components/EnchantList.vue'
+import PotionBrewing from './components/PotionBrewing.vue'
+import VillagerTrades from './components/VillagerTrades.vue'
 import './styles/index.scss'
 
 export default {
@@ -42,6 +48,12 @@ export default {
     app.component('UuidConverter', UuidConverter)
     app.component('GameTimeCalc', GameTimeCalc)
     app.component('PortChecker', PortChecker)
+    app.component('AccordionPanel', AccordionPanel)
+    app.component('CoordCalculator', CoordCalculator)
+    app.component('ExpCalculator', ExpCalculator)
+    app.component('EnchantList', EnchantList)
+    app.component('PotionBrewing', PotionBrewing)
+    app.component('VillagerTrades', VillagerTrades)
 
     if (typeof window !== 'undefined') {
       onMounted(() => {
@@ -55,6 +67,10 @@ export default {
         enableClickFireworks()
         enableAutoDarkMode()
         enablePWAInstallPrompt()
+        enableButtonRipple()
+        enableReadingProgress()
+        enableAutoDarkModeByTime()
+        enableFontSizeControl()
       })
 
       watch(
@@ -742,5 +758,112 @@ function enablePWAInstallPrompt() {
         setTimeout(() => popup.remove(), 300)
       })
     }, 5000)
+  })
+}
+
+function enableButtonRipple() {
+  if (typeof window === 'undefined') return
+
+  const createRipple = (e: MouseEvent) => {
+    const button = (e.target as HTMLElement).closest('button, .VPLinkCard, .VPButton, .tool-btn, .copy-btn')
+    if (!button) return
+
+    const rect = button.getBoundingClientRect()
+    const ripple = document.createElement('span')
+    const size = Math.max(rect.width, rect.height)
+    const x = e.clientX - rect.left - size / 2
+    const y = e.clientY - rect.top - size / 2
+
+    ripple.className = 'ripple'
+    ripple.style.width = ripple.style.height = size + 'px'
+    ripple.style.left = x + 'px'
+    ripple.style.top = y + 'px'
+
+    button.appendChild(ripple)
+
+    setTimeout(() => ripple.remove(), 600)
+  }
+
+  document.addEventListener('click', createRipple)
+}
+
+function enableReadingProgress() {
+  if (typeof window === 'undefined') return
+
+  const progressBar = document.createElement('div')
+  progressBar.className = 'reading-progress'
+  progressBar.style.width = '0%'
+  document.body.appendChild(progressBar)
+
+  const updateProgress = () => {
+    const scrollTop = window.scrollY
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight
+    const progress = docHeight > 0 ? (scrollTop / docHeight) * 100 : 0
+    progressBar.style.width = progress + '%'
+  }
+
+  window.addEventListener('scroll', updateProgress, { passive: true })
+  updateProgress()
+}
+
+function enableAutoDarkModeByTime() {
+  if (typeof window === 'undefined') return
+
+  const checkTime = () => {
+    if (localStorage.getItem('vitepress-theme-appearance')) return
+
+    const hour = new Date().getHours()
+    const isNight = hour < 6 || hour >= 18
+    const html = document.documentElement
+
+    if (isNight && !html.classList.contains('dark')) {
+      html.classList.add('dark')
+    } else if (!isNight && html.classList.contains('dark')) {
+      html.classList.remove('dark')
+    }
+  }
+
+  checkTime()
+  setInterval(checkTime, 60000)
+}
+
+function enableFontSizeControl() {
+  if (typeof window === 'undefined') return
+
+  const container = document.createElement('div')
+  container.className = 'font-size-control'
+  container.innerHTML = `
+    <button class="font-increase" title="放大字体">A+</button>
+    <button class="font-reset" title="重置字体">A</button>
+    <button class="font-decrease" title="缩小字体">A-</button>
+  `
+
+  document.body.appendChild(container)
+
+  let currentScale = parseFloat(localStorage.getItem('fontScale') || '1')
+  const applyScale = () => {
+    document.documentElement.style.fontSize = (currentScale * 16) + 'px'
+    localStorage.setItem('fontScale', String(currentScale))
+  }
+
+  applyScale()
+
+  container.querySelector('.font-increase')?.addEventListener('click', () => {
+    if (currentScale < 1.5) {
+      currentScale += 0.1
+      applyScale()
+    }
+  })
+
+  container.querySelector('.font-decrease')?.addEventListener('click', () => {
+    if (currentScale > 0.7) {
+      currentScale -= 0.1
+      applyScale()
+    }
+  })
+
+  container.querySelector('.font-reset')?.addEventListener('click', () => {
+    currentScale = 1
+    applyScale()
   })
 }
