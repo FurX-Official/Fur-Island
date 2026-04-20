@@ -122,90 +122,49 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
 
 .calc-tabs {
   display: flex;
-  gap: 0;
-  margin-bottom: 0;
-  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.1));
-  padding: 8px;
+  gap: 8px;
+  margin-bottom: -1px;
+  background: var(--fur-bg-muted);
+  padding: 12px;
   border-radius: 20px 20px 0 0;
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  border: 2px solid var(--fur-border);
   border-bottom: none;
 }
 
 .calc-tab {
   flex: 1;
-  padding: 16px 20px;
-  border: none;
-  border-radius: 14px;
-  background: transparent;
+  padding: 14px 16px;
+  border: 2px solid transparent;
+  border-radius: 12px;
+  background: var(--fur-bg-card);
   color: var(--fur-text-secondary);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: all 0.3s ease;
   position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: var(--fur-gradient-primary);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
 
   &.active {
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
     color: white;
+    border-color: transparent;
     transform: translateY(-2px);
-    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
-
-    &::before {
-      opacity: 1;
-    }
-
-    span {
-      position: relative;
-      z-index: 1;
-    }
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.35);
   }
 
   &:hover:not(.active) {
-    background: rgba(139, 92, 246, 0.1);
+    border-color: var(--fur-primary);
     color: var(--fur-primary);
   }
 }
 
 .coord-card {
-  background: linear-gradient(135deg, 
-    rgba(255, 255, 255, 0.9), 
-    rgba(139, 92, 246, 0.05)
-  );
-  backdrop-filter: blur(20px);
-  border: 1px solid rgba(139, 92, 246, 0.2);
+  background: var(--fur-bg-card);
+  border: 2px solid var(--fur-border);
   border-radius: 0 0 20px 20px;
   padding: 32px;
   margin-bottom: 20px;
-  box-shadow: 0 20px 60px rgba(139, 92, 246, 0.15);
-  position: relative;
-  overflow: hidden;
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 4px;
-    background: var(--fur-gradient-primary);
-  }
-
-  .dark & {
-    background: linear-gradient(135deg, 
-      rgba(30, 30, 40, 0.95), 
-      rgba(139, 92, 246, 0.08)
-    );
-  }
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
 }
 
 .section-title {
@@ -213,7 +172,7 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
   font-weight: 800;
   margin-bottom: 24px;
   text-align: center;
-  background: var(--fur-gradient-primary);
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -277,67 +236,39 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
   }
 
   input {
-    padding: 18px 16px;
-    border: 2px solid transparent;
-    border-radius: 16px;
-    background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(59, 130, 246, 0.08));
+    padding: 16px;
+    border: 2px solid var(--fur-border);
+    border-radius: 12px;
+    background: var(--fur-bg-muted);
     color: var(--fur-text);
     font-size: 20px;
     font-weight: 800;
     text-align: center;
-    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transition: all 0.3s ease;
 
     &:focus {
       outline: none;
       border-color: var(--fur-primary);
-      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.2), 0 8px 24px rgba(139, 92, 246, 0.25);
-      transform: translateY(-2px);
-    }
-
-    &:hover:not(:focus) {
-      background: linear-gradient(135deg, rgba(139, 92, 246, 0.12), rgba(59, 130, 246, 0.12));
+      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+      transform: translateY(-1px);
     }
   }
 }
 
 .coord-result {
-  background: var(--fur-gradient-primary);
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
   border-radius: 16px;
   padding: 24px;
-  position: relative;
-  overflow: hidden;
   box-shadow: 0 12px 40px rgba(139, 92, 246, 0.35);
-
-  &::before {
-    content: '';
-    position: absolute;
-    top: -50%;
-    left: -50%;
-    width: 200%;
-    height: 200%;
-    background: linear-gradient(45deg, 
-      transparent 40%, 
-      rgba(255, 255, 255, 0.1) 50%, 
-      transparent 60%
-    );
-    animation: shine 3s infinite;
-  }
-}
-
-@keyframes shine {
-  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
-  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
 .result-label {
   font-size: 12px;
   font-weight: 700;
-  color: rgba(255, 255, 255, 0.8);
+  color: rgba(255, 255, 255, 0.85);
   margin-bottom: 16px;
   text-transform: uppercase;
   letter-spacing: 2px;
-  position: relative;
-  z-index: 1;
 }
 
 .result-coords {
@@ -345,8 +276,6 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
   gap: 32px;
   margin-bottom: 12px;
   justify-content: center;
-  position: relative;
-  z-index: 1;
   flex-wrap: wrap;
 }
 
@@ -354,12 +283,12 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
   font-size: 32px;
   font-weight: 900;
   color: white;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
 
   span {
     font-size: 14px;
     font-weight: 700;
-    color: rgba(255, 255, 255, 0.7);
+    color: rgba(255, 255, 255, 0.75);
     margin-right: 6px;
     text-transform: uppercase;
     letter-spacing: 1px;
@@ -369,21 +298,18 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
 .result-hint {
   margin: 0;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.85);
+  color: rgba(255, 255, 255, 0.9);
   text-align: center;
   font-weight: 600;
-  position: relative;
-  z-index: 1;
 }
 
 .info-card {
   display: flex;
   gap: 16px;
   padding: 20px 24px;
-  background: linear-gradient(135deg, rgba(59, 130, 246, 0.1), rgba(236, 72, 153, 0.1));
+  background: var(--fur-bg-muted);
   border-radius: 16px;
-  border-left: 4px solid;
-  border-image: var(--fur-gradient-primary) 1;
+  border-left: 4px solid var(--fur-primary);
   align-items: center;
 }
 
@@ -410,13 +336,18 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
 }
 
 @media (max-width: 520px) {
+  .calc-tabs {
+    padding: 8px;
+    gap: 6px;
+  }
+
   .calc-tab {
-    padding: 14px 12px;
-    font-size: 13px;
+    padding: 12px;
+    font-size: 12px;
   }
 
   .coord-card {
-    padding: 24px 20px;
+    padding: 24px 16px;
   }
 
   .result-coords {
@@ -425,6 +356,12 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
 
   .coord-item {
     font-size: 24px;
+  }
+
+  .info-card {
+    padding: 16px;
+    flex-direction: column;
+    text-align: center;
   }
 }
 </style>
