@@ -17,6 +17,14 @@ export default defineConfig({
           { text: '领地教程', link: '/guides/residence/' }
         ]
       },
+      {
+        text: '实用工具',
+        items: [
+          { text: 'UUID 转换器', link: '/tools/uuid' },
+          { text: '游戏时间', link: '/tools/time' },
+          { text: '端口检测', link: '/tools/port' }
+        ]
+      },
       { text: '更新日志', link: '/changelog' },
       { text: '常见问题', link: '/faq' },
       { text: '服务器规则', link: '/rules' },

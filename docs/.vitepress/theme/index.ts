@@ -14,6 +14,11 @@ import FAQSection from './components/FAQSection.vue'
 import SupportUs from './components/SupportUs.vue'
 import TeamSection from './components/TeamSection.vue'
 import ServerMap from './components/ServerMap.vue'
+import StarBackground from './components/StarBackground.vue'
+import TypewriterText from './components/TypewriterText.vue'
+import UuidConverter from './components/UuidConverter.vue'
+import GameTimeCalc from './components/GameTimeCalc.vue'
+import PortChecker from './components/PortChecker.vue'
 import './styles/index.scss'
 
 export default {
@@ -32,6 +37,11 @@ export default {
     app.component('SupportUs', SupportUs)
     app.component('TeamSection', TeamSection)
     app.component('ServerMap', ServerMap)
+    app.component('StarBackground', StarBackground)
+    app.component('TypewriterText', TypewriterText)
+    app.component('UuidConverter', UuidConverter)
+    app.component('GameTimeCalc', GameTimeCalc)
+    app.component('PortChecker', PortChecker)
 
     if (typeof window !== 'undefined') {
       onMounted(() => {
@@ -42,6 +52,9 @@ export default {
         enableNavbarGlass()
         enableProgressBar(router)
         enableWelcomePopup()
+        enableClickFireworks()
+        enableAutoDarkMode()
+        enablePWAInstallPrompt()
       })
 
       watch(
@@ -387,4 +400,347 @@ function enableWelcomePopup() {
       }
     }, 8000)
   }
+}
+
+function enableClickFireworks() {
+  if (typeof window === 'undefined') return
+
+  const colors = ['#8b5cf6', '#3b82f6', '#ec4899', '#10b981', '#f59e0b', '#06b6d4']
+
+  document.addEventListener('click', (e) => {
+    const particles = 15
+    const x = e.clientX
+    const y = e.clientY
+
+    for (let i = 0; i < particles; i++) {
+      const particle = document.createElement('div')
+      const angle = (Math.PI * 2 * i) / particles
+      const velocity = 50 + Math.random() * 50
+      const size = 4 + Math.random() * 4
+      const color = colors[Math.floor(Math.random() * colors.length)]
+
+      particle.style.cssText = `
+        position: fixed;
+        left: ${x}px;
+        top: ${y}px;
+        width: ${size}px;
+        height: ${size}px;
+        background: ${color};
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 99999;
+        box-shadow: 0 0 6px ${color};
+      `
+
+      document.body.appendChild(particle)
+
+      const dx = Math.cos(angle) * velocity
+      const dy = Math.sin(angle) * velocity
+      let opacity = 1
+      let posX = 0
+      let posY = 0
+
+      const animate = () => {
+        posX += dx * 0.08
+        posY += dy * 0.08 + 2
+        opacity -= 0.04
+
+        particle.style.transform = `translate(${posX}px, ${posY}px)`
+        particle.style.opacity = String(opacity)
+
+        if (opacity > 0) {
+          requestAnimationFrame(animate)
+        } else {
+          particle.remove()
+        }
+      }
+
+      requestAnimationFrame(animate)
+    }
+  })
+}
+
+function enableAutoDarkMode() {
+  if (typeof window === 'undefined') return
+
+  const darkModeMediaQuery = window.matchMedia('(prefers-color-scheme: dark)')
+  
+  const updateTheme = (isDark: boolean) => {
+    const html = document.documentElement
+    if (isDark) {
+      html.classList.add('dark')
+    } else {
+      html.classList.remove('dark')
+    }
+  }
+
+  if (!localStorage.getItem('vitepress-theme-appearance')) {
+    updateTheme(darkModeMediaQuery.matches)
+  }
+
+  darkModeMediaQuery.addEventListener('change', (e) => {
+    if (!localStorage.getItem('vitepress-theme-appearance')) {
+      updateTheme(e.matches)
+    }
+  })
+}
+
+function uuidToOffline(uuid: string): string {
+  const hex = uuid.replace(/-/g, '')
+  const bytes = new Uint8Array(16)
+  for (let i = 0; i < 16; i++) {
+    bytes[i] = parseInt(hex.substr(i * 2, 2), 16)
+  }
+  bytes[8] = bytes[8] & 0x7f
+  let result = ''
+  for (let i = 0; i < 16; i++) {
+    result += bytes[i].toString(16).padStart(2, '0')
+  }
+  return result.substr(0, 8) + '-' + result.substr(8, 4) + '-' + result.substr(12, 4) + '-' + result.substr(16, 4) + '-' + result.substr(20)
+}
+
+function nameToOfflineUuid(name: string): string {
+  function md5(str: string): string {
+    function rotateLeft(n: number, s: number): number {
+      return (n << s) | (n >>> (32 - s))
+    }
+    function cmn(q: number, a: number, b: number, x: number, s: number, t: number): number {
+      return rotateLeft(a + q + x + t, s) + b
+    }
+    function ff(a: number, b: number, c: number, d: number, x: number, s: number, t: number): number {
+      return cmn((b & c) | ((~b) & d), a, b, x, s, t)
+    }
+    function gg(a: number, b: number, c: number, d: number, x: number, s: number, t: number): number {
+      return cmn((b & d) | (c & (~d)), a, b, x, s, t)
+    }
+    function hh(a: number, b: number, c: number, d: number, x: number, s: number, t: number): number {
+      return cmn(b ^ c ^ d, a, b, x, s, t)
+    }
+    function ii(a: number, b: number, c: number, d: number, x: number, s: number, t: number): number {
+      return cmn(c ^ (b | (~d)), a, b, x, s, t)
+    }
+
+    const utf8 = unescape(encodeURIComponent(str))
+    const words: number[] = []
+    for (let i = 0; i < utf8.length; i++) {
+      words[i >>> 2] |= utf8.charCodeAt(i) << ((i % 4) * 8)
+    }
+    const oldLen = utf8.length * 8
+    words[oldLen >>> 5] |= 0x80 << ((oldLen) % 32)
+    words[(((oldLen + 64) >>> 9) << 4) + 14] = oldLen
+
+    let a = 1732584193
+    let b = -271733879
+    let c = -1732584194
+    let d = 271733878
+
+    for (let i = 0; i < words.length; i += 16) {
+      const olda = a
+      const oldb = b
+      const oldc = c
+      const oldd = d
+
+      a = ff(a, b, c, d, words[i + 0], 7, -680876936)
+      d = ff(d, a, b, c, words[i + 1], 12, -389564586)
+      c = ff(c, d, a, b, words[i + 2], 17, 606105819)
+      b = ff(b, c, d, a, words[i + 3], 22, -1044525330)
+      a = ff(a, b, c, d, words[i + 4], 7, -176418897)
+      d = ff(d, a, b, c, words[i + 5], 12, 1200080426)
+      c = ff(c, d, a, b, words[i + 6], 17, -1473231341)
+      b = ff(b, c, d, a, words[i + 7], 22, -45705983)
+      a = ff(a, b, c, d, words[i + 8], 7, 1770035416)
+      d = ff(d, a, b, c, words[i + 9], 12, -1958414417)
+      c = ff(c, d, a, b, words[i + 10], 17, -42063)
+      b = ff(b, c, d, a, words[i + 11], 22, -1990404162)
+      a = ff(a, b, c, d, words[i + 12], 7, 1804603682)
+      d = ff(d, a, b, c, words[i + 13], 12, -40341101)
+      c = ff(c, d, a, b, words[i + 14], 17, -1502002290)
+      b = ff(b, c, d, a, words[i + 15], 22, 1236535329)
+
+      a = gg(a, b, c, d, words[i + 1], 5, -165796510)
+      d = gg(d, a, b, c, words[i + 6], 9, -1069501632)
+      c = gg(c, d, a, b, words[i + 11], 14, 643717713)
+      b = gg(b, c, d, a, words[i + 0], 20, -373897302)
+      a = gg(a, b, c, d, words[i + 5], 5, -701558691)
+      d = gg(d, a, b, c, words[i + 10], 9, 38016083)
+      c = gg(c, d, a, b, words[i + 15], 14, -660478335)
+      b = gg(b, c, d, a, words[i + 4], 20, -405537848)
+      a = gg(a, b, c, d, words[i + 9], 5, 568446438)
+      d = gg(d, a, b, c, words[i + 14], 9, -1019803690)
+      c = gg(c, d, a, b, words[i + 3], 14, -187363961)
+      b = gg(b, c, d, a, words[i + 8], 20, 1163531501)
+      a = gg(a, b, c, d, words[i + 13], 5, -1444681467)
+      d = gg(d, a, b, c, words[i + 2], 9, -51403784)
+      c = gg(c, d, a, b, words[i + 7], 14, 1735328473)
+      b = gg(b, c, d, a, words[i + 12], 20, -1926607734)
+
+      a = hh(a, b, c, d, words[i + 5], 4, -378558)
+      d = hh(d, a, b, c, words[i + 8], 11, -2022574463)
+      c = hh(c, d, a, b, words[i + 11], 16, 1839030562)
+      b = hh(b, c, d, a, words[i + 14], 23, -35309556)
+      a = hh(a, b, c, d, words[i + 1], 4, -1530992060)
+      d = hh(d, a, b, c, words[i + 4], 11, 1272893353)
+      c = hh(c, d, a, b, words[i + 7], 16, -155497632)
+      b = hh(b, c, d, a, words[i + 10], 23, -1094730640)
+      a = hh(a, b, c, d, words[i + 13], 4, 681279174)
+      d = hh(d, a, b, c, words[i + 0], 11, -358537222)
+      c = hh(c, d, a, b, words[i + 3], 16, -722521979)
+      b = hh(b, c, d, a, words[i + 6], 23, 76029189)
+      a = hh(a, b, c, d, words[i + 9], 4, -640364487)
+      d = hh(d, a, b, c, words[i + 12], 11, -421815835)
+      c = hh(c, d, a, b, words[i + 15], 16, 530742520)
+      b = hh(b, c, d, a, words[i + 2], 23, -995338651)
+
+      a = ii(a, b, c, d, words[i + 0], 6, -198630844)
+      d = ii(d, a, b, c, words[i + 7], 10, 1126891415)
+      c = ii(c, d, a, b, words[i + 14], 15, -1416354905)
+      b = ii(b, c, d, a, words[i + 5], 21, -57434055)
+      a = ii(a, b, c, d, words[i + 12], 6, 1700485571)
+      d = ii(d, a, b, c, words[i + 3], 10, -1894986606)
+      c = ii(c, d, a, b, words[i + 10], 15, -1051523)
+      b = ii(b, c, d, a, words[i + 1], 21, -2054922799)
+      a = ii(a, b, c, d, words[i + 8], 6, 1873313359)
+      d = ii(d, a, b, c, words[i + 15], 10, -30611744)
+      c = ii(c, d, a, b, words[i + 6], 15, -1560198380)
+      b = ii(b, c, d, a, words[i + 13], 21, 1309151649)
+      a = ii(a, b, c, d, words[i + 4], 6, -145523070)
+      d = ii(d, a, b, c, words[i + 11], 10, -1120210379)
+      c = ii(c, d, a, b, words[i + 2], 15, 718787259)
+      b = ii(b, c, d, a, words[i + 9], 21, -343485551)
+
+      a = a + olda | 0
+      b = b + oldb | 0
+      c = c + oldc | 0
+      d = d + oldd | 0
+    }
+
+    const hex = (n: number) => {
+      let result = ''
+      for (let i = 0; i < 4; i++) {
+        result += ((n >> (i * 8 + 4)) & 15).toString(16) + ((n >> (i * 8)) & 15).toString(16)
+      }
+      return result
+    }
+
+    return hex(a) + hex(b) + hex(c) + hex(d)
+  }
+
+  const hash = md5('OfflinePlayer:' + name)
+  const bytes = new Uint8Array(16)
+  for (let i = 0; i < 16; i++) {
+    bytes[i] = parseInt(hash.substr(i * 2, 2), 16)
+  }
+  bytes[8] = bytes[8] & 0x7f
+  let result = ''
+  for (let i = 0; i < 16; i++) {
+    result += bytes[i].toString(16).padStart(2, '0')
+  }
+  return result.substr(0, 8) + '-' + result.substr(8, 4) + '-' + result.substr(12, 4) + '-' + result.substr(16, 4) + '-' + result.substr(20)
+}
+
+declare global {
+  interface Window {
+    deferredPrompt: any
+  }
+}
+
+function enablePWAInstallPrompt() {
+  if (typeof window === 'undefined') return
+
+  let deferredPrompt: any
+
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault()
+    deferredPrompt = e
+
+    setTimeout(() => {
+      const popup = document.createElement('div')
+      popup.className = 'pwa-install-popup'
+      popup.innerHTML = `
+        <div class="pwa-install-content">
+          <div class="pwa-icon">📱</div>
+          <div class="pwa-text">
+            <div class="pwa-title">安装到桌面</div>
+            <div class="pwa-desc">将网站安装为 App，离线也能访问！</div>
+          </div>
+          <button class="pwa-install-btn">安装</button>
+          <button class="pwa-close-btn">✕</button>
+        </div>
+      `
+
+      popup.style.cssText = `
+        position: fixed;
+        bottom: 24px;
+        left: 50%;
+        transform: translateX(-50%) translateY(100px);
+        z-index: 9999;
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+      `
+
+      const style = document.createElement('style')
+      style.textContent = `
+        .pwa-install-content {
+          display: flex;
+          align-items: center;
+          gap: 16px;
+          padding: 16px 24px;
+          background: var(--fur-bg-elevated);
+          border-radius: 16px;
+          border: 1px solid var(--fur-border-light);
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+          position: relative;
+        }
+        .pwa-icon { font-size: 32px; }
+        .pwa-title { font-weight: 700; margin-bottom: 2px; }
+        .pwa-desc { font-size: 13px; color: var(--fur-text-secondary); }
+        .pwa-install-btn {
+          padding: 8px 16px;
+          background: var(--fur-gradient-primary);
+          color: white;
+          border: none;
+          border-radius: 8px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: transform 0.2s;
+        }
+        .pwa-install-btn:hover { transform: scale(1.05); }
+        .pwa-close-btn {
+          position: absolute;
+          top: 8px;
+          right: 8px;
+          border: none;
+          background: none;
+          cursor: pointer;
+          opacity: 0.5;
+          font-size: 14px;
+        }
+      `
+      document.head.appendChild(style)
+      document.body.appendChild(popup)
+
+      setTimeout(() => {
+        popup.style.transform = 'translateX(-50%) translateY(0)'
+        popup.style.opacity = '1'
+      }, 100)
+
+      popup.querySelector('.pwa-install-btn')?.addEventListener('click', async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt()
+          const { outcome } = await deferredPrompt.userChoice
+          console.log('PWA install', outcome)
+          deferredPrompt = null
+        }
+        popup.style.transform = 'translateX(-50%) translateY(100px)'
+        popup.style.opacity = '0'
+        setTimeout(() => popup.remove(), 300)
+      })
+
+      popup.querySelector('.pwa-close-btn')?.addEventListener('click', () => {
+        popup.style.transform = 'translateX(-50%) translateY(100px)'
+        popup.style.opacity = '0'
+        setTimeout(() => popup.remove(), 300)
+      })
+    }, 5000)
+  })
 }

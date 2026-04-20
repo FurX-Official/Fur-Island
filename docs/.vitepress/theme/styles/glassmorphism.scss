@@ -1,0 +1,35 @@
+.VPLinkCard,
+.VPFeature,
+.team-card,
+.friend-card,
+.changelog-item,
+.faq-item,
+.support-tier {
+  background: rgba(var(--fur-bg-rgb), 0.6) !important;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--fur-border-light) !important;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background: rgba(var(--fur-bg-rgb), 0.8) !important;
+    border-color: var(--fur-primary) !important;
+    box-shadow: 0 8px 32px rgba(139, 92, 246, 0.15);
+  }
+}
+
+.dark {
+  .VPLinkCard,
+  .VPFeature,
+  .team-card,
+  .friend-card,
+  .changelog-item,
+  .faq-item,
+  .support-tier {
+    background: rgba(30, 30, 32, 0.6) !important;
+
+    &:hover {
+      background: rgba(30, 30, 32, 0.8) !important;
+    }
+  }
+}

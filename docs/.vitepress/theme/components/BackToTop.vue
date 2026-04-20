@@ -8,10 +8,37 @@ const handleScroll = () => {
 }
 
 const scrollToTop = () => {
-  window.scrollTo({
-    top: 0,
-    behavior: 'smooth'
-  })
+  const start = window.scrollY
+  const duration = 800
+  const startTime = performance.now()
+
+  const easeOutBounce = (t: number) => {
+    const n1 = 7.5625
+    const d1 = 2.75
+
+    if (t < 1 / d1) {
+      return n1 * t * t
+    } else if (t < 2 / d1) {
+      return n1 * (t -= 1.5 / d1) * t + 0.75
+    } else if (t < 2.5 / d1) {
+      return n1 * (t -= 2.25 / d1) * t + 0.9375
+    } else {
+      return n1 * (t -= 2.625 / d1) * t + 0.984375
+    }
+  }
+
+  const animate = (currentTime: number) => {
+    const elapsed = currentTime - startTime
+    const progress = Math.min(elapsed / duration, 1)
+    const eased = easeOutBounce(progress)
+    window.scrollTo(0, start * (1 - eased))
+
+    if (progress < 1) {
+      requestAnimationFrame(animate)
+    }
+  }
+
+  requestAnimationFrame(animate)
 }
 
 onMounted(() => {

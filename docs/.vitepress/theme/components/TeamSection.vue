@@ -146,12 +146,39 @@ const isImageUrl = (str: string) => {
     justify-content: center;
     font-size: 40px;
     overflow: hidden;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    position: relative;
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -3px;
+      border-radius: 50%;
+      background: var(--member-color);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      filter: blur(8px);
+      z-index: -1;
+    }
 
     img {
       width: 100%;
       height: 100%;
       object-fit: cover;
       border-radius: 50%;
+      transition: transform 0.4s ease;
+    }
+  }
+
+  .team-card:hover .member-avatar {
+    transform: scale(1.15) rotate(5deg);
+
+    &::before {
+      opacity: 0.6;
+    }
+
+    img {
+      transform: scale(1.1);
     }
   }
 
