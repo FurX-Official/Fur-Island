@@ -22,6 +22,8 @@ features:
     details: Java版与基岩版互通，随时随地都能加入游戏
 ---
 
+<ParticlesBackground />
+
 <ServerStatus />
 
 <ConnectGuide />

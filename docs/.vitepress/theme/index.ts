@@ -8,6 +8,10 @@ import FriendLinks from './components/FriendLinks.vue'
 import ServerRules from './components/ServerRules.vue'
 import LoginGuide from './components/LoginGuide.vue'
 import ResidenceGuide from './components/ResidenceGuide.vue'
+import ParticlesBackground from './components/ParticlesBackground.vue'
+import Changelog from './components/Changelog.vue'
+import FAQSection from './components/FAQSection.vue'
+import SupportUs from './components/SupportUs.vue'
 import './styles/index.scss'
 
 export default {
@@ -20,12 +24,16 @@ export default {
     app.component('ServerRules', ServerRules)
     app.component('LoginGuide', LoginGuide)
     app.component('ResidenceGuide', ResidenceGuide)
+    app.component('ParticlesBackground', ParticlesBackground)
+    app.component('Changelog', Changelog)
+    app.component('FAQSection', FAQSection)
+    app.component('SupportUs', SupportUs)
 
     if (typeof window !== 'undefined') {
       onMounted(() => {
         playClickSound()
         enableDarkModeTransition()
-        enableImageLightbox()
+        enableImageLightbox(router)
         enablePageLoading()
       })
 
@@ -87,7 +95,7 @@ function enableDarkModeTransition() {
   }, 1000)
 }
 
-function enableImageLightbox() {
+function enableImageLightbox(router: any) {
   if (typeof window === 'undefined') return
 
   let overlay: HTMLDivElement | null = null
@@ -126,13 +134,15 @@ function enableImageLightbox() {
 
   const bindImages = () => {
     setTimeout(() => {
-      const images = document.querySelectorAll('.VPDoc .content img, .step-image img, .lobby-image img')
+      const images = document.querySelectorAll('.step-image img, .lobby-image img, img')
       images.forEach((img) => {
         const imgEl = img as HTMLImageElement
-        imgEl.style.cursor = 'zoom-in'
-        imgEl.onclick = () => openLightbox(imgEl.src)
+        if (!imgEl.style.cursor || imgEl.style.cursor !== 'zoom-in') {
+          imgEl.style.cursor = 'zoom-in'
+          imgEl.onclick = () => openLightbox(imgEl.src)
+        }
       })
-    }, 300)
+    }, 500)
   }
 
   document.addEventListener('keydown', (e) => {
@@ -142,13 +152,15 @@ function enableImageLightbox() {
   bindImages()
 
   const originalPush = router.push
-  router.push = async (...args) => {
+  router.push = async (...args: any[]) => {
     const loadingBar = document.createElement('div')
     loadingBar.className = 'page-loading'
     document.body.appendChild(loadingBar)
-    await originalPush(...args)
-    setTimeout(() => loadingBar.remove(), 600)
-    bindImages()
+    await originalPush.apply(router, args)
+    setTimeout(() => {
+      loadingBar.remove()
+      bindImages()
+    }, 600)
   }
 }
 

@@ -16,9 +16,16 @@ export default defineConfig({
           { text: '领地教程', link: '/guides/residence/' }
         ]
       },
+      { text: '更新日志', link: '/changelog' },
+      { text: '常见问题', link: '/faq' },
       { text: '服务器规则', link: '/rules' },
+      { text: '支持我们', link: '/support' },
       { text: '友情链接', link: '/friends' }
     ],
+
+    search: {
+      provider: 'local'
+    },
 
     sidebar: false,
 
