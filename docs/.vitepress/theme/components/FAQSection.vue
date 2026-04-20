@@ -1,40 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
+import { siteContent } from '../config/content'
 
-const faqs = ref([
-  {
-    question: '服务器支持哪些版本？',
-    answer: '服务器支持 Java 版 1.7.x - 1.21.x 和基岩版。Java 版端口默认，基岩版端口 51650。'
-  },
-  {
-    question: '需要正版才能玩吗？',
-    answer: '不需要！服务器支持正版、皮肤站、离线玩家三种登录方式。正版和皮肤站用户无需注册即可直接进入，离线玩家需要在 Limbo 界面完成简单注册。'
-  },
-  {
-    question: '可以使用生电机器吗？',
-    answer: '可以！服务器完全支持生电、红石机械相关建造。刷怪塔、物品分类器等均可正常使用，只要不建造过度卡顿的高频红石装置即可。'
-  },
-  {
-    question: 'PVP 是开启的吗？',
-    answer: '是的，服务器默认开启自由 PVP，请自行承担风险。但禁止恶意围堵、用陷阱坑杀萌新玩家。'
-  },
-  {
-    question: '可以使用什么模组/客户端？',
-    answer: '允许使用不影响平衡的辅助模组，如小地图、光影、优化模组等。禁止飞行、穿墙、杀戮光环、自动攻击等破坏平衡的作弊功能。'
-  },
-  {
-    question: '如何保护我的建筑？',
-    answer: '使用 Residence 领地插件！输入 /res select 20 选择范围，然后 /res create 领地名 创建即可。详细教程请查看「游戏指南→领地教程」。'
-  },
-  {
-    question: '领地可以给好友权限吗？',
-    answer: '可以！站在领地内输入 /res pset 玩家ID trusted true 即可给该玩家全部权限。也可以单独设置某个权限。'
-  },
-  {
-    question: '忘记密码怎么办？',
-    answer: '请加入我们的 QQ 群，联系管理员说明情况并提供相关验证信息后即可重置密码。'
-  }
-])
+const faqs = siteContent.faq
 
 const expandedIndex = ref<number | null>(null)
 
@@ -50,10 +18,10 @@ const toggleFAQ = (index: number) => {
         <span class="title-icon">❓</span>
         常见问题
       </h2>
-      <p class="guide-subtitle">这里有你可能想知道的一切答案</p>
+      <p class="guide-subtitle">在这里找到你想要的答案</p>
     </div>
 
-    <div class="faq-list">
+    <div class="faq-container">
       <div
         v-for="(faq, index) in faqs"
         :key="index"
@@ -62,17 +30,13 @@ const toggleFAQ = (index: number) => {
         @click="toggleFAQ(index)"
       >
         <div class="faq-question">
-          <span class="faq-q-label">Q</span>
-          <span class="faq-text">{{ faq.question }}</span>
-          <span class="faq-icon">
-            {{ expandedIndex === index ? '−' : '+' }}
-          </span>
+          <span class="question-text">{{ faq.question }}</span>
+          <span class="faq-icon">{{ expandedIndex === index ? '−' : '+' }}</span>
         </div>
 
         <Transition name="faq">
           <div v-if="expandedIndex === index" class="faq-answer">
-            <span class="faq-a-label">A</span>
-            <span class="faq-text">{{ faq.answer }}</span>
+            {{ faq.answer }}
           </div>
         </Transition>
       </div>
@@ -89,7 +53,7 @@ const toggleFAQ = (index: number) => {
 
 .guide-header {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
 
   .guide-title {
     display: inline-flex;
@@ -115,7 +79,7 @@ const toggleFAQ = (index: number) => {
   }
 }
 
-.faq-list {
+.faq-container {
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -124,87 +88,53 @@ const toggleFAQ = (index: number) => {
 .faq-item {
   background: var(--fur-bg-card);
   border: 1px solid var(--fur-border);
-  border-radius: 12px;
+  border-radius: 14px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.2s;
 
   &:hover {
-    border-color: rgba(var(--fur-primary-rgb), 0.3);
+    border-color: var(--fur-primary);
   }
 
   &.expanded {
-    border-color: rgba(var(--fur-primary-rgb), 0.5);
-    box-shadow: 0 4px 20px rgba(var(--fur-primary-rgb), 0.1);
+    border-color: var(--fur-primary);
+    box-shadow: var(--fur-shadow-card);
   }
 }
 
 .faq-question {
   display: flex;
   align-items: center;
-  gap: 14px;
-  padding: 18px 22px;
+  justify-content: space-between;
+  padding: 20px 24px;
+  font-weight: 600;
+  gap: 16px;
 
-  .faq-q-label {
-    width: 28px;
-    height: 28px;
-    background: var(--fur-gradient-primary);
-    color: white;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 14px;
-    flex-shrink: 0;
-  }
-
-  .faq-text {
+  .question-text {
     flex: 1;
-    font-weight: 600;
-    font-size: 15px;
   }
 
   .faq-icon {
     width: 28px;
     height: 28px;
-    background: var(--fur-bg-soft);
-    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: var(--fur-bg-soft);
+    border-radius: 50%;
+    font-size: 16px;
     font-weight: 700;
-    font-size: 18px;
     color: var(--fur-primary);
-    transition: transform 0.3s ease;
+    flex-shrink: 0;
   }
 }
 
 .faq-answer {
-  display: flex;
-  gap: 14px;
-  padding: 0 22px 20px;
-
-  .faq-a-label {
-    width: 28px;
-    height: 28px;
-    background: rgba(16, 185, 129, 0.15);
-    color: #10b981;
-    border-radius: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 14px;
-    flex-shrink: 0;
-  }
-
-  .faq-text {
-    flex: 1;
-    font-size: 14px;
-    line-height: 1.7;
-    color: var(--fur-text-secondary);
-  }
+  padding: 0 24px 20px;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--fur-text-secondary);
 }
 
 .faq-enter-active,

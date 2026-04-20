@@ -1,45 +1,7 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { siteContent } from '../config/content'
 
-const changelogs = ref([
-  {
-    date: '2026-04-18',
-    version: 'v1.2.0',
-    type: 'feature',
-    title: '领地保护系统上线',
-    items: [
-      '✅ 新增 Residence 领地保护插件',
-      '✅ 支持玩家自主创建和管理领地',
-      '✅ 细粒度权限控制系统',
-      '✅ 详细的使用教程文档'
-    ]
-  },
-  {
-    date: '2026-04-15',
-    version: 'v1.1.0',
-    type: 'update',
-    title: '双验证系统优化',
-    items: [
-      '🔄 正版验证 + 皮肤站双验证系统',
-      '✅ 皮肤站用户无需注册直接进入',
-      '✅ Limbo 等候大厅优化',
-      '🔧 修复部分玩家登录异常问题'
-    ]
-  },
-  {
-    date: '2026-04-10',
-    version: 'v1.0.0',
-    type: 'release',
-    title: '服务器正式开服！',
-    items: [
-      '🎉 服务器正式对外开放！',
-      '✅ Java 版与基岩版互通',
-      '✅ 生电友好，允许红石机械',
-      '✅ 自由 PVP 玩法',
-      '✅ 平衡的作弊检测机制'
-    ]
-  }
-])
+const changelogs = siteContent.changelog
 
 const typeColors: Record<string, string> = {
   feature: '#8b5cf6',
@@ -63,7 +25,7 @@ const typeLabels: Record<string, string> = {
         <span class="title-icon">📜</span>
         更新日志
       </h2>
-      <p class="guide-subtitle">记录服务器的每一步成长</p>
+      <p class="guide-subtitle">记录服务器的每一次成长</p>
     </div>
 
     <div class="timeline">
@@ -72,11 +34,12 @@ const typeLabels: Record<string, string> = {
         :key="index"
         class="timeline-item"
       >
-        <div class="timeline-dot" :style="{ backgroundColor: typeColors[log.type] }"></div>
+        <div class="timeline-marker" :style="{ background: typeColors[log.type] }">
+        </div>
 
         <div class="timeline-content">
-          <div class="log-header">
-            <div class="log-badge" :style="{ backgroundColor: typeColors[log.type] }">
+          <div class="timeline-header">
+            <div class="log-type-badge" :style="{ background: typeColors[log.type] }">
               {{ typeLabels[log.type] }}
             </div>
             <span class="log-version">{{ log.version }}</span>
@@ -85,11 +48,11 @@ const typeLabels: Record<string, string> = {
 
           <h3 class="log-title">{{ log.title }}</h3>
 
-          <ul class="log-items">
-            <li v-for="(item, idx) in log.items" :key="idx" class="log-item">
+          <div class="log-items">
+            <div v-for="(item, idx) in log.items" :key="idx" class="log-item">
               {{ item }}
-            </li>
-          </ul>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -133,7 +96,7 @@ const typeLabels: Record<string, string> = {
 
 .timeline {
   position: relative;
-  padding-left: 30px;
+  padding-left: 32px;
 
   &::before {
     content: '';
@@ -142,33 +105,37 @@ const typeLabels: Record<string, string> = {
     top: 0;
     bottom: 0;
     width: 2px;
-    background: var(--fur-border);
-    border-radius: 1px;
+    background: var(--fur-border-light);
   }
 }
 
 .timeline-item {
   position: relative;
-  margin-bottom: 32px;
+  padding-bottom: 40px;
+
+  &:last-child {
+    padding-bottom: 0;
+  }
 }
 
-.timeline-dot {
+.timeline-marker {
   position: absolute;
-  left: -30px;
-  top: 8px;
+  left: -32px;
+  top: 4px;
   width: 18px;
   height: 18px;
   border-radius: 50%;
-  border: 4px solid var(--fur-bg);
-  z-index: 1;
+  background: var(--fur-primary);
+  border: 3px solid var(--fur-bg-body);
+  box-shadow: 0 0 0 2px var(--fur-border-light);
 }
 
 .timeline-content {
   background: var(--fur-bg-card);
   border: 1px solid var(--fur-border);
-  border-radius: 14px;
-  padding: 24px;
-  transition: all 0.3s ease;
+  border-radius: 16px;
+  padding: 24px 28px;
+  transition: all 0.2s;
 
   &:hover {
     transform: translateX(4px);
@@ -176,53 +143,48 @@ const typeLabels: Record<string, string> = {
   }
 }
 
-.log-header {
+.timeline-header {
   display: flex;
   align-items: center;
   gap: 12px;
   margin-bottom: 12px;
   flex-wrap: wrap;
+}
 
-  .log-badge {
-    padding: 4px 12px;
-    border-radius: 20px;
-    color: white;
-    font-size: 12px;
-    font-weight: 600;
-  }
+.log-type-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  color: white;
+  font-size: 11px;
+  font-weight: 700;
+}
 
-  .log-version {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 13px;
-    font-weight: 700;
-    color: var(--fur-primary);
-  }
+.log-version {
+  font-family: monospace;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--fur-text);
+}
 
-  .log-date {
-    font-size: 13px;
-    color: var(--fur-text-secondary);
-  }
+.log-date {
+  font-size: 13px;
+  color: var(--fur-text-muted);
+  margin-left: auto;
 }
 
 .log-title {
   margin: 0 0 16px 0;
   font-size: 18px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
-.log-items {
-  margin: 0;
-  padding-left: 0;
-  list-style: none;
+.log-item {
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--fur-text-secondary);
 
-  .log-item {
-    padding: 6px 0;
-    font-size: 14px;
-    color: var(--fur-text-secondary);
-
-    &:not(:last-child) {
-      border-bottom: 1px solid var(--fur-border-light);
-    }
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--fur-border-light);
   }
 }
 </style>

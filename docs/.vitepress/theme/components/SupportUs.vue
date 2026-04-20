@@ -1,49 +1,9 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { siteContent } from '../config/content'
 
-const tiers = ref([
-  {
-    name: '奶茶赞助',
-    price: '¥15',
-    color: '#8b5cf6',
-    features: [
-      '❤️ 感谢您的心意！',
-      '专属感谢气泡',
-      '赞助者称号 7 天'
-    ]
-  },
-  {
-    name: '咖啡赞助',
-    price: '¥30',
-    color: '#3b82f6',
-    popular: true,
-    features: [
-      '❤️ 感谢您的大力支持！',
-      '专属感谢气泡',
-      '赞助者称号 30 天',
-      '领地创建数量 +1'
-    ]
-  },
-  {
-    name: '大餐赞助',
-    price: '¥68',
-    color: '#10b981',
-    features: [
-      '❤️ 非常感谢您的厚爱！',
-      '专属感谢气泡',
-      '赞助者称号 永久',
-      '领地创建数量 +3',
-      '定制专属头衔'
-    ]
-  }
-])
-
-const sponsors = ref([
-  { name: '某某玩家', amount: '¥68', avatar: '🧑‍💻' },
-  { name: '某某玩家', amount: '¥30', avatar: '🐱' },
-  { name: '某某玩家', amount: '¥30', avatar: '🐶' },
-  { name: '某某玩家', amount: '¥15', avatar: '🦊' }
-])
+const tiers = siteContent.support.tiers
+const sponsors = siteContent.support.sponsors
+const notice = siteContent.support.notice
 </script>
 
 <template>
@@ -56,6 +16,11 @@ const sponsors = ref([
       <p class="guide-subtitle">您的每一份支持，都是服务器前进的动力</p>
     </div>
 
+    <div class="eula-notice">
+      <span class="eula-icon">ℹ️</span>
+      <p class="eula-text">根据 Mojang EULA 规定，赞助属于自愿捐赠，<strong>不会获得任何游戏内物品、权限、优势</strong>作为回报。</p>
+    </div>
+
     <div class="tiers-grid">
       <div
         v-for="(tier, index) in tiers"
@@ -65,7 +30,7 @@ const sponsors = ref([
         :class="{ popular: tier.popular }"
       >
         <div v-if="tier.popular" class="popular-badge">
-          🔥 推荐
+          ❤️ 感谢
         </div>
 
         <h3 class="tier-name">{{ tier.name }}</h3>
@@ -76,10 +41,6 @@ const sponsors = ref([
             {{ feature }}
           </li>
         </ul>
-
-        <button class="tier-btn">
-          支持此档位
-        </button>
       </div>
     </div>
 
@@ -89,7 +50,7 @@ const sponsors = ref([
           📱
         </div>
         <p class="qr-desc">扫码即可赞助</p>
-        <p class="qr-note">赞助后请联系管理员发放奖励</p>
+        <p class="qr-note">赞助后请联系管理员加入鸣谢名单</p>
       </div>
     </div>
 
@@ -112,7 +73,7 @@ const sponsors = ref([
       <span class="notice-icon">💡</span>
       <div class="notice-content">
         <h4>温馨提示</h4>
-        <p>赞助完全自愿，所有赞助都将用于服务器的维护和升级。<br>赞助后请联系管理员，我们会尽快为您发放奖励！</p>
+        <p>{{ notice }}</p>
       </div>
     </div>
   </div>
@@ -127,7 +88,7 @@ const sponsors = ref([
 
 .guide-header {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 24px;
 
   .guide-title {
     display: inline-flex;
@@ -150,6 +111,38 @@ const sponsors = ref([
     font-size: 15px;
     color: var(--fur-text-secondary);
     margin: 0;
+  }
+}
+
+.eula-notice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 600px;
+  margin: 0 auto 48px;
+  padding: 16px 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(59, 130, 246, 0.1) 0%,
+    rgba(139, 92, 246, 0.05) 100%
+  );
+  border: 1px solid rgba(59, 130, 246, 0.2);
+  border-radius: 12px;
+
+  .eula-icon {
+    font-size: 24px;
+    flex-shrink: 0;
+  }
+
+  .eula-text {
+    margin: 0;
+    font-size: 13px;
+    color: var(--fur-text-secondary);
+    line-height: 1.6;
+
+    strong {
+      color: #3b82f6;
+    }
   }
 }
 
@@ -177,10 +170,6 @@ const sponsors = ref([
   &.popular {
     border-color: var(--tier-color);
     transform: scale(1.05);
-
-    .tier-btn {
-      background: linear-gradient(135deg, var(--tier-color), var(--fur-primary));
-    }
   }
 
   .popular-badge {
@@ -213,7 +202,7 @@ const sponsors = ref([
   .tier-features {
     list-style: none;
     padding: 0;
-    margin: 0 0 24px 0;
+    margin: 0;
 
     li {
       padding: 8px 0;
@@ -223,23 +212,6 @@ const sponsors = ref([
       &:not(:last-child) {
         border-bottom: 1px solid var(--fur-border-light);
       }
-    }
-  }
-
-  .tier-btn {
-    width: 100%;
-    padding: 12px;
-    border: none;
-    border-radius: 10px;
-    background: var(--fur-bg-soft);
-    color: var(--tier-color);
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.2s;
-
-    &:hover {
-      opacity: 0.9;
     }
   }
 }

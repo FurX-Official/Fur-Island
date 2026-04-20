@@ -1,124 +1,42 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { siteContent } from '../config/content'
 
-const ruleCategories = ref([
-  {
-    icon: '🏠',
-    title: '家园保护',
-    color: '#f59e0b',
-    rules: [
-      '禁止任何形式的恶意破坏、偷窃他人财物',
-      '禁止恶意利用漏洞破坏他人建筑或红石装置',
-      '保护区域外建筑请自行做好防熊措施',
-      '未经允许禁止进入他人私人领地'
-    ]
-  },
-  {
-    icon: '💬',
-    title: '聊天规范',
-    color: '#8b5cf6',
-    rules: [
-      '禁止刷屏、广告、恶意引战及人身攻击',
-      '禁止发布色情、暴力、政治敏感内容',
-      '友善交流，请勿使用不文明用语',
-      '禁止泄露他人隐私信息'
-    ]
-  },
-  {
-    icon: '⚔️',
-    title: 'PVP 与互动',
-    color: '#f59e0b',
-    rules: [
-      '服务器允许自由 PVP，请自行承担风险',
-      '禁止用陷阱、机关等方式恶意坑杀萌新',
-      '玩家间交易请自行承担风险与责任',
-      '恶意围堵、囚禁其他玩家是不被允许的'
-    ]
-  },
-  {
-    icon: '⚡',
-    title: '生电说明',
-    color: '#8b5cf6',
-    rules: [
-      '服务器允许生电、红石机械相关建造',
-      '请勿建造过度卡顿的高频红石装置',
-      '刷怪塔、物品分类等生电装置均可使用',
-      '大型生电机组建议建在远离主区域位置'
-    ]
-  },
-  {
-    icon: '⛏️',
-    title: '游戏公平',
-    color: '#10b981',
-    rules: [
-      '允许使用不影响平衡的辅助模组（如小地图）',
-      '禁止恶意利用服务器 Bug 复制物品等',
-      '禁止飞行、穿墙、杀戮光环等作弊功能',
-      '禁止高速连点器、自动攻击等破坏PVP平衡的辅助'
-    ]
-  },
-  {
-    icon: '🌐',
-    title: '公共区域',
-    color: '#3b82f6',
-    rules: [
-      '主城、出生点附近禁止建造不雅建筑',
-      '公共资源区请合理采集，请勿垄断',
-      '不要在主要交通要道旁建造遮挡建筑',
-      '请保持公共区域整洁，勿乱扔垃圾'
-    ]
-  },
-  {
-    icon: '❤️',
-    title: '社区氛围',
-    color: '#ec4899',
-    rules: [
-      '欢迎新玩家，乐于助人是美德',
-      '遇到问题请友好沟通，或联系管理员',
-      '禁止宣传其他服务器及外部广告',
-      '共同营造温馨和谐的社区环境'
-    ]
-  }
-])
+const rules = siteContent.rules
 </script>
 
 <template>
   <div class="rules-section">
-    <div class="rules-header">
-      <h2 class="rules-title">
+    <div class="guide-header">
+      <h2 class="guide-title">
         <span class="title-icon">📜</span>
         服务器规则
       </h2>
-      <p class="rules-subtitle">共建温馨和谐的游戏环境，从遵守规则开始 💛</p>
+      <p class="guide-subtitle">共同维护和谐友好的游戏环境</p>
     </div>
 
     <div class="rules-grid">
       <div
-        v-for="(category, index) in ruleCategories"
+        v-for="(category, index) in rules"
         :key="index"
         class="rule-card"
+        :style="`--rule-color: ${category.color}`"
       >
-        <div class="card-header" :style="{ '--card-color': category.color }">
-          <span class="category-icon">{{ category.icon }}</span>
-          <h3 class="category-title">{{ category.title }}</h3>
-        </div>
+        <div class="rule-icon">{{ category.icon }}</div>
+        <h3 class="rule-category">{{ category.title }}</h3>
 
         <ul class="rule-list">
-          <li v-for="(rule, idx) in category.rules" :key="idx" class="rule-item">
-            <span class="rule-bullet"></span>
-            <span class="rule-text">{{ rule }}</span>
+          <li v-for="(rule, idx) in category.rules" :key="idx">
+            <span class="rule-dot"></span>
+            {{ rule }}
           </li>
         </ul>
       </div>
     </div>
 
     <div class="rules-footer">
-      <div class="notice-card">
-        <span class="notice-icon">⚠️</span>
-        <div class="notice-content">
-          <h4>温馨提示</h4>
-          <p>违反规则将根据情节严重程度给予警告、临时封禁乃至永久封禁。<br>如果对处罚有异议，请联系管理员申诉。</p>
-        </div>
+      <div class="rule-notice">
+        <span class="notice-icon">💡</span>
+        <p>如有疑问或举报，请联系管理员处理。规则最终解释权归服务器管理团队所有。</p>
       </div>
     </div>
   </div>
@@ -127,13 +45,15 @@ const ruleCategories = ref([
 <style scoped lang="scss">
 .rules-section {
   padding: 32px 0;
+  max-width: 1100px;
+  margin: 0 auto;
 }
 
-.rules-header {
+.guide-header {
   text-align: center;
   margin-bottom: 48px;
 
-  .rules-title {
+  .guide-title {
     display: inline-flex;
     align-items: center;
     gap: 12px;
@@ -150,7 +70,7 @@ const ruleCategories = ref([
     }
   }
 
-  .rules-subtitle {
+  .guide-subtitle {
     font-size: 15px;
     color: var(--fur-text-secondary);
     margin: 0;
@@ -159,145 +79,90 @@ const ruleCategories = ref([
 
 .rules-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
-  margin-bottom: 48px;
+  margin-bottom: 40px;
 }
 
 .rule-card {
   background: var(--fur-bg-card);
   border: 1px solid var(--fur-border);
-  border-radius: 18px;
-  overflow: hidden;
-  transition: all var(--fur-transition-normal);
+  border-radius: 16px;
+  padding: 28px 24px 24px;
+  transition: all 0.2s;
 
   &:hover {
     transform: translateY(-4px);
-    box-shadow: var(--fur-shadow-large);
-  }
-}
-
-.card-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 18px 22px;
-  background: linear-gradient(
-    90deg,
-    var(--card-color) 0%,
-    var(--card-color) 4px,
-    rgba(var(--card-color), 0.1) 4px,
-    transparent 100%
-  );
-  border-bottom: 1px solid var(--fur-border);
-
-  .category-icon {
-    font-size: 26px;
-    width: 40px;
-    height: 40px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--fur-shadow-card);
+    border-color: var(--rule-color);
   }
 
-  .category-title {
-    margin: 0;
+  .rule-icon {
+    font-size: 40px;
+    margin-bottom: 12px;
+  }
+
+  .rule-category {
+    margin: 0 0 20px 0;
     font-size: 18px;
     font-weight: 700;
-    color: var(--fur-text);
+    color: var(--rule-color);
   }
 
-  :deep(.dark) & .category-icon {
-    background: rgba(0, 0, 0, 0.3);
-  }
-}
+  .rule-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
 
-.rule-list {
-  padding: 20px 22px;
-  margin: 0;
-  list-style: none;
-}
+    li {
+      display: flex;
+      gap: 10px;
+      padding: 8px 0;
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--fur-text-secondary);
 
-.rule-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 0;
+      &:not(:last-child) {
+        border-bottom: 1px solid var(--fur-border-light);
+      }
 
-  &:not(:last-child) {
-    border-bottom: 1px solid var(--fur-border-light);
-  }
-
-  .rule-bullet {
-    width: 6px;
-    height: 6px;
-    margin-top: 8px;
-    background: var(--fur-primary);
-    border-radius: 50%;
-    flex-shrink: 0;
-  }
-
-  .rule-text {
-    font-size: 14px;
-    color: var(--fur-text-secondary);
-    line-height: 1.6;
+      .rule-dot {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--rule-color);
+        margin-top: 6px;
+        flex-shrink: 0;
+      }
+    }
   }
 }
 
 .rules-footer {
-  .notice-card {
+  .rule-notice {
     display: flex;
-    align-items: flex-start;
-    gap: 16px;
-    padding: 24px 28px;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 24px;
     background: linear-gradient(
       135deg,
-      rgba(251, 191, 36, 0.1) 0%,
-      rgba(251, 146, 60, 0.05) 100%
+      rgba(59, 130, 246, 0.1) 0%,
+      rgba(139, 92, 246, 0.05) 100%
     );
-    border: 1px solid rgba(251, 191, 36, 0.2);
-    border-radius: 16px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 12px;
 
     .notice-icon {
-      font-size: 32px;
+      font-size: 24px;
       flex-shrink: 0;
     }
 
-    .notice-content {
-      h4 {
-        margin: 0 0 8px 0;
-        font-size: 16px;
-        font-weight: 700;
-        color: #f59e0b;
-      }
-
-      p {
-        margin: 0;
-        font-size: 14px;
-        color: var(--fur-text-secondary);
-        line-height: 1.7;
-      }
+    p {
+      margin: 0;
+      font-size: 14px;
+      color: var(--fur-text-secondary);
+      line-height: 1.6;
     }
-  }
-}
-
-@media (max-width: 640px) {
-  .rules-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .rules-header {
-    .rules-title {
-      font-size: 26px;
-    }
-  }
-
-  .notice-card {
-    flex-direction: column;
-    text-align: center;
   }
 }
 </style>
