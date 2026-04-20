@@ -7,6 +7,7 @@ import ConnectGuide from './components/ConnectGuide.vue'
 import FriendLinks from './components/FriendLinks.vue'
 import ServerRules from './components/ServerRules.vue'
 import LoginGuide from './components/LoginGuide.vue'
+import ResidenceGuide from './components/ResidenceGuide.vue'
 import './styles/index.scss'
 
 export default {
@@ -18,6 +19,7 @@ export default {
     app.component('FriendLinks', FriendLinks)
     app.component('ServerRules', ServerRules)
     app.component('LoginGuide', LoginGuide)
+    app.component('ResidenceGuide', ResidenceGuide)
 
     if (typeof window !== 'undefined') {
       onMounted(() => {

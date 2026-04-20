@@ -9,7 +9,13 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '首页', link: '/' },
-      { text: '登录教程', link: '/guides/login/' },
+      {
+        text: '游戏指南',
+        items: [
+          { text: '登录教程', link: '/guides/login/' },
+          { text: '领地教程', link: '/guides/residence/' }
+        ]
+      },
       { text: '服务器规则', link: '/rules' },
       { text: '友情链接', link: '/friends' }
     ],
