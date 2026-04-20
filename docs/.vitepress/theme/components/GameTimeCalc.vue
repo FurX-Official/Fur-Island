@@ -8,25 +8,24 @@ let timer: number
 
 const gameTime = computed(() => {
   const now = customTime.value || realTime.value
-  const hours = now.getUTCHours()
-  const minutes = now.getUTCMinutes()
-  const totalMinutes = hours * 60 + minutes
-  const gameTotalMinutes = ((totalMinutes + 167) % 1440) * 24000 / 1440
-  return Math.floor(gameTotalMinutes) % 24000
+  const totalSeconds = Math.floor(now.getTime() / 1000)
+  const mcDaySeconds = 20 * 60
+  let ticks = (totalSeconds % mcDaySeconds) * 24000 / mcDaySeconds
+  return Math.floor(ticks) % 24000
 })
 
 const formattedGameTime = computed(() => {
   const gt = gameTime.value
-  const hours = Math.floor(((gt + 6000) % 24000) / 1000)
+  const hours = (Math.floor(gt / 1000) + 6) % 24
   const minutes = Math.floor((gt % 1000) / 1000 * 60)
   return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
 })
 
 const gamePhase = computed(() => {
   const gt = gameTime.value
-  if (gt >= 0 && gt < 6000) return { name: '白天', icon: '☀️', color: '#fbbf24' }
-  if (gt >= 6000 && gt < 12000) return { name: '黄昏', icon: '🌅', color: '#f97316' }
-  if (gt >= 12000 && gt < 13800) return { name: '傍晚', icon: '🌆', color: '#8b5cf6' }
+  if (gt >= 0 && gt < 6000) return { name: '上午', icon: '🌤️', color: '#fbbf24' }
+  if (gt >= 6000 && gt < 12000) return { name: '下午', icon: '☀️', color: '#f97316' }
+  if (gt >= 12000 && gt < 13800) return { name: '黄昏', icon: '🌅', color: '#f97316' }
   if (gt >= 13800 && gt < 22200) return { name: '夜晚', icon: '🌙', color: '#4f46e5' }
   return { name: '黎明', icon: '🌄', color: '#ec4899' }
 })
