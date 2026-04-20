@@ -147,6 +147,22 @@ const formatNumber = (num: number) => num.toLocaleString()
         <span class="divider-icon">⚡</span>
       </div>
 
+      <div v-if="expInput > 0" class="level-progress-section">
+        <div class="progress-header">
+          <span class="progress-level">Lv.{{ levelFromExp.level }}</span>
+          <span class="progress-percent">{{ levelFromExp.progress }}%</span>
+        </div>
+        <div class="progress-bar-container">
+          <div class="progress-bar-fill" :style="{ width: levelFromExp.progress + '%' }">
+            <div class="progress-bar-shine"></div>
+          </div>
+        </div>
+        <div class="progress-details">
+          <span class="progress-detail">💫 进度: {{ levelFromExp.current }} / {{ levelFromExp.needed }} EXP</span>
+          <span class="progress-detail">🔜 升级还需: {{ levelFromExp.remaining }} EXP</span>
+        </div>
+      </div>
+
       <div class="result-section">
         <div class="level-display">
           <div class="level-main">
@@ -411,6 +427,79 @@ const formatNumber = (num: number) => num.toLocaleString()
     font-size: 20px;
     position: relative;
     z-index: 1;
+  }
+}
+
+.level-progress-section {
+  margin-bottom: 24px;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+  border-radius: 16px;
+  border: 3px solid var(--fur-primary);
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+
+  .progress-level {
+    font-size: 28px;
+    font-weight: 900;
+    color: var(--fur-primary);
+  }
+
+  .progress-percent {
+    font-size: 24px;
+    font-weight: 900;
+    color: #10b981;
+  }
+}
+
+.progress-bar-container {
+  height: 24px;
+  background: var(--fur-bg-muted);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 14px;
+  border: 3px solid var(--fur-border);
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #8b5cf6, #3b82f6, #10b981);
+  border-radius: 10px;
+  position: relative;
+  transition: width 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  overflow: hidden;
+}
+
+.progress-bar-shine {
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+  animation: shine 2s infinite;
+}
+
+@keyframes shine {
+  0% { left: -100%; }
+  100% { left: 150%; }
+}
+
+.progress-details {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+
+  .progress-detail {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--fur-text-secondary);
   }
 }
 

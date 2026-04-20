@@ -85,45 +85,59 @@ const toRoman = (num: number) => {
 
 <template>
   <div class="enchant-list">
-    <div class="search-bar">
-      <input 
-        v-model="searchQuery" 
-        type="text" 
-        placeholder="🔍 搜索附魔名称..."
-      >
+    <div class="component-header">
+      <span class="header-icon">💎</span>
+      <span class="header-text">附魔大全</span>
     </div>
 
-    <div class="category-tabs">
-      <button
-        v-for="cat in categories"
-        :key="cat.id"
-        class="category-tab"
-        :class="{ active: categoryFilter === cat.id }"
-        @click="categoryFilter = cat.id"
-      >
-        <span>{{ cat.icon }}</span>
-        <span>{{ cat.name }}</span>
-      </button>
-    </div>
-
-    <div class="enchant-grid">
-      <div v-for="enchant in filteredEnchantments" :key="enchant.id" class="enchant-card">
-        <div class="enchant-header">
-          <span class="enchant-name">{{ enchant.chinese }}</span>
-          <span class="enchant-level">Ⅰ ~ {{ toRoman(enchant.maxLevel) }}</span>
+    <div class="component-content">
+      <div class="search-section">
+        <div class="search-item">
+          <div class="search-label">🔍</div>
+          <input 
+            v-model="searchQuery" 
+            type="text" 
+            placeholder="搜索附魔名称..."
+          >
         </div>
-        <div class="enchant-id">{{ enchant.name }}</div>
-        <p class="enchant-desc">{{ enchant.description }}</p>
-        <div class="enchant-info">
-          <div class="info-row">
-            <span class="info-label">适用</span>
-            <span class="info-value">{{ enchant.items.join(', ') }}</span>
+      </div>
+
+      <div class="category-tabs">
+        <button
+          v-for="cat in categories"
+          :key="cat.id"
+          class="category-tab"
+          :class="{ active: categoryFilter === cat.id }"
+          @click="categoryFilter = cat.id"
+        >
+          <span class="tab-icon">{{ cat.icon }}</span>
+          <span>{{ cat.name }}</span>
+        </button>
+      </div>
+
+      <div class="results-count">
+        共找到 <span class="count-number">{{ filteredEnchantments.length }}</span> 个附魔
+      </div>
+
+      <div class="enchant-grid">
+        <div v-for="enchant in filteredEnchantments" :key="enchant.id" class="enchant-card">
+          <div class="enchant-header">
+            <span class="enchant-name">{{ enchant.chinese }}</span>
+            <span class="enchant-level">Ⅰ ~ {{ toRoman(enchant.maxLevel) }}</span>
           </div>
-          <div v-if="enchant.incompatible.length" class="info-row incompatible">
-            <span class="info-label">❌ 互斥</span>
-            <span class="info-value">
-              {{ enchant.incompatible.map(i => enchantments.find(e => e.id === i)?.chinese || i).join(', ') }}
-            </span>
+          <div class="enchant-id">{{ enchant.name }}</div>
+          <p class="enchant-desc">{{ enchant.description }}</p>
+          <div class="enchant-info">
+            <div class="info-row">
+              <span class="info-label">📌 适用</span>
+              <span class="info-value">{{ enchant.items.join(', ') }}</span>
+            </div>
+            <div v-if="enchant.incompatible.length" class="info-row incompatible">
+              <span class="info-label">❌ 互斥</span>
+              <span class="info-value">
+                {{ enchant.incompatible.map(i => enchantments.find(e => e.id === i)?.chinese || i).join(', ') }}
+              </span>
+            </div>
           </div>
         </div>
       </div>
@@ -133,104 +147,167 @@ const toRoman = (num: number) => {
 
 <style scoped lang="scss">
 .enchant-list {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 40px 0;
-}
+  background: var(--fur-bg-card);
+  border: 4px solid var(--fur-border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
 
-.guide-header {
-  text-align: center;
-  margin-bottom: 32px;
-
-  .guide-title {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 28px;
-    font-weight: 700;
-    margin: 0 0 8px 0;
-    background: var(--fur-gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-
-    .title-icon {
-      font-size: 32px;
-    }
-  }
-
-  .guide-subtitle {
-    font-size: 14px;
-    color: var(--fur-text-secondary);
-    margin: 0;
-  }
-}
-
-.search-bar input {
-  width: 100%;
-  padding: 14px 20px;
-  border: 2px solid var(--fur-border);
-  border-radius: 12px;
-  background: var(--fur-bg-muted);
-  color: var(--fur-text);
-  font-size: 15px;
-  transition: border-color 0.2s;
-  margin-bottom: 16px;
-
-  &:focus {
-    outline: none;
+  &:hover {
     border-color: var(--fur-primary);
+    box-shadow: 0 12px 48px rgba(139, 92, 246, 0.25);
+  }
+}
+
+.component-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, #8b5cf6, #ec4899);
+  color: white;
+
+  .header-icon {
+    font-size: 40px;
+  }
+
+  .header-text {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+}
+
+.component-content {
+  padding: 32px;
+}
+
+.search-section {
+  margin-bottom: 20px;
+}
+
+.search-item {
+  position: relative;
+  max-width: 500px;
+  margin: 0 auto;
+
+  .search-label {
+    position: absolute;
+    left: -4px;
+    top: -4px;
+    width: 52px;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    border-radius: 14px 0 14px 0;
+    font-size: 22px;
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 20px 20px 20px 68px;
+    border: 4px solid var(--fur-border);
+    border-radius: 16px;
+    background: var(--fur-bg-muted);
+    color: var(--fur-text);
+    font-size: 16px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--fur-primary);
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
+    }
+
+    &::placeholder {
+      font-weight: 500;
+      opacity: 0.5;
+    }
   }
 }
 
 .category-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 20px;
 }
 
 .category-tab {
-  padding: 8px 14px;
-  border: 1px solid var(--fur-border);
-  border-radius: 8px;
-  background: var(--fur-bg-card);
-  color: var(--fur-text-secondary);
-  font-size: 13px;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  transition: all 0.2s;
-
-  &.active {
-    background: var(--fur-primary);
-    border-color: var(--fur-primary);
-    color: white;
-  }
+  gap: 8px;
+  padding: 12px 20px;
+  border: 4px solid var(--fur-border);
+  border-radius: 14px;
+  background: var(--fur-bg-muted);
+  color: var(--fur-text-secondary);
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
 
   &:hover:not(.active) {
     border-color: var(--fur-primary);
+    transform: translateY(-1px);
+  }
+
+  &.active {
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    border-color: transparent;
+    color: white;
+    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.35);
+    transform: translateY(-2px);
+  }
+
+  .tab-icon {
+    font-size: 18px;
+  }
+}
+
+.results-count {
+  text-align: center;
+  padding: 12px;
+  font-size: 14px;
+  color: var(--fur-text-secondary);
+  font-weight: 600;
+  margin-bottom: 20px;
+
+  .count-number {
+    color: var(--fur-primary);
+    font-weight: 900;
+    font-size: 18px;
   }
 }
 
 .enchant-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
 }
 
 .enchant-card {
-  background: var(--fur-bg-card);
-  border: 1px solid var(--fur-border);
-  border-radius: 12px;
-  padding: 16px;
-  transition: all 0.3s;
+  background: var(--fur-bg-muted);
+  border: 4px solid var(--fur-border);
+  border-radius: 16px;
+  padding: 20px;
+  transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-2px);
+    transform: translateY(-3px);
     border-color: var(--fur-primary);
-    box-shadow: var(--fur-shadow-card);
+    box-shadow: 0 10px 30px rgba(139, 92, 246, 0.2);
   }
 }
 
@@ -238,48 +315,52 @@ const toRoman = (num: number) => {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 4px;
+  margin-bottom: 6px;
 }
 
 .enchant-name {
-  font-size: 16px;
-  font-weight: 700;
+  font-size: 18px;
+  font-weight: 900;
   color: var(--fur-primary);
 }
 
 .enchant-level {
-  font-size: 12px;
-  padding: 2px 8px;
-  background: rgba(139, 92, 246, 0.15);
+  font-size: 13px;
+  padding: 6px 12px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(59, 130, 246, 0.2));
   border-radius: 20px;
   color: var(--fur-primary);
-  font-weight: 600;
+  font-weight: 800;
+  border: 2px solid var(--fur-primary);
 }
 
 .enchant-id {
-  font-size: 11px;
-  color: var(--fur-text-muted);
-  margin-bottom: 10px;
-  font-family: monospace;
+  font-size: 12px;
+  color: var(--fur-text-secondary);
+  margin-bottom: 12px;
+  font-family: 'Fira Code', monospace;
+  opacity: 0.7;
 }
 
 .enchant-desc {
-  font-size: 13px;
+  font-size: 14px;
   color: var(--fur-text-secondary);
-  margin: 0 0 12px 0;
-  line-height: 1.5;
+  margin: 0 0 16px 0;
+  line-height: 1.6;
+  font-weight: 600;
 }
 
 .enchant-info {
-  border-top: 1px solid var(--fur-border-light);
-  padding-top: 12px;
+  border-top: 3px solid var(--fur-border);
+  padding-top: 14px;
 }
 
 .info-row {
   display: flex;
-  gap: 8px;
-  font-size: 12px;
-  margin-bottom: 6px;
+  gap: 10px;
+  font-size: 13px;
+  margin-bottom: 8px;
+  align-items: flex-start;
 
   &.incompatible {
     color: #ef4444;
@@ -291,13 +372,54 @@ const toRoman = (num: number) => {
 }
 
 .info-label {
-  font-weight: 600;
-  color: var(--fur-text-muted);
-  min-width: 40px;
+  font-weight: 800;
+  flex-shrink: 0;
 }
 
 .info-value {
   flex: 1;
-  color: var(--fur-text-secondary);
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+@media (max-width: 768px) {
+  .component-header {
+    padding: 20px 24px;
+
+    .header-icon {
+      font-size: 32px;
+    }
+
+    .header-text {
+      font-size: 22px;
+    }
+  }
+
+  .component-content {
+    padding: 24px 20px;
+  }
+
+  .category-tabs {
+    gap: 8px;
+  }
+
+  .category-tab {
+    padding: 10px 14px;
+    font-size: 13px;
+  }
+
+  .enchant-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .component-content {
+    padding: 20px 16px;
+  }
+
+  .enchant-card {
+    padding: 16px;
+  }
 }
 </style>

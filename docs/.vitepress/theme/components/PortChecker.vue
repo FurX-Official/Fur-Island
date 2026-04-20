@@ -51,59 +51,95 @@ const statusConfig = {
 
 <template>
   <div class="port-checker">
-    <div class="guide-header">
-      <h2 class="guide-title">
-        <span class="title-icon">🔌</span>
-        服务器端口检测
-      </h2>
-      <p class="guide-desc">检测 Java 版和基岩版端口连通性</p>
+    <div class="component-header">
+      <span class="header-icon">🔌</span>
+      <span class="header-text">端口检测器</span>
     </div>
 
-    <div class="checker-grid">
-      <div class="checker-card">
-        <div class="checker-header">
-          <span class="version-badge java">☕ Java 版</span>
-          <span class="status-badge" :style="{ background: statusConfig[javaStatus].color }">
-            {{ statusConfig[javaStatus].icon }} {{ statusConfig[javaStatus].text }}
-          </span>
+    <div class="component-content">
+      <div class="checker-grid">
+        <div class="checker-card">
+          <div class="checker-header">
+            <span class="version-badge java">☕ Java 版</span>
+            <span class="status-badge" :style="{ background: statusConfig[javaStatus].color }">
+              {{ statusConfig[javaStatus].icon }} {{ statusConfig[javaStatus].text }}
+            </span>
+          </div>
+
+          <div class="input-row">
+            <div class="input-item">
+              <div class="input-label host">H</div>
+              <input v-model="javaHost" class="host-input" placeholder="主机地址">
+            </div>
+            <span class="colon">:</span>
+            <div class="input-item">
+              <div class="input-label port">P</div>
+              <input v-model="javaPort" class="port-input" placeholder="端口">
+            </div>
+          </div>
+
+          <div v-if="javaLatency" class="latency">
+            <span class="latency-icon">📶</span>
+            <span>延迟:</span>
+            <span class="latency-value">{{ javaLatency }}ms</span>
+          </div>
+
+          <button class="check-btn" @click="checkJava" :disabled="javaStatus === 'checking'">
+            {{ javaStatus === 'checking' ? '🔄 检测中...' : '🚀 开始检测' }}
+          </button>
         </div>
 
-        <div class="input-row">
-          <input v-model="javaHost" class="host-input" placeholder="主机地址">
-          <span class="colon">:</span>
-          <input v-model="javaPort" class="port-input" placeholder="端口">
-        </div>
+        <div class="checker-card">
+          <div class="checker-header">
+            <span class="version-badge bedrock">🪨 基岩版</span>
+            <span class="status-badge" :style="{ background: statusConfig[bedrockStatus].color }">
+              {{ statusConfig[bedrockStatus].icon }} {{ statusConfig[bedrockStatus].text }}
+            </span>
+          </div>
 
-        <div v-if="javaLatency" class="latency">
-          延迟: <span class="latency-value">{{ javaLatency }}ms</span>
-        </div>
+          <div class="input-row">
+            <div class="input-item">
+              <div class="input-label host">H</div>
+              <input v-model="bedrockHost" class="host-input" placeholder="主机地址">
+            </div>
+            <span class="colon">:</span>
+            <div class="input-item">
+              <div class="input-label port">P</div>
+              <input v-model="bedrockPort" class="port-input" placeholder="端口">
+            </div>
+          </div>
 
-        <button class="check-btn" @click="checkJava" :disabled="javaStatus === 'checking'">
-          {{ javaStatus === 'checking' ? '检测中...' : '开始检测' }}
-        </button>
+          <div v-if="bedrockLatency" class="latency">
+            <span class="latency-icon">📶</span>
+            <span>延迟:</span>
+            <span class="latency-value">{{ bedrockLatency }}ms</span>
+          </div>
+
+          <button class="check-btn" @click="checkBedrock" :disabled="bedrockStatus === 'checking'">
+            {{ bedrockStatus === 'checking' ? '🔄 检测中...' : '🚀 开始检测' }}
+          </button>
+        </div>
       </div>
 
-      <div class="checker-card">
-        <div class="checker-header">
-          <span class="version-badge bedrock">🪨 基岩版</span>
-          <span class="status-badge" :style="{ background: statusConfig[bedrockStatus].color }">
-            {{ statusConfig[bedrockStatus].icon }} {{ statusConfig[bedrockStatus].text }}
-          </span>
+      <div class="tips-section">
+        <div class="tips-header">
+          <span class="tips-icon">💡</span>
+          <span class="tips-title">小贴士</span>
         </div>
-
-        <div class="input-row">
-          <input v-model="bedrockHost" class="host-input" placeholder="主机地址">
-          <span class="colon">:</span>
-          <input v-model="bedrockPort" class="port-input" placeholder="端口">
+        <div class="tips-list">
+          <div class="tip-item">
+            <span class="tip-num">1</span>
+            <span class="tip-text">检测结果仅作参考，实际以游戏内连接为准</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-num">2</span>
+            <span class="tip-text">Java版默认端口 25565，基岩版默认端口 19132</span>
+          </div>
+          <div class="tip-item">
+            <span class="tip-num">3</span>
+            <span class="tip-text">端口检测通过第三方 API 进行，可能存在延迟</span>
+          </div>
         </div>
-
-        <div v-if="bedrockLatency" class="latency">
-          延迟: <span class="latency-value">{{ bedrockLatency }}ms</span>
-        </div>
-
-        <button class="check-btn" @click="checkBedrock" :disabled="bedrockStatus === 'checking'">
-          {{ bedrockStatus === 'checking' ? '检测中...' : '开始检测' }}
-        </button>
       </div>
     </div>
   </div>
@@ -111,39 +147,63 @@ const statusConfig = {
 
 <style scoped lang="scss">
 .port-checker {
-  max-width: 800px;
+  max-width: 720px;
   margin: 0 auto;
+  background: var(--fur-bg-card);
+  border: 4px solid var(--fur-border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: var(--fur-primary);
+    box-shadow: 0 12px 48px rgba(139, 92, 246, 0.25);
+  }
 }
 
-.guide-header {
-  text-align: center;
-  margin-bottom: 32px;
+.component-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, #10b981, #3b82f6);
+  color: white;
 
-  .guide-title {
+  .header-icon {
+    font-size: 40px;
+  }
+
+  .header-text {
     font-size: 28px;
-    margin-bottom: 8px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
+    font-weight: 900;
+    letter-spacing: 2px;
   }
+}
 
-  .guide-desc {
-    color: var(--fur-text-secondary);
-  }
+.component-content {
+  padding: 32px;
 }
 
 .checker-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 24px;
+  margin-bottom: 24px;
 }
 
 .checker-card {
-  background: var(--fur-bg-elevated);
-  border-radius: 16px;
+  background: var(--fur-bg-muted);
+  border: 4px solid var(--fur-border);
+  border-radius: 20px;
   padding: 24px;
-  border: 1px solid var(--fur-border-light);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: var(--fur-primary);
+    transform: translateY(-2px);
+  }
 }
 
 .checker-header {
@@ -154,97 +214,239 @@ const statusConfig = {
 }
 
 .version-badge {
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 20px;
-  font-size: 13px;
-  font-weight: 600;
+  font-size: 14px;
+  font-weight: 800;
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 
   &.java {
     background: linear-gradient(135deg, #f97316, #ef4444);
-    color: white;
   }
 
   &.bedrock {
     background: linear-gradient(135deg, #3b82f6, #1d4ed8);
-    color: white;
   }
 }
 
 .status-badge {
-  padding: 4px 10px;
-  border-radius: 12px;
-  font-size: 12px;
-  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 14px;
+  font-size: 13px;
+  font-weight: 800;
   color: white;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .input-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 20px;
 }
 
-.host-input,
-.port-input {
-  padding: 10px 14px;
-  border: 2px solid var(--fur-border-light);
-  border-radius: 10px;
-  background: var(--fur-bg);
-  font-size: 14px;
-  transition: all 0.3s ease;
+.input-item {
+  position: relative;
+  flex: 1;
 
-  &:focus {
-    outline: none;
-    border-color: var(--fur-primary);
+  .input-label {
+    position: absolute;
+    left: -4px;
+    top: -4px;
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px 0 12px 0;
+    font-size: 16px;
+    font-weight: 900;
+    color: white;
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+
+    &.host {
+      background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    }
+
+    &.port {
+      background: linear-gradient(135deg, #10b981, #3b82f6);
+    }
+  }
+
+  input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 16px 12px 16px 56px;
+    border: 4px solid var(--fur-border);
+    border-radius: 14px;
+    background: var(--fur-bg-card);
+    color: var(--fur-text);
+    font-size: 15px;
+    font-weight: 700;
+    transition: all 0.3s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--fur-primary);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.2);
+    }
   }
 }
 
-.host-input {
-  flex: 1;
-}
-
-.port-input {
-  width: 80px;
-}
-
 .colon {
-  font-weight: bold;
-  font-size: 18px;
+  font-size: 24px;
+  font-weight: 900;
+  color: var(--fur-primary);
+  margin-top: 8px;
 }
 
 .latency {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px;
+  background: var(--fur-bg-card);
+  border-radius: 12px;
+  border: 3px solid var(--fur-border);
   margin-bottom: 16px;
-  font-size: 14px;
-  color: var(--fur-text-secondary);
+  font-size: 15px;
+  font-weight: 700;
+
+  .latency-icon {
+    font-size: 20px;
+  }
 
   .latency-value {
-    font-weight: 700;
-    color: #10b981;
+    color: var(--fur-primary);
+    font-weight: 900;
+    font-size: 17px;
   }
 }
 
 .check-btn {
   width: 100%;
-  padding: 12px;
-  background: var(--fur-gradient-primary);
-  color: white;
+  padding: 14px 24px;
   border: none;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+  color: white;
+  font-size: 16px;
+  font-weight: 800;
   cursor: pointer;
   transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(139, 92, 246, 0.3);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.4);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
   }
 
   &:disabled {
     opacity: 0.7;
     cursor: not-allowed;
+  }
+}
+
+.tips-section {
+  background: var(--fur-bg-muted);
+  border: 4px solid var(--fur-border);
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.tips-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1));
+  border-bottom: 4px solid var(--fur-border);
+
+  .tips-icon {
+    font-size: 24px;
+  }
+
+  .tips-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: var(--fur-text);
+  }
+}
+
+.tips-list {
+  padding: 16px 20px;
+}
+
+.tip-item {
+  display: flex;
+  gap: 12px;
+  padding: 10px 0;
+  align-items: flex-start;
+
+  &:not(:last-child) {
+    border-bottom: 2px solid var(--fur-border);
+  }
+
+  .tip-num {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    border-radius: 50%;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    margin-top: 1px;
+  }
+
+  .tip-text {
+    flex: 1;
+    font-size: 14px;
+    color: var(--fur-text-secondary);
+    line-height: 1.6;
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 768px) {
+  .component-header {
+    padding: 20px 24px;
+
+    .header-icon {
+      font-size: 32px;
+    }
+
+    .header-text {
+      font-size: 22px;
+    }
+  }
+
+  .component-content {
+    padding: 24px 20px;
+  }
+
+  .checker-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 560px) {
+  .component-content {
+    padding: 20px 16px;
+  }
+
+  .checker-card {
+    padding: 20px;
   }
 }
 </style>

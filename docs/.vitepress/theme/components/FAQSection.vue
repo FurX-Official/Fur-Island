@@ -13,13 +13,13 @@ const toggleFAQ = (index: number) => {
 
 <template>
   <div class="faq-section">
-    <div class="guide-header">
-      <h2 class="guide-title">
-        <span class="title-icon">❓</span>
-        常见问题
-      </h2>
-      <p class="guide-subtitle">在这里找到你想要的答案</p>
+    <div class="component-header">
+      <span class="header-icon">❓</span>
+      <span class="header-text">常见问题</span>
     </div>
+
+    <div class="component-content">
+      <p class="guide-subtitle">在这里找到你想要的答案</p>
 
     <div class="faq-container">
       <div
@@ -41,42 +41,56 @@ const toggleFAQ = (index: number) => {
         </Transition>
       </div>
     </div>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 .faq-section {
-  padding: 32px 0;
-  max-width: 800px;
+  max-width: 900px;
   margin: 0 auto;
+  background: var(--fur-bg-card);
+  border: 4px solid var(--fur-border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: var(--fur-primary);
+    box-shadow: 0 12px 48px rgba(139, 92, 246, 0.25);
+  }
 }
 
-.guide-header {
+.component-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+  color: white;
+
+  .header-icon {
+    font-size: 40px;
+  }
+
+  .header-text {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+}
+
+.component-content {
+  padding: 32px;
+}
+
+.guide-subtitle {
+  font-size: 15px;
+  color: var(--fur-text-secondary);
+  margin: 0 0 32px 0;
   text-align: center;
-  margin-bottom: 40px;
-
-  .guide-title {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
-    font-size: 32px;
-    font-weight: 700;
-    margin: 0 0 12px 0;
-    background: var(--fur-gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-
-    .title-icon {
-      font-size: 36px;
-    }
-  }
-
-  .guide-subtitle {
-    font-size: 15px;
-    color: var(--fur-text-secondary);
-    margin: 0;
-  }
 }
 
 .faq-container {
@@ -87,11 +101,11 @@ const toggleFAQ = (index: number) => {
 
 .faq-item {
   background: var(--fur-bg-card);
-  border: 1px solid var(--fur-border);
-  border-radius: 14px;
+  border: 3px solid var(--fur-border);
+  border-radius: 18px;
   overflow: hidden;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: all 0.3s ease;
 
   &:hover {
     border-color: var(--fur-primary);
@@ -99,7 +113,7 @@ const toggleFAQ = (index: number) => {
 
   &.expanded {
     border-color: var(--fur-primary);
-    box-shadow: var(--fur-shadow-card);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2);
   }
 }
 
