@@ -201,7 +201,7 @@ const copyToClipboard = (text: string) => {
 
 <style scoped lang="scss">
 .coord-calculator {
-  max-width: 600px;
+  max-width: 720px;
   margin: 0 auto;
   padding: 40px 20px;
 
@@ -213,27 +213,27 @@ const copyToClipboard = (text: string) => {
 .mode-switcher {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  margin-bottom: 20px;
+  gap: 16px;
+  margin-bottom: 24px;
 }
 
 .mode-btn {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 14px 20px;
+  gap: 10px;
+  padding: 18px 24px;
   border: 2px solid var(--fur-border);
   border-radius: 16px;
   background: var(--fur-bg-card);
   color: var(--fur-text-secondary);
-  font-size: 14px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
 
   .btn-icon {
-    font-size: 20px;
+    font-size: 24px;
   }
 
   &.active {
@@ -268,37 +268,37 @@ const copyToClipboard = (text: string) => {
 .card-header {
   display: flex;
   align-items: center;
-  gap: 16px;
-  padding: 24px;
+  gap: 20px;
+  padding: 32px;
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.05));
   border-bottom: 2px solid var(--fur-border);
 
   .header-icon {
-    font-size: 36px;
+    font-size: 44px;
   }
 
   h3 {
-    margin: 0 0 4px 0;
-    font-size: 18px;
+    margin: 0 0 6px 0;
+    font-size: 22px;
     font-weight: 800;
     color: var(--fur-text);
   }
 
   p {
     margin: 0;
-    font-size: 13px;
+    font-size: 14px;
     color: var(--fur-text-secondary);
   }
 }
 
 .input-grid {
   display: grid;
-  gap: 16px;
-  padding: 24px;
+  gap: 20px;
+  padding: 32px;
 
   &.cols-2 {
     grid-template-columns: repeat(2, 1fr);
-    max-width: 400px;
+    max-width: 480px;
     margin: 0 auto;
   }
 
@@ -310,7 +310,7 @@ const copyToClipboard = (text: string) => {
     &.cols-2,
     &.cols-3 {
       grid-template-columns: 1fr;
-      max-width: 280px;
+      max-width: 320px;
     }
   }
 }
@@ -318,10 +318,10 @@ const copyToClipboard = (text: string) => {
 .input-item {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 10px;
 
   .input-label {
-    font-size: 11px;
+    font-size: 12px;
     font-weight: 800;
     color: var(--fur-primary);
     text-transform: uppercase;
@@ -330,12 +330,12 @@ const copyToClipboard = (text: string) => {
   }
 
   input {
-    padding: 16px;
+    padding: 20px;
     border: 2px solid var(--fur-border);
     border-radius: 12px;
     background: var(--fur-bg-muted);
     color: var(--fur-text);
-    font-size: 20px;
+    font-size: 24px;
     font-weight: 800;
     text-align: center;
     transition: all 0.3s ease;
@@ -375,22 +375,22 @@ const copyToClipboard = (text: string) => {
 }
 
 .result-section {
-  padding: 24px;
+  padding: 32px;
 }
 
 .result-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 12px;
+  margin-bottom: 24px;
   flex-wrap: wrap;
 
   .result-icon {
-    font-size: 24px;
+    font-size: 28px;
   }
 
   .result-title {
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 800;
     color: var(--fur-text);
   }
@@ -398,9 +398,9 @@ const copyToClipboard = (text: string) => {
 
 .accuracy-badge {
   margin-left: auto;
-  padding: 6px 12px;
+  padding: 8px 16px;
   border-radius: 20px;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   background: rgba(239, 68, 68, 0.1);
   color: #ef4444;
@@ -414,12 +414,12 @@ const copyToClipboard = (text: string) => {
 .coord-display {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
-  margin-bottom: 16px;
+  gap: 16px;
+  margin-bottom: 20px;
 
   @media (max-width: 520px) {
     grid-template-columns: 1fr;
-    max-width: 240px;
+    max-width: 280px;
     margin-left: auto;
     margin-right: auto;
   }
@@ -428,8 +428,8 @@ const copyToClipboard = (text: string) => {
 .coord-box {
   display: flex;
   align-items: center;
-  gap: 8px;
-  padding: 12px 16px;
+  gap: 10px;
+  padding: 16px 20px;
   background: var(--fur-bg-muted);
   border-radius: 12px;
   border: 2px solid transparent;
@@ -444,7 +444,7 @@ const copyToClipboard = (text: string) => {
   }
 
   .coord-axis {
-    font-size: 12px;
+    font-size: 14px;
     font-weight: 800;
     color: var(--fur-primary);
     text-transform: uppercase;
@@ -452,7 +452,7 @@ const copyToClipboard = (text: string) => {
 
   .coord-value {
     flex: 1;
-    font-size: 24px;
+    font-size: 30px;
     font-weight: 900;
     color: var(--fur-text);
     text-align: center;
@@ -572,30 +572,30 @@ const copyToClipboard = (text: string) => {
 .tips-header {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 16px 20px;
+  gap: 12px;
+  padding: 20px 28px;
   background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1));
   border-bottom: 2px solid var(--fur-border);
 
   .tips-icon {
-    font-size: 24px;
+    font-size: 28px;
   }
 
   .tips-title {
-    font-size: 15px;
+    font-size: 17px;
     font-weight: 800;
     color: var(--fur-text);
   }
 }
 
 .tips-list {
-  padding: 20px;
+  padding: 24px 28px;
 }
 
 .tip-item {
   display: flex;
-  gap: 14px;
-  padding: 10px 0;
+  gap: 16px;
+  padding: 12px 0;
 
   &:not(:last-child) {
     border-bottom: 1px solid var(--fur-border);
@@ -603,24 +603,24 @@ const copyToClipboard = (text: string) => {
 
   .tip-num {
     flex-shrink: 0;
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
     background: linear-gradient(135deg, #8b5cf6, #3b82f6);
     border-radius: 50%;
     color: white;
-    font-size: 13px;
+    font-size: 14px;
     font-weight: 800;
   }
 
   .tip-text {
     flex: 1;
-    padding-top: 3px;
-    font-size: 14px;
+    padding-top: 5px;
+    font-size: 15px;
     color: var(--fur-text-secondary);
-    line-height: 1.6;
+    line-height: 1.7;
   }
 }
 </style>
