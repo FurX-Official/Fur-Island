@@ -7,103 +7,193 @@ const overworldX = ref(0)
 const overworldZ = ref(0)
 const overworldY = ref(64)
 
-const netherX = computed(() => Math.floor(overworldX.value / 8))
-const netherZ = computed(() => Math.floor(overworldZ.value / 8))
+const netherX = computed(() => Math.round(overworldX.value / 8))
+const netherZ = computed(() => Math.round(overworldZ.value / 8))
+const netherErrorX = computed(() => Math.abs(overworldX.value - netherX.value * 8))
+const netherErrorZ = computed(() => Math.abs(overworldZ.value - netherZ.value * 8))
+const isAccurate = computed(() => netherErrorX.value <= 1 && netherErrorZ.value <= 1)
 
 const portalNetherX = ref(0)
 const portalNetherZ = ref(0)
 
 const portalOverworldX = computed(() => portalNetherX.value * 8)
 const portalOverworldZ = computed(() => portalNetherZ.value * 8)
+const recommendedRange = computed(() => ({
+  minX: portalOverworldX.value - 16,
+  maxX: portalOverworldX.value + 16,
+  minZ: portalOverworldZ.value - 16,
+  maxZ: portalOverworldZ.value + 16
+}))
+
+const copyToClipboard = (text: string) => {
+  navigator.clipboard.writeText(text)
+}
 </script>
 
 <template>
   <div class="coord-calculator">
-    <div class="calc-tabs">
+    <div class="mode-switcher">
       <button
         v-for="d in ['overworld', 'nether']"
         :key="d"
-        class="calc-tab"
+        class="mode-btn"
         :class="{ active: direction === d }"
         @click="direction = d as any"
       >
-        <span>{{ d === 'overworld' ? '🌍 主世界 → 地狱' : '🔥 地狱 → 主世界' }}</span>
+        <span class="btn-icon">{{ d === 'overworld' ? '🌍' : '🔥' }}</span>
+        <span class="btn-text">{{ d === 'overworld' ? '主世界 → 地狱' : '地狱 → 主世界' }}</span>
       </button>
     </div>
 
-    <div v-if="direction === 'overworld'" class="coord-card">
-      <div class="section-title">📍 输入主世界坐标</div>
+    <div v-if="direction === 'overworld'" class="converter-card">
+      <div class="card-header">
+        <div class="header-icon">📍</div>
+        <div class="header-text">
+          <h3>输入主世界坐标</h3>
+          <p>将自动转换为对应地狱门位置</p>
+        </div>
+      </div>
       
-      <div class="coord-inputs cols-3">
-        <div class="input-group">
-          <label>X</label>
+      <div class="input-grid cols-3">
+        <div class="input-item">
+          <div class="input-label">X</div>
           <input v-model.number="overworldX" type="number" step="1">
         </div>
-        <div class="input-group">
-          <label>Y</label>
+        <div class="input-item">
+          <div class="input-label">Y</div>
           <input v-model.number="overworldY" type="number" step="1">
         </div>
-        <div class="input-group">
-          <label>Z</label>
+        <div class="input-item">
+          <div class="input-label">Z</div>
           <input v-model.number="overworldZ" type="number" step="1">
         </div>
       </div>
 
-      <div class="coord-result">
-        <div class="result-label">🔥 对应地狱门位置</div>
-        <div class="result-coords">
-          <span class="coord-item">
-            <span class="coord-x">X</span> {{ netherX }}
-          </span>
-          <span class="coord-item">
-            <span class="coord-y">Y</span> {{ overworldY }}
-          </span>
-          <span class="coord-item">
-            <span class="coord-z">Z</span> {{ netherZ }}
+      <div class="divider">
+        <span class="divider-icon">⚡</span>
+      </div>
+
+      <div class="result-section">
+        <div class="result-header">
+          <span class="result-icon">🌀</span>
+          <span class="result-title">地狱门坐标</span>
+          <span class="accuracy-badge" :class="{ accurate: isAccurate }">
+            {{ isAccurate ? '✅ 精确匹配' : '⚠️ 建议校正' }}
           </span>
         </div>
-        <p class="result-hint">
-          💡 主世界坐标 ÷ 8 = 地狱坐标
-        </p>
+
+        <div class="coord-display">
+          <div class="coord-box">
+            <div class="coord-axis">X</div>
+            <div class="coord-value">{{ netherX }}</div>
+            <button class="copy-btn" @click="copyToClipboard(String(netherX))">📋</button>
+          </div>
+          <div class="coord-box">
+            <div class="coord-axis">Y</div>
+            <div class="coord-value">{{ overworldY }}</div>
+            <button class="copy-btn" @click="copyToClipboard(String(overworldY))">📋</button>
+          </div>
+          <div class="coord-box">
+            <div class="coord-axis">Z</div>
+            <div class="coord-value">{{ netherZ }}</div>
+            <button class="copy-btn" @click="copyToClipboard(String(netherZ))">📋</button>
+          </div>
+        </div>
+
+        <div v-if="!isAccurate" class="error-hint">
+          <strong>💡 精度提示</strong>
+          <p>当前坐标与标准 1:8 比例有误差：X 轴偏移 {{ netherErrorX }} 格，Z 轴偏移 {{ netherErrorZ }} 格</p>
+          <p class="hint-small">建议使用 8 的倍数坐标，以获得最佳的传送精度</p>
+        </div>
+
+        <div class="formula">
+          <code>主世界坐标 ÷ 8 = 地狱坐标</code>
+        </div>
       </div>
     </div>
 
-    <div v-else class="coord-card">
-      <div class="section-title">🔥 输入地狱门坐标</div>
+    <div v-else class="converter-card">
+      <div class="card-header">
+        <div class="header-icon">🔥</div>
+        <div class="header-text">
+          <h3>输入地狱门坐标</h3>
+          <p>计算对应主世界生成范围</p>
+        </div>
+      </div>
       
-      <div class="coord-inputs cols-2">
-        <div class="input-group">
-          <label>X</label>
+      <div class="input-grid cols-2">
+        <div class="input-item">
+          <div class="input-label">X</div>
           <input v-model.number="portalNetherX" type="number" step="1">
         </div>
-        <div class="input-group">
-          <label>Z</label>
+        <div class="input-item">
+          <div class="input-label">Z</div>
           <input v-model.number="portalNetherZ" type="number" step="1">
         </div>
       </div>
 
-      <div class="coord-result">
-        <div class="result-label">🌍 对应主世界位置</div>
-        <div class="result-coords">
-          <span class="coord-item">
-            <span class="coord-x">X</span> {{ portalOverworldX }}
-          </span>
-          <span class="coord-item">
-            <span class="coord-z">Z</span> {{ portalOverworldZ }}
-          </span>
+      <div class="divider">
+        <span class="divider-icon">⚡</span>
+      </div>
+
+      <div class="result-section">
+        <div class="result-header">
+          <span class="result-icon">🌍</span>
+          <span class="result-title">主世界生成区域</span>
         </div>
-        <p class="result-hint">
-          💡 地狱坐标 × 8 = 主世界坐标
-        </p>
+
+        <div class="coord-display">
+          <div class="coord-box highlight">
+            <div class="coord-axis">X</div>
+            <div class="coord-value">{{ portalOverworldX }}</div>
+            <button class="copy-btn" @click="copyToClipboard(String(portalOverworldX))">📋</button>
+          </div>
+          <div class="coord-box highlight">
+            <div class="coord-axis">Z</div>
+            <div class="coord-value">{{ portalOverworldZ }}</div>
+            <button class="copy-btn" @click="copyToClipboard(String(portalOverworldZ))">📋</button>
+          </div>
+        </div>
+
+        <div class="range-info">
+          <div class="range-title">🎯 推荐建造范围</div>
+          <div class="range-grid">
+            <div class="range-item">
+              <span class="range-label">X 轴</span>
+              <span class="range-value">{{ recommendedRange.minX }} ~ {{ recommendedRange.maxX }}</span>
+            </div>
+            <div class="range-item">
+              <span class="range-label">Z 轴</span>
+              <span class="range-value">{{ recommendedRange.minZ }} ~ {{ recommendedRange.maxZ }}</span>
+            </div>
+          </div>
+          <p class="range-desc">在此 32×32 范围内建造，可保证正确链接</p>
+        </div>
+
+        <div class="formula">
+          <code>地狱坐标 × 8 = 主世界坐标</code>
+        </div>
       </div>
     </div>
 
-    <div class="info-card">
-      <div class="info-icon">ℹ️</div>
-      <div class="info-text">
-        <strong>建造提示</strong>
-        <p>两个地狱门之间至少需要相距 128 格以上才不会相互链接错误
-        <br>推荐在 Y = 116 层建造地狱交通最快</p>
+    <div class="tips-card">
+      <div class="tips-header">
+        <span class="tips-icon">💡</span>
+        <span class="tips-title">建造技巧</span>
+      </div>
+      <div class="tips-list">
+        <div class="tip-item">
+          <span class="tip-num">1</span>
+          <span class="tip-text">两个地狱门至少相距 128 格以上才不会相互链接错误</span>
+        </div>
+        <div class="tip-item">
+          <span class="tip-num">2</span>
+          <span class="tip-text">推荐在 Y = 116 层建造地狱交通网络</span>
+        </div>
+        <div class="tip-item">
+          <span class="tip-num">3</span>
+          <span class="tip-text">使用 8 的倍数坐标，获得最佳传送精度</span>
+        </div>
       </div>
     </div>
   </div>
@@ -111,7 +201,7 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
 
 <style scoped lang="scss">
 .coord-calculator {
-  max-width: 650px;
+  max-width: 600px;
   margin: 0 auto;
   padding: 40px 20px;
 
@@ -120,34 +210,36 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
   }
 }
 
-.calc-tabs {
-  display: flex;
-  gap: 8px;
-  margin-bottom: -1px;
-  background: var(--fur-bg-muted);
-  padding: 12px;
-  border-radius: 20px 20px 0 0;
-  border: 2px solid var(--fur-border);
-  border-bottom: none;
+.mode-switcher {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-.calc-tab {
-  flex: 1;
-  padding: 14px 16px;
-  border: 2px solid transparent;
-  border-radius: 12px;
+.mode-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 20px;
+  border: 2px solid var(--fur-border);
+  border-radius: 16px;
   background: var(--fur-bg-card);
   color: var(--fur-text-secondary);
   font-size: 14px;
   font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
-  position: relative;
+
+  .btn-icon {
+    font-size: 20px;
+  }
 
   &.active {
     background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-    color: white;
     border-color: transparent;
+    color: white;
     transform: translateY(-2px);
     box-shadow: 0 8px 24px rgba(139, 92, 246, 0.35);
   }
@@ -156,77 +248,79 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
     border-color: var(--fur-primary);
     color: var(--fur-primary);
   }
+
+  @media (max-width: 480px) {
+    .btn-text {
+      display: none;
+    }
+  }
 }
 
-.coord-card {
+.converter-card {
   background: var(--fur-bg-card);
   border: 2px solid var(--fur-border);
-  border-radius: 0 0 20px 20px;
-  padding: 32px;
+  border-radius: 20px;
+  overflow: hidden;
   margin-bottom: 20px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
 }
 
-.section-title {
-  font-size: 18px;
-  font-weight: 800;
-  margin-bottom: 24px;
-  text-align: center;
-  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  letter-spacing: 1px;
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.05));
+  border-bottom: 2px solid var(--fur-border);
+
+  .header-icon {
+    font-size: 36px;
+  }
+
+  h3 {
+    margin: 0 0 4px 0;
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--fur-text);
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    color: var(--fur-text-secondary);
+  }
 }
 
-.coord-inputs {
+.input-grid {
   display: grid;
-  gap: 20px;
-  margin-bottom: 32px;
+  gap: 16px;
+  padding: 24px;
 
   &.cols-2 {
     grid-template-columns: repeat(2, 1fr);
-    max-width: 420px;
-    margin-left: auto;
-    margin-right: auto;
+    max-width: 400px;
+    margin: 0 auto;
   }
 
   &.cols-3 {
     grid-template-columns: repeat(3, 1fr);
   }
 
-  @media (max-width: 768px) {
-    &.cols-3 {
-      grid-template-columns: repeat(2, 1fr);
-      max-width: 420px;
-      margin-left: auto;
-      margin-right: auto;
-
-      .input-group:nth-child(3) {
-        grid-column: span 2;
-        max-width: 200px;
-        margin: 0 auto;
-      }
-    }
-  }
-
-  @media (max-width: 520px) {
+  @media (max-width: 640px) {
     &.cols-2,
     &.cols-3 {
       grid-template-columns: 1fr;
       max-width: 280px;
-      margin-left: auto;
-      margin-right: auto;
     }
   }
 }
 
-.input-group {
+.input-item {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 8px;
 
-  label {
+  .input-label {
     font-size: 11px;
     font-weight: 800;
     color: var(--fur-primary);
@@ -255,113 +349,278 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
   }
 }
 
-.coord-result {
-  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 12px 40px rgba(139, 92, 246, 0.35);
-}
-
-.result-label {
-  font-size: 12px;
-  font-weight: 700;
-  color: rgba(255, 255, 255, 0.85);
-  margin-bottom: 16px;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-}
-
-.result-coords {
+.divider {
   display: flex;
-  gap: 32px;
-  margin-bottom: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
-.coord-item {
-  font-size: 32px;
-  font-weight: 900;
-  color: white;
-  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-
-  span {
-    font-size: 14px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.75);
-    margin-right: 6px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-  }
-}
-
-.result-hint {
-  margin: 0;
-  font-size: 12px;
-  color: rgba(255, 255, 255, 0.9);
-  text-align: center;
-  font-weight: 600;
-}
-
-.info-card {
-  display: flex;
-  gap: 16px;
-  padding: 20px 24px;
-  background: var(--fur-bg-muted);
-  border-radius: 16px;
-  border-left: 4px solid var(--fur-primary);
   align-items: center;
-}
+  justify-content: center;
+  position: relative;
+  padding: 0 24px;
 
-.info-icon {
-  font-size: 32px;
-  flex-shrink: 0;
-}
-
-.info-text {
-  strong {
-    display: block;
-    font-size: 15px;
-    font-weight: 800;
-    margin-bottom: 6px;
-    color: var(--fur-text);
+  &::before {
+    content: '';
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    height: 2px;
+    background: var(--fur-border);
   }
 
-  p {
-    margin: 0;
-    font-size: 13px;
-    color: var(--fur-text-secondary);
-    line-height: 1.7;
+  .divider-icon {
+    background: var(--fur-bg-card);
+    padding: 0 12px;
+    font-size: 20px;
+    position: relative;
+    z-index: 1;
   }
 }
 
-@media (max-width: 520px) {
-  .calc-tabs {
-    padding: 8px;
-    gap: 6px;
-  }
+.result-section {
+  padding: 24px;
+}
 
-  .calc-tab {
-    padding: 12px;
-    font-size: 12px;
-  }
+.result-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
 
-  .coord-card {
-    padding: 24px 16px;
-  }
-
-  .result-coords {
-    gap: 20px;
-  }
-
-  .coord-item {
+  .result-icon {
     font-size: 24px;
   }
 
-  .info-card {
-    padding: 16px;
-    flex-direction: column;
+  .result-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--fur-text);
+  }
+}
+
+.accuracy-badge {
+  margin-left: auto;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
+  background: rgba(239, 68, 68, 0.1);
+  color: #ef4444;
+
+  &.accurate {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+  }
+}
+
+.coord-display {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-bottom: 16px;
+
+  @media (max-width: 520px) {
+    grid-template-columns: 1fr;
+    max-width: 240px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.coord-box {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  background: var(--fur-bg-muted);
+  border-radius: 12px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+
+  &.highlight {
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.15));
+  }
+
+  &:hover {
+    border-color: var(--fur-primary);
+  }
+
+  .coord-axis {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--fur-primary);
+    text-transform: uppercase;
+  }
+
+  .coord-value {
+    flex: 1;
+    font-size: 24px;
+    font-weight: 900;
+    color: var(--fur-text);
     text-align: center;
+  }
+
+  .copy-btn {
+    padding: 4px 8px;
+    border: none;
+    border-radius: 6px;
+    background: transparent;
+    cursor: pointer;
+    font-size: 16px;
+    opacity: 0.6;
+    transition: all 0.2s;
+
+    &:hover {
+      opacity: 1;
+      background: rgba(139, 92, 246, 0.1);
+    }
+  }
+}
+
+.error-hint {
+  padding: 16px;
+  background: rgba(239, 68, 68, 0.08);
+  border-radius: 12px;
+  border-left: 4px solid #ef4444;
+  margin-bottom: 16px;
+
+  strong {
+    display: block;
+    font-size: 13px;
+    font-weight: 700;
+    color: #ef4444;
+    margin-bottom: 6px;
+  }
+
+  p {
+    margin: 0 0 4px 0;
+    font-size: 13px;
+    color: var(--fur-text-secondary);
+  }
+
+  .hint-small {
+    font-size: 12px;
+    color: #ef4444;
+  }
+}
+
+.range-info {
+  padding: 16px;
+  background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.range-title {
+  font-size: 13px;
+  font-weight: 800;
+  color: var(--fur-text);
+  margin-bottom: 12px;
+}
+
+.range-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 8px;
+}
+
+.range-item {
+  display: flex;
+  justify-content: space-between;
+
+  .range-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--fur-text-secondary);
+  }
+
+  .range-value {
+    font-size: 13px;
+    font-weight: 800;
+    color: #10b981;
+  }
+}
+
+.range-desc {
+  margin: 0;
+  font-size: 12px;
+  color: var(--fur-text-secondary);
+}
+
+.formula {
+  text-align: center;
+
+  code {
+    display: inline-block;
+    padding: 8px 16px;
+    background: var(--fur-bg-muted);
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--fur-primary);
+    font-family: inherit;
+  }
+}
+
+.tips-card {
+  background: var(--fur-bg-card);
+  border: 2px solid var(--fur-border);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+}
+
+.tips-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1));
+  border-bottom: 2px solid var(--fur-border);
+
+  .tips-icon {
+    font-size: 24px;
+  }
+
+  .tips-title {
+    font-size: 15px;
+    font-weight: 800;
+    color: var(--fur-text);
+  }
+}
+
+.tips-list {
+  padding: 20px;
+}
+
+.tip-item {
+  display: flex;
+  gap: 14px;
+  padding: 10px 0;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid var(--fur-border);
+  }
+
+  .tip-num {
+    flex-shrink: 0;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    border-radius: 50%;
+    color: white;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .tip-text {
+    flex: 1;
+    padding-top: 3px;
+    font-size: 14px;
+    color: var(--fur-text-secondary);
+    line-height: 1.6;
   }
 }
 </style>
