@@ -160,7 +160,6 @@ const typeLabels: Record<string, string> = {
 }
 
 .log-version {
-  font-family: monospace;
   font-size: 14px;
   font-weight: 700;
   color: var(--fur-text);
