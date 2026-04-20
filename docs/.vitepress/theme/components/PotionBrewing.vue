@@ -175,14 +175,6 @@ const filteredPotions = ref(potions.filter(p =>
 
 <template>
   <div class="potion-brewing">
-    <div class="guide-header">
-      <h2 class="guide-title">
-        <span class="title-icon">🧪</span>
-        药水酿造配方
-      </h2>
-      <p class="guide-subtitle">17种药水完整酿造指南</p>
-    </div>
-
     <div class="search-bar">
       <input 
         v-model="searchQuery" 
@@ -259,7 +251,7 @@ const filteredPotions = ref(potions.filter(p =>
 .potion-brewing {
   max-width: 900px;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 40px 0;
 }
 
 .guide-header {

@@ -82,14 +82,6 @@ const filteredTrades = trades.filter(t =>
 
 <template>
   <div class="villager-trades">
-    <div class="guide-header">
-      <h2 class="guide-title">
-        <span class="title-icon">🧑‍🌾</span>
-        村民交易表
-      </h2>
-      <p class="guide-subtitle">全职业完整交易对照表</p>
-    </div>
-
     <div class="profession-tabs">
       <button
         v-for="p in professions"
@@ -152,7 +144,7 @@ const filteredTrades = trades.filter(t =>
 .villager-trades {
   max-width: 900px;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 40px 0;
 }
 
 .guide-header {

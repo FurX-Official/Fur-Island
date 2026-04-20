@@ -85,14 +85,6 @@ const toRoman = (num: number) => {
 
 <template>
   <div class="enchant-list">
-    <div class="guide-header">
-      <h2 class="guide-title">
-        <span class="title-icon">✨</span>
-        附魔大全
-      </h2>
-      <p class="guide-subtitle">38种附魔完整查询，含互斥说明</p>
-    </div>
-
     <div class="search-bar">
       <input 
         v-model="searchQuery" 
@@ -143,7 +135,7 @@ const toRoman = (num: number) => {
 .enchant-list {
   max-width: 900px;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 40px 0;
 }
 
 .guide-header {

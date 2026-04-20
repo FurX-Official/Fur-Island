@@ -19,14 +19,6 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
 
 <template>
   <div class="coord-calculator">
-    <div class="guide-header">
-      <h2 class="guide-title">
-        <span class="title-icon">🗺️</span>
-        坐标转换器
-      </h2>
-      <p class="guide-subtitle">主世界 ↔ 地狱门 坐标换算</p>
-    </div>
-
     <div class="calc-tabs">
       <button
         v-for="d in ['overworld', 'nether']"
@@ -42,7 +34,7 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
     <div v-if="direction === 'overworld'" class="coord-card">
       <div class="section-title">📍 输入主世界坐标</div>
       
-      <div class="coord-inputs">
+      <div class="coord-inputs cols-3">
         <div class="input-group">
           <label>X</label>
           <input v-model.number="overworldX" type="number" step="1">
@@ -79,7 +71,7 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
     <div v-else class="coord-card">
       <div class="section-title">🔥 输入地狱门坐标</div>
       
-      <div class="coord-inputs">
+      <div class="coord-inputs cols-2">
         <div class="input-group">
           <label>X</label>
           <input v-model.number="portalNetherX" type="number" step="1">
@@ -121,7 +113,7 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
 .coord-calculator {
   max-width: 600px;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 40px 0;
 }
 
 .guide-header {
@@ -197,9 +189,19 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
 
 .coord-inputs {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
   gap: 16px;
   margin-bottom: 24px;
+
+  &.cols-2 {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 400px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  &.cols-3 {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .input-group {

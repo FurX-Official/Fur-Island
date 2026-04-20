@@ -51,14 +51,6 @@ const formatNumber = (num: number) => num.toLocaleString()
 
 <template>
   <div class="exp-calculator">
-    <div class="guide-header">
-      <h2 class="guide-title">
-        <span class="title-icon">✨</span>
-        经验计算器
-      </h2>
-      <p class="guide-subtitle">等级 ↔ 经验值 精准换算</p>
-    </div>
-
     <div class="calc-tabs">
       <button
         v-for="m in ['levelToExp', 'expToLevel']"
@@ -171,7 +163,7 @@ const formatNumber = (num: number) => num.toLocaleString()
 .exp-calculator {
   max-width: 600px;
   margin: 0 auto;
-  padding: 20px 0;
+  padding: 40px 0;
 }
 
 .guide-header {
