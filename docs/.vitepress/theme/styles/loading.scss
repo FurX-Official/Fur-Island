@@ -1,0 +1,84 @@
+#VPContent {
+  .is-loading & {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  transition: opacity 0.3s ease, transform 0.4s ease;
+}
+
+.VPDoc {
+  .content {
+    img {
+      transition: opacity 0.4s ease;
+
+      &:not([loaded]) {
+        opacity: 0;
+        background: linear-gradient(
+          90deg,
+          var(--fur-bg-soft) 25%,
+          var(--fur-bg-card) 50%,
+          var(--fur-bg-soft) 75%
+        );
+        background-size: 200% 100%;
+        animation: skeleton-loading 1.5s infinite;
+      }
+
+      &[loaded='true'] {
+        opacity: 1;
+      }
+    }
+  }
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.page-loading {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  z-index: 9999;
+  pointer-events: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 30%;
+    background: var(--fur-gradient-primary);
+    animation: loading-bar 1s ease-in-out infinite;
+    box-shadow: 0 0 10px rgba(var(--fur-primary-rgb), 0.5);
+  }
+}
+
+@keyframes loading-bar {
+  0% {
+    left: -30%;
+  }
+  100% {
+    left: 100%;
+  }
+}
+
+.skeleton-box {
+  background: linear-gradient(
+    90deg,
+    var(--fur-bg-soft) 25%,
+    var(--fur-bg-card) 50%,
+    var(--fur-bg-soft) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+  border-radius: 8px;
+}

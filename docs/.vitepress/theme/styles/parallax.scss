@@ -1,0 +1,47 @@
+.parallax-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+  transition: transform 0.1s ease-out;
+
+  > * {
+    transform: translateZ(20px);
+  }
+}
+
+.command-card,
+.type-card,
+.flag-card,
+.rule-card,
+.friend-card {
+  transform-style: preserve-3d;
+  perspective: 1000px;
+
+  &:hover {
+    box-shadow: 0 20px 40px -8px rgba(var(--fur-primary-rgb), 0.15);
+  }
+}
+
+.friend-card {
+  &:hover {
+    transform: translateY(-6px) rotateX(2deg) rotateY(-2deg);
+  }
+}
+
+.rule-card,
+.command-card,
+.flag-card,
+.type-card,
+.faq-item {
+  &:hover {
+    transform: translateY(-4px) scale(1.02);
+  }
+}
+
+.limbo-card,
+.perm-example,
+.notice-card,
+.tips-card {
+  &:hover {
+    transform: translateY(-2px);
+  }
+}

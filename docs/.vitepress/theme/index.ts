@@ -25,6 +25,8 @@ export default {
       onMounted(() => {
         playClickSound()
         enableDarkModeTransition()
+        enableImageLightbox()
+        enablePageLoading()
       })
 
       watch(
@@ -83,4 +85,126 @@ function enableDarkModeTransition() {
       attributeFilter: ['class']
     })
   }, 1000)
+}
+
+function enableImageLightbox() {
+  if (typeof window === 'undefined') return
+
+  let overlay: HTMLDivElement | null = null
+
+  const createOverlay = () => {
+    overlay = document.createElement('div')
+    overlay.className = 'global-lightbox-overlay'
+    overlay.innerHTML = `
+      <div class="global-lightbox-content">
+        <button class="global-lightbox-close">✕</button>
+        <img class="global-lightbox-image" src="" alt="">
+      </div>
+    `
+    document.body.appendChild(overlay)
+
+    overlay.querySelector('.global-lightbox-close')?.addEventListener('click', closeLightbox)
+    overlay.addEventListener('click', (e) => {
+      if (e.target === overlay) closeLightbox()
+    })
+  }
+
+  const openLightbox = (src: string) => {
+    if (!overlay) createOverlay()
+    const img = overlay!.querySelector('.global-lightbox-image') as HTMLImageElement
+    img!.src = src
+    overlay!.style.display = 'flex'
+    document.body.style.overflow = 'hidden'
+  }
+
+  const closeLightbox = () => {
+    if (overlay) {
+      overlay.style.display = 'none'
+      document.body.style.overflow = ''
+    }
+  }
+
+  const bindImages = () => {
+    setTimeout(() => {
+      const images = document.querySelectorAll('.VPDoc .content img, .step-image img, .lobby-image img')
+      images.forEach((img) => {
+        const imgEl = img as HTMLImageElement
+        imgEl.style.cursor = 'zoom-in'
+        imgEl.onclick = () => openLightbox(imgEl.src)
+      })
+    }, 300)
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeLightbox()
+  })
+
+  bindImages()
+
+  const originalPush = router.push
+  router.push = async (...args) => {
+    const loadingBar = document.createElement('div')
+    loadingBar.className = 'page-loading'
+    document.body.appendChild(loadingBar)
+    await originalPush(...args)
+    setTimeout(() => loadingBar.remove(), 600)
+    bindImages()
+  }
+}
+
+function enablePageLoading() {
+  const style = document.createElement('style')
+  style.textContent = `
+    .global-lightbox-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      backdrop-filter: blur(8px);
+      z-index: 9999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 40px;
+      animation: fadeIn 0.3s ease;
+    }
+    .global-lightbox-content {
+      position: relative;
+      max-width: 90vw;
+      max-height: 85vh;
+    }
+    .global-lightbox-close {
+      position: absolute;
+      top: -50px;
+      right: 0;
+      width: 40px;
+      height: 40px;
+      border: none;
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      border-radius: 50%;
+      font-size: 18px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .global-lightbox-close:hover {
+      background: rgba(255, 255, 255, 0.2);
+      transform: scale(1.1);
+    }
+    .global-lightbox-image {
+      max-width: 100%;
+      max-height: 85vh;
+      border-radius: 12px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+      animation: zoomIn 0.3s ease;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    @keyframes zoomIn {
+      from { transform: scale(0.9); opacity: 0; }
+      to { transform: scale(1); opacity: 1; }
+    }
+  `
+  document.head.appendChild(style)
 }
