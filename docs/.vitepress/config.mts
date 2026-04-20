@@ -9,6 +9,7 @@ export default defineConfig({
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '首页', link: '/' },
+      { text: '服务器地图', link: '/map' },
       {
         text: '游戏指南',
         items: [
@@ -19,6 +20,7 @@ export default defineConfig({
       { text: '更新日志', link: '/changelog' },
       { text: '常见问题', link: '/faq' },
       { text: '服务器规则', link: '/rules' },
+      { text: '团队介绍', link: '/team' },
       { text: '支持我们', link: '/support' },
       { text: '友情链接', link: '/friends' }
     ],

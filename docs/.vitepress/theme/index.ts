@@ -12,6 +12,8 @@ import ParticlesBackground from './components/ParticlesBackground.vue'
 import Changelog from './components/Changelog.vue'
 import FAQSection from './components/FAQSection.vue'
 import SupportUs from './components/SupportUs.vue'
+import TeamSection from './components/TeamSection.vue'
+import ServerMap from './components/ServerMap.vue'
 import './styles/index.scss'
 
 export default {
@@ -28,6 +30,8 @@ export default {
     app.component('Changelog', Changelog)
     app.component('FAQSection', FAQSection)
     app.component('SupportUs', SupportUs)
+    app.component('TeamSection', TeamSection)
+    app.component('ServerMap', ServerMap)
 
     if (typeof window !== 'undefined') {
       onMounted(() => {
@@ -35,6 +39,9 @@ export default {
         enableDarkModeTransition()
         enableImageLightbox(router)
         enablePageLoading()
+        enableNavbarGlass()
+        enableProgressBar(router)
+        enableWelcomePopup()
       })
 
       watch(
@@ -219,4 +226,165 @@ function enablePageLoading() {
     }
   `
   document.head.appendChild(style)
+}
+
+function enableNavbarGlass() {
+  if (typeof window === 'undefined') return
+
+  const navbar = document.querySelector('.VPNavBar')
+
+  const updateScroll = () => {
+    if (window.scrollY > 20) {
+      navbar?.classList.add('scrolled')
+    } else {
+      navbar?.classList.remove('scrolled')
+    }
+  }
+
+  updateScroll()
+  window.addEventListener('scroll', updateScroll, { passive: true })
+}
+
+function enableProgressBar(router: any) {
+  if (typeof window === 'undefined') return
+
+  const style = document.createElement('style')
+  style.textContent = `
+    #nprogress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 0%;
+      height: 3px;
+      background: var(--fur-gradient-primary);
+      z-index: 99999;
+      transition: width 0.3s ease, opacity 0.2s ease;
+      box-shadow: 0 0 10px var(--fur-primary);
+    }
+  `
+  document.head.appendChild(style)
+
+  const bar = document.createElement('div')
+  bar.id = 'nprogress-bar'
+  document.body.appendChild(bar)
+
+  const originalPush = router.push
+  router.push = async (...args: any[]) => {
+    bar.style.opacity = '1'
+    bar.style.width = '0%'
+
+    setTimeout(() => bar.style.width = '40%', 10)
+    setTimeout(() => bar.style.width = '70%', 150)
+    setTimeout(() => bar.style.width = '90%', 300)
+
+    await originalPush.apply(router, args)
+
+    setTimeout(() => {
+      bar.style.width = '100%'
+      setTimeout(() => {
+        bar.style.opacity = '0'
+        setTimeout(() => {
+          bar.style.width = '0%'
+        }, 200)
+      }, 100)
+    }, 50)
+  }
+}
+
+function enableWelcomePopup() {
+  if (typeof window === 'undefined') return
+
+  const visitKey = 'fur-island-visits'
+  const lastVisitKey = 'fur-island-last-visit'
+
+  const visits = parseInt(localStorage.getItem(visitKey) || '0') + 1
+  const lastVisit = localStorage.getItem(lastVisitKey)
+  const now = Date.now()
+
+  localStorage.setItem(visitKey, String(visits))
+  localStorage.setItem(lastVisitKey, String(now))
+
+  if (visits > 1 && lastVisit && (now - parseInt(lastVisit)) > 24 * 60 * 60 * 1000) {
+    const style = document.createElement('style')
+    style.textContent = `
+      .welcome-popup {
+        position: fixed;
+        bottom: 24px;
+        right: 24px;
+        background: var(--fur-bg-card);
+        border: 1px solid var(--fur-border);
+        border-radius: 16px;
+        padding: 20px 24px;
+        box-shadow: var(--fur-shadow-large);
+        z-index: 9999;
+        animation: slideUp 0.5s ease;
+        max-width: 300px;
+      }
+      .welcome-popup h4 {
+        margin: 0 0 8px 0;
+        font-size: 16px;
+        font-weight: 700;
+        background: var(--fur-gradient-primary);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+      }
+      .welcome-popup p {
+        margin: 0 0 12px 0;
+        font-size: 13px;
+        color: var(--fur-text-secondary);
+        line-height: 1.6;
+      }
+      .welcome-popup-close {
+        position: absolute;
+        top: 12px;
+        right: 12px;
+        width: 28px;
+        height: 28px;
+        border: none;
+        background: var(--fur-bg-soft);
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s;
+      }
+      .welcome-popup-close:hover {
+        background: var(--fur-primary);
+        color: white;
+      }
+      @keyframes slideUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    `
+    document.head.appendChild(style)
+
+    const popup = document.createElement('div')
+    popup.className = 'welcome-popup'
+    popup.innerHTML = `
+      <button class="welcome-popup-close">×</button>
+      <h4>🐾 欢迎回来！</h4>
+      <p>这是您第 <strong>${visits}</strong> 次访问<br>服务器又有新变化啦~</p>
+    `
+    document.body.appendChild(popup)
+
+    popup.querySelector('.welcome-popup-close')?.addEventListener('click', () => {
+      popup.style.opacity = '0'
+      popup.style.transform = 'translateY(30px)'
+      setTimeout(() => popup.remove(), 300)
+    })
+
+    setTimeout(() => {
+      if (document.body.contains(popup)) {
+        popup.style.opacity = '0'
+        popup.style.transform = 'translateY(30px)'
+        setTimeout(() => popup.remove(), 300)
+      }
+    }, 8000)
+  }
 }

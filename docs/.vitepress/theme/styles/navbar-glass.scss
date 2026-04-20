@@ -1,0 +1,22 @@
+.VPNavBar {
+  transition: all 0.3s ease;
+
+  &.scrolled {
+    background: rgba(var(--fur-bg-rgb), 0.7) !important;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--fur-border-light) !important;
+
+    &:not(.dark) {
+      background: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    &.dark {
+      background: rgba(30, 30, 32, 0.7) !important;
+    }
+  }
+}
+
+.VPNavBar.has-sidebar .title {
+  border-bottom-color: transparent !important;
+}

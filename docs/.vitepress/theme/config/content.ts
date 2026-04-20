@@ -1,4 +1,23 @@
 export const siteContent = {
+  team: [
+    {
+      name: '无名',
+      role: '服主 / 技术',
+      avatar: 'http://q.qlogo.cn/headimg_dl?dst_uin=3838475087&spec=640&img_type=jpg',
+      color: '#8b5cf6',
+      bio: '负责服务器整体规划和技术架构',
+      links: { qq: 'tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=3838475087' }
+    },
+    {
+      name: '天梦',
+      role: "吉祥物/小男娘",
+      avatar: 'http://q.qlogo.cn/headimg_dl?dst_uin=248809043&spec=640&img_type=jpg',
+      color: '#3b82f6',
+      bio: '服务器吉祥物',
+      links: { qq: 'tencent://AddContact/?fromId=45&fromSubId=1&subcmd=all&uin=248809043' }
+    }
+  ],
+
   support: {
     tiers: [
       {
