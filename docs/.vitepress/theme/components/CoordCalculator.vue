@@ -113,7 +113,13 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
 .coord-calculator {
   max-width: 600px;
   margin: 0 auto;
-  padding: 40px 0;
+  padding: 40px 20px;
+}
+
+@media (max-width: 640px) {
+  .coord-calculator {
+    padding: 30px 16px;
+  }
 }
 
 .guide-header {
@@ -201,6 +207,31 @@ const portalOverworldZ = computed(() => portalNetherZ.value * 8)
 
   &.cols-3 {
     grid-template-columns: repeat(3, 1fr);
+  }
+
+  @media (max-width: 768px) {
+    &.cols-3 {
+      grid-template-columns: repeat(2, 1fr);
+      max-width: 400px;
+      margin-left: auto;
+      margin-right: auto;
+
+      .input-group:nth-child(3) {
+        grid-column: span 2;
+        max-width: 180px;
+        margin: 0 auto;
+      }
+    }
+  }
+
+  @media (max-width: 520px) {
+    &.cols-2,
+    &.cols-3 {
+      grid-template-columns: 1fr;
+      max-width: 280px;
+      margin-left: auto;
+      margin-right: auto;
+    }
   }
 }
 
