@@ -223,7 +223,7 @@ const copyToClipboard = (text: string) => {
   justify-content: center;
   gap: 10px;
   padding: 18px 24px;
-  border: 2px solid var(--fur-border);
+  border: 4px solid var(--fur-border);
   border-radius: 16px;
   background: var(--fur-bg-card);
   color: var(--fur-text-secondary);
@@ -258,11 +258,11 @@ const copyToClipboard = (text: string) => {
 
 .converter-card {
   background: var(--fur-bg-card);
-  border: 2px solid var(--fur-border);
-  border-radius: 20px;
+  border: 4px solid var(--fur-border);
+  border-radius: 24px;
   overflow: hidden;
-  margin-bottom: 20px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  margin-bottom: 24px;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
 }
 
 .card-header {
@@ -271,7 +271,7 @@ const copyToClipboard = (text: string) => {
   gap: 20px;
   padding: 32px;
   background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(59, 130, 246, 0.05));
-  border-bottom: 2px solid var(--fur-border);
+  border-bottom: 4px solid var(--fur-border);
 
   .header-icon {
     font-size: 44px;
@@ -331,8 +331,8 @@ const copyToClipboard = (text: string) => {
 
   input {
     padding: 20px;
-    border: 2px solid var(--fur-border);
-    border-radius: 12px;
+    border: 4px solid var(--fur-border);
+    border-radius: 16px;
     background: var(--fur-bg-muted);
     color: var(--fur-text);
     font-size: 24px;
@@ -343,7 +343,7 @@ const copyToClipboard = (text: string) => {
     &:focus {
       outline: none;
       border-color: var(--fur-primary);
-      box-shadow: 0 0 0 4px rgba(139, 92, 246, 0.15);
+      box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.15);
       transform: translateY(-1px);
     }
   }
@@ -354,14 +354,14 @@ const copyToClipboard = (text: string) => {
   align-items: center;
   justify-content: center;
   position: relative;
-  padding: 0 24px;
+  padding: 0 32px;
 
   &::before {
     content: '';
     position: absolute;
-    left: 24px;
-    right: 24px;
-    height: 2px;
+    left: 32px;
+    right: 32px;
+    height: 4px;
     background: var(--fur-border);
   }
 
@@ -431,8 +431,8 @@ const copyToClipboard = (text: string) => {
   gap: 10px;
   padding: 16px 20px;
   background: var(--fur-bg-muted);
-  border-radius: 12px;
-  border: 2px solid transparent;
+  border-radius: 16px;
+  border: 4px solid transparent;
   transition: all 0.2s ease;
 
   &.highlight {
@@ -478,8 +478,8 @@ const copyToClipboard = (text: string) => {
 .error-hint {
   padding: 16px;
   background: rgba(239, 68, 68, 0.08);
-  border-radius: 12px;
-  border-left: 4px solid #ef4444;
+  border-radius: 16px;
+  border-left: 6px solid #ef4444;
   margin-bottom: 16px;
 
   strong {
@@ -505,7 +505,7 @@ const copyToClipboard = (text: string) => {
 .range-info {
   padding: 16px;
   background: linear-gradient(135deg, rgba(16, 185, 129, 0.1), rgba(59, 130, 246, 0.1));
-  border-radius: 12px;
+  border-radius: 16px;
   margin-bottom: 16px;
 }
 
@@ -563,10 +563,10 @@ const copyToClipboard = (text: string) => {
 
 .tips-card {
   background: var(--fur-bg-card);
-  border: 2px solid var(--fur-border);
-  border-radius: 20px;
+  border: 4px solid var(--fur-border);
+  border-radius: 24px;
   overflow: hidden;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.12);
 }
 
 .tips-header {
@@ -575,7 +575,7 @@ const copyToClipboard = (text: string) => {
   gap: 12px;
   padding: 20px 28px;
   background: linear-gradient(135deg, rgba(236, 72, 153, 0.1), rgba(139, 92, 246, 0.1));
-  border-bottom: 2px solid var(--fur-border);
+  border-bottom: 4px solid var(--fur-border);
 
   .tips-icon {
     font-size: 28px;
