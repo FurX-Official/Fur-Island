@@ -25,6 +25,7 @@ import ExpCalculator from './components/ExpCalculator.vue'
 import EnchantList from './components/EnchantList.vue'
 import PotionBrewing from './components/PotionBrewing.vue'
 import VillagerTrades from './components/VillagerTrades.vue'
+import ReportGuide from './components/ReportGuide.vue'
 import './styles/index.scss'
 
 export default {
@@ -54,6 +55,7 @@ export default {
     app.component('EnchantList', EnchantList)
     app.component('PotionBrewing', PotionBrewing)
     app.component('VillagerTrades', VillagerTrades)
+    app.component('ReportGuide', ReportGuide)
 
     if (typeof window !== 'undefined') {
       onMounted(() => {
