@@ -316,11 +316,17 @@ const filteredTrades = computed(() =>
 .tips-list {
   margin: 0;
   padding-left: 24px;
+  list-style: none;
 
   li {
-    padding: 10px 0;
+    padding: 12px 0;
     font-size: 15px;
     font-weight: 600;
+    line-height: 1.7;
+
+    &:not(:last-child) {
+      border-bottom: 2px solid var(--fur-border);
+    }
   }
 }
 
