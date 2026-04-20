@@ -310,41 +310,68 @@ const copyToClipboard = (text: string) => {
     &.cols-2,
     &.cols-3 {
       grid-template-columns: 1fr;
-      max-width: 320px;
+      max-width: 360px;
+    }
+  }
+
+  @media (max-width: 400px) {
+    .input-item {
+      .input-label {
+        width: 48px;
+        height: 48px;
+        font-size: 18px;
+      }
+
+      input {
+        padding: 20px 20px 20px 64px;
+        font-size: 24px;
+      }
     }
   }
 }
 
 .input-item {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 0;
 
   .input-label {
-    font-size: 12px;
-    font-weight: 800;
-    color: var(--fur-primary);
+    position: absolute;
+    left: -4px;
+    top: -4px;
+    width: 56px;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    border-radius: 16px 0 16px 0;
+    font-size: 20px;
+    font-weight: 900;
+    color: white;
     text-transform: uppercase;
-    letter-spacing: 2px;
-    text-align: center;
+    letter-spacing: 0;
+    z-index: 1;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
   }
 
   input {
-    padding: 20px;
+    padding: 24px 24px 24px 76px;
     border: 4px solid var(--fur-border);
     border-radius: 16px;
     background: var(--fur-bg-muted);
     color: var(--fur-text);
-    font-size: 24px;
-    font-weight: 800;
-    text-align: center;
+    font-size: 28px;
+    font-weight: 900;
+    text-align: left;
     transition: all 0.3s ease;
 
     &:focus {
       outline: none;
       border-color: var(--fur-primary);
-      box-shadow: 0 0 0 6px rgba(139, 92, 246, 0.15);
-      transform: translateY(-1px);
+      box-shadow: 0 8px 24px rgba(139, 92, 246, 0.25);
+      transform: translateY(-2px);
     }
   }
 }

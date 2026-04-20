@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 
 const selectedProfession = ref('all')
 
@@ -75,206 +75,301 @@ const trades: Trade[] = [
   { profession: 'wandering', level: 1, input: '绿宝石', inputCount: 5, output: '珊瑚扇', outputCount: 1 }
 ]
 
-const filteredTrades = trades.filter(t => 
-  selectedProfession.value === 'all' || t.profession === selectedProfession.value
+const filteredTrades = computed(() => 
+  trades.filter(t => 
+    selectedProfession.value === 'all' || t.profession === selectedProfession.value
+  )
 )
 </script>
 
 <template>
   <div class="villager-trades">
-    <div class="profession-tabs">
-      <button
-        v-for="p in professions"
-        :key="p.id"
-        class="profession-tab"
-        :class="{ active: selectedProfession === p.id }"
-        @click="selectedProfession = p.id"
-      >
-        <span>{{ p.icon }}</span>
-        <span class="tab-text">{{ p.name }}</span>
-      </button>
+    <div class="component-header">
+      <span class="header-icon">🤝</span>
+      <span class="header-text">村民交易指南</span>
     </div>
 
-    <div class="trades-table-container">
-      <table class="trades-table">
-        <thead>
-          <tr>
-            <th>职业</th>
-            <th>等级</th>
-            <th>输入</th>
-            <th>输出</th>
-            <th>备注</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(trade, i) in filteredTrades" :key="i">
-            <td>
-              <span class="prof-icon">{{ professions.find(p => p.id === trade.profession)?.icon }}</span>
-              {{ professions.find(p => p.id === trade.profession)?.name }}
-            </td>
-            <td><span class="level-badge">Lv.{{ trade.level }}</span></td>
-            <td>
-              <span class="item-count">{{ trade.inputCount }}×</span>
-              {{ trade.input }}
-            </td>
-            <td>
-              <span class="item-count output">{{ trade.outputCount }}×</span>
-              {{ trade.output }}
-            </td>
-            <td><span class="trade-note">{{ trade.note }}</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
+    <div class="component-content">
+      <div class="profession-tabs">
+        <button
+          v-for="p in professions"
+          :key="p.id"
+          class="profession-tab"
+          :class="{ active: selectedProfession === p.id }"
+          @click="selectedProfession = p.id"
+        >
+          <span class="tab-icon">{{ p.icon }}</span>
+          <span class="tab-text">{{ p.name }}</span>
+        </button>
+      </div>
 
-    <AccordionPanel title="💡 刷交易技巧" icon="⭐">
-      <ul class="tips-list">
-        <li>🎯 <strong>图书管理员</strong> - 刷出经验修补是终极目标！</li>
-        <li>🏹 <strong>制箭师</strong> - 新手必刷！16根箭仅需2绿宝石</li>
-        <li>⛏️ <strong>工具匠</strong> - 满级必出附魔钻石镐</li>
-        <li>⚔️ <strong>武器匠</strong> - 满级出极品钻石剑</li>
-        <li>💧 <strong>牧师</strong> - 用腐肉稳定换绿宝石 + 末影珍珠</li>
-        <li>🚫 工作站放好，村民旁边放床就会自动绑定职业！</li>
-      </ul>
-    </AccordionPanel>
+      <div class="trades-table-container">
+        <table class="trades-table">
+          <thead>
+            <tr>
+              <th>💼 职业</th>
+              <th>⭐ 等级</th>
+              <th>📥 输入</th>
+              <th>📤 输出</th>
+              <th>💡 备注</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(trade, i) in filteredTrades" :key="i">
+              <td>
+                <span class="prof-icon">{{ professions.find(p => p.id === trade.profession)?.icon }}</span>
+                {{ professions.find(p => p.id === trade.profession)?.name }}
+              </td>
+              <td><span class="level-badge">Lv.{{ trade.level }}</span></td>
+              <td>
+                <span class="item-count">{{ trade.inputCount }}×</span>
+                {{ trade.input }}
+              </td>
+              <td>
+                <span class="item-count output">{{ trade.outputCount }}×</span>
+                {{ trade.output }}
+              </td>
+              <td><span class="trade-note">{{ trade.note }}</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <AccordionPanel title="💡 刷交易技巧" icon="⭐">
+        <ul class="tips-list">
+          <li>🎯 <strong>图书管理员</strong> - 刷出经验修补是终极目标！</li>
+          <li>🏹 <strong>制箭师</strong> - 新手必刷！16根箭仅需2绿宝石</li>
+          <li>⛏️ <strong>工具匠</strong> - 满级必出附魔钻石镐</li>
+          <li>⚔️ <strong>武器匠</strong> - 满级出极品钻石剑</li>
+          <li>💧 <strong>牧师</strong> - 用腐肉稳定换绿宝石 + 末影珍珠</li>
+          <li>🚫 工作站放好，村民旁边放床就会自动绑定职业！</li>
+        </ul>
+      </AccordionPanel>
+    </div>
   </div>
 </template>
 
 <style scoped lang="scss">
 .villager-trades {
-  max-width: 900px;
+  max-width: 1000px;
   margin: 0 auto;
-  padding: 40px 0;
+  background: var(--fur-bg-card);
+  border: 4px solid var(--fur-border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
+
+  &:hover {
+    border-color: var(--fur-primary);
+    box-shadow: 0 12px 48px rgba(139, 92, 246, 0.25);
+  }
 }
 
-.guide-header {
-  text-align: center;
-  margin-bottom: 32px;
+.component-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+  color: white;
 
-  .guide-title {
-    display: inline-flex;
-    align-items: center;
-    gap: 12px;
+  .header-icon {
+    font-size: 40px;
+  }
+
+  .header-text {
     font-size: 28px;
-    font-weight: 700;
-    margin: 0 0 8px 0;
-    background: var(--fur-gradient-primary);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-
-    .title-icon {
-      font-size: 32px;
-    }
+    font-weight: 900;
+    letter-spacing: 2px;
   }
+}
 
-  .guide-subtitle {
-    font-size: 14px;
-    color: var(--fur-text-secondary);
-    margin: 0;
-  }
+.component-content {
+  padding: 32px;
 }
 
 .profession-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
-  margin-bottom: 24px;
+  gap: 12px;
+  margin-bottom: 32px;
   justify-content: center;
 }
 
 .profession-tab {
-  padding: 8px 14px;
-  border: 1px solid var(--fur-border);
-  border-radius: 8px;
-  background: var(--fur-bg-card);
-  color: var(--fur-text-secondary);
-  font-size: 13px;
-  cursor: pointer;
   display: flex;
   align-items: center;
-  gap: 6px;
-  transition: all 0.2s;
+  gap: 8px;
+  padding: 14px 20px;
+  border: 4px solid var(--fur-border);
+  border-radius: 16px;
+  background: var(--fur-bg-card);
+  color: var(--fur-text-secondary);
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+
+  .tab-icon {
+    font-size: 20px;
+  }
 
   &.active {
-    background: var(--fur-primary);
-    border-color: var(--fur-primary);
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    border-color: transparent;
     color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.35);
   }
 
   &:hover:not(.active) {
     border-color: var(--fur-primary);
+    transform: translateY(-1px);
   }
 }
 
 .trades-table-container {
   overflow-x: auto;
+  border: 4px solid var(--fur-border);
+  border-radius: 20px;
+  margin-bottom: 24px;
 }
 
 .trades-table {
   width: 100%;
   border-collapse: collapse;
   background: var(--fur-bg-card);
-  border-radius: 12px;
-  overflow: hidden;
 
   th, td {
-    padding: 14px 16px;
+    padding: 18px 20px;
     text-align: left;
-    border-bottom: 1px solid var(--fur-border-light);
-    font-size: 14px;
+    border-bottom: 2px solid var(--fur-border);
+    font-size: 15px;
+    font-weight: 600;
   }
 
   th {
-    background: var(--fur-bg-muted);
-    font-weight: 600;
-    color: var(--fur-text-secondary);
+    background: linear-gradient(135deg, rgba(139, 92, 246, 0.15), rgba(59, 130, 246, 0.15));
+    font-weight: 800;
+    color: var(--fur-primary);
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 
-  tr:hover {
-    background: rgba(139, 92, 246, 0.05);
+  tr {
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: linear-gradient(135deg, rgba(139, 92, 246, 0.08), rgba(59, 130, 246, 0.08));
+    }
+
+    &:last-child td {
+      border-bottom: none;
+    }
   }
 }
 
 .prof-icon {
-  margin-right: 6px;
+  margin-right: 8px;
+  font-size: 20px;
 }
 
 .level-badge {
-  padding: 3px 8px;
-  background: var(--fur-primary);
+  padding: 6px 12px;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
   color: white;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 700;
+  border-radius: 12px;
+  font-size: 13px;
+  font-weight: 800;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
 }
 
 .item-count {
-  padding: 2px 6px;
+  padding: 6px 12px;
   background: var(--fur-bg-muted);
-  border-radius: 4px;
-  margin-right: 6px;
-  font-weight: 600;
+  border-radius: 10px;
+  margin-right: 10px;
+  font-weight: 800;
+  font-size: 14px;
+  border: 2px solid var(--fur-border);
 
   &.output {
-    background: rgba(16, 185, 129, 0.15);
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.2), rgba(16, 185, 129, 0.1));
     color: #10b981;
+    border-color: rgba(16, 185, 129, 0.3);
   }
 }
 
 .trade-note {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--fur-primary);
-  font-weight: 600;
+  font-weight: 800;
+  padding: 6px 12px;
+  background: rgba(139, 92, 246, 0.1);
+  border-radius: 10px;
+  border: 2px solid rgba(139, 92, 246, 0.2);
 }
 
 .tips-list {
   margin: 0;
-  padding-left: 20px;
+  padding-left: 24px;
 
   li {
-    padding: 6px 0;
-    font-size: 14px;
+    padding: 10px 0;
+    font-size: 15px;
+    font-weight: 600;
+  }
+}
+
+@media (max-width: 768px) {
+  .component-header {
+    padding: 20px 24px;
+
+    .header-icon {
+      font-size: 32px;
+    }
+
+    .header-text {
+      font-size: 22px;
+    }
+  }
+
+  .component-content {
+    padding: 24px 20px;
+  }
+
+  .profession-tab {
+    padding: 10px 14px;
+    font-size: 13px;
+
+    .tab-icon {
+      font-size: 18px;
+    }
+  }
+
+  .trades-table {
+    th, td {
+      padding: 12px 14px;
+      font-size: 13px;
+    }
+
+    th {
+      font-size: 12px;
+    }
+  }
+
+  .prof-icon {
+    font-size: 18px;
+  }
+
+  .level-badge,
+  .item-count,
+  .trade-note {
+    padding: 4px 8px;
+    font-size: 12px;
   }
 }
 </style>
