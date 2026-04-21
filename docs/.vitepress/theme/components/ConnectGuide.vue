@@ -63,36 +63,43 @@ const copyAddress = () => {
 
 <template>
   <div class="connect-guide">
-    <h3 class="guide-title">🚀 加入服务器指南</h3>
-    
-    <div class="tabs">
-      <button
-        v-for="tab in tabs"
-        :key="tab.key"
-        class="tab"
-        :class="{ active: activeTab === tab.key }"
-        @click="activeTab = tab.key"
-      >
-        <span class="tab-icon">{{ tab.icon }}</span>
-        {{ tab.label }}
-      </button>
+    <div class="component-header">
+      <span class="header-icon">🚀</span>
+      <span class="header-text">加入服务器指南</span>
     </div>
 
-    <div class="steps">
-      <div
-        v-for="step in activeTab === 'java' ? javaSteps : bedrockSteps"
-        :key="step.step"
-        class="step-item"
-      >
-        <div class="step-number">{{ step.step }}</div>
-        <div class="step-content">
-          <h4 class="step-title">{{ step.title }}</h4>
-          <p class="step-desc">
-            {{ step.desc }}
-            <span v-if="step.copy" class="copy-text" @click="copyAddress">
-              点击复制
-            </span>
-          </p>
+    <div class="component-content">
+      <p class="guide-subtitle">跨平台支持 · 支持 Java 版与基岩版互通</p>
+      
+      <div class="tabs">
+        <button
+          v-for="tab in tabs"
+          :key="tab.key"
+          class="tab"
+          :class="{ active: activeTab === tab.key }"
+          @click="activeTab = tab.key"
+        >
+          <span class="tab-icon">{{ tab.icon }}</span>
+          {{ tab.label }}
+        </button>
+      </div>
+
+      <div class="steps">
+        <div
+          v-for="step in activeTab === 'java' ? javaSteps : bedrockSteps"
+          :key="step.step"
+          class="step-item"
+        >
+          <div class="step-number">{{ step.step }}</div>
+          <div class="step-content">
+            <h4 class="step-title">{{ step.title }}</h4>
+            <p class="step-desc">
+              {{ step.desc }}
+              <span v-if="step.copy" class="copy-text" @click="copyAddress">
+                点击复制
+              </span>
+            </p>
+          </div>
         </div>
       </div>
     </div>
@@ -101,30 +108,51 @@ const copyAddress = () => {
 
 <style scoped lang="scss">
 .connect-guide {
-  margin: 48px auto;
-  max-width: 100%;
-  padding: 36px 48px;
+  max-width: 1000px;
+  margin: 0 auto;
   background: var(--fur-bg-card);
-  border-radius: 20px;
-  border: 1px solid var(--fur-border);
-  box-shadow: var(--fur-shadow-medium);
+  border: 4px solid var(--fur-border);
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s ease;
 
-  :deep(.dark) & {
-    background: var(--fur-bg-card);
-  }
-
-  @media (max-width: 768px) {
-    margin: 32px auto;
-    padding: 24px 20px;
+  &:hover {
+    border-color: var(--fur-primary);
+    box-shadow: 0 12px 48px rgba(139, 92, 246, 0.25);
   }
 }
 
-.guide-title {
-  margin: 0 0 24px;
-  font-size: 22px;
-  font-weight: 700;
+.component-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 28px 32px;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+  color: white;
+
+  .header-icon {
+    font-size: 40px;
+  }
+
+  .header-text {
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 2px;
+  }
+}
+
+.component-content {
+  padding: 32px;
+}
+
+.guide-subtitle {
+  font-size: 15px;
+  color: var(--fur-text-secondary);
+  margin: 0 0 32px 0;
   text-align: center;
-  color: var(--fur-text-primary);
+  font-weight: 600;
 }
 
 .tabs {
@@ -136,19 +164,19 @@ const copyAddress = () => {
   .tab {
     display: flex;
     align-items: center;
-    gap: 6px;
-    padding: 10px 20px;
+    gap: 8px;
+    padding: 12px 24px;
     background: var(--fur-bg-soft);
-    border: 1px solid var(--fur-border);
-    border-radius: 12px;
-    font-size: 14px;
-    font-weight: 600;
+    border: 3px solid var(--fur-border);
+    border-radius: 14px;
+    font-size: 15px;
+    font-weight: 800;
     color: var(--fur-text-secondary);
     cursor: pointer;
-    transition: all var(--fur-transition-normal);
+    transition: all 0.3s ease;
 
     .tab-icon {
-      font-size: 16px;
+      font-size: 18px;
     }
 
     &:hover {
@@ -156,18 +184,19 @@ const copyAddress = () => {
     }
 
     &.active {
-      background: var(--fur-gradient-primary);
+      background: linear-gradient(135deg, #8b5cf6, #3b82f6);
       border-color: transparent;
       color: white;
-      box-shadow: var(--fur-shadow-glow);
+      box-shadow: 0 4px 16px rgba(139, 92, 246, 0.4);
+      transform: translateY(-2px);
     }
   }
 
   @media (max-width: 480px) {
     gap: 8px;
     .tab {
-      padding: 8px 14px;
-      font-size: 13px;
+      padding: 10px 18px;
+      font-size: 14px;
     }
   }
 }
@@ -184,74 +213,97 @@ const copyAddress = () => {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding: 20px 12px;
-  border-radius: 16px;
-  background: var(--fur-bg-soft);
-  transition: all var(--fur-transition-normal);
+  padding: 24px 16px;
+  border-radius: 18px;
+  border: 3px solid var(--fur-border);
+  background: var(--fur-bg-card);
+  transition: all 0.3s ease;
 
   &:hover {
-    transform: translateY(-2px);
-    box-shadow: var(--fur-shadow-medium);
-  }
-
-  :deep(.dark) & {
-    background: var(--fur-bg-soft);
+    transform: translateY(-3px);
+    border-color: var(--fur-primary);
+    box-shadow: 0 8px 24px rgba(139, 92, 246, 0.2);
   }
 }
 
-@media (max-width: 768px) {
+.step-number {
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+  color: white;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 20px;
+  margin-bottom: 16px;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+}
+
+.step-content {
+  flex: 1;
+}
+
+.step-title {
+  margin: 0 0 8px 0;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.step-desc {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--fur-text-secondary);
+  line-height: 1.5;
+}
+
+.copy-text {
+  display: inline-block;
+  margin: 10px auto 0;
+  padding: 6px 12px;
+  background: rgba(139, 92, 246, 0.15);
+  border-radius: 10px;
+  color: var(--fur-primary);
+  font-weight: 800;
+  cursor: pointer;
+  font-size: 13px;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(139, 92, 246, 0.25);
+    transform: scale(1.05);
+  }
+}
+
+@media (max-width: 900px) {
   .steps {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 768px) {
+  .component-header {
+    padding: 20px 24px;
+
+    .header-icon {
+      font-size: 32px;
+    }
+
+    .header-text {
+      font-size: 22px;
+    }
+  }
+
+  .component-content {
+    padding: 24px 20px;
+  }
+}
+
+@media (max-width: 520px) {
   .steps {
     grid-template-columns: 1fr;
   }
 }
-
-.step-number {
-  flex-shrink: 0;
-  width: 40px;
-  height: 40px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--fur-gradient-primary);
-  border-radius: 12px;
-  font-size: 18px;
-  font-weight: 700;
-  color: white;
-  z-index: 2;
-  box-shadow: var(--fur-shadow-glow);
-}
-
-.step-content {
-  margin-top: 12px;
-
-  .step-title {
-    margin: 0 0 6px;
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--fur-text-primary);
-  }
-
-  .step-desc {
-    margin: 0;
-    font-size: 13px;
-    color: var(--fur-text-secondary);
-    line-height: 1.5;
-
-    .copy-text {
-      display: block;
-      margin-top: 4px;
-      color: var(--fur-primary);
-      font-weight: 600;
-      cursor: pointer;
-    }
-  }
-}
-
-
 </style>

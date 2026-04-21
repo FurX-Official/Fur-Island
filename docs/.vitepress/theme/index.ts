@@ -26,6 +26,9 @@ import EnchantList from './components/EnchantList.vue'
 import PotionBrewing from './components/PotionBrewing.vue'
 import VillagerTrades from './components/VillagerTrades.vue'
 import ReportGuide from './components/ReportGuide.vue'
+import CodeBlock from './components/CodeBlock.vue'
+import EnchantmentCalculator from './components/EnchantmentCalculator.vue'
+import PotionFinder from './components/PotionFinder.vue'
 import './styles/index.scss'
 
 export default {
@@ -56,6 +59,9 @@ export default {
     app.component('PotionBrewing', PotionBrewing)
     app.component('VillagerTrades', VillagerTrades)
     app.component('ReportGuide', ReportGuide)
+    app.component('CodeBlock', CodeBlock)
+    app.component('EnchantmentCalculator', EnchantmentCalculator)
+    app.component('PotionFinder', PotionFinder)
 
     if (typeof window !== 'undefined') {
       onMounted(() => {
@@ -73,6 +79,8 @@ export default {
         enableReadingProgress()
         enableAutoDarkModeByTime()
         enableFontSizeControl()
+        enableScrollAnimations()
+        enableCard3DEffect()
       })
 
       watch(
@@ -867,5 +875,134 @@ function enableFontSizeControl() {
   container.querySelector('.font-reset')?.addEventListener('click', () => {
     currentScale = 1
     applyScale()
+  })
+}
+
+function enableScrollAnimations() {
+  if (typeof window === 'undefined') return
+
+  const applyAnimationClass = () => {
+    const cards = document.querySelectorAll(`
+      .residence-guide, .login-guide, .report-guide,
+      .connect-guide, .server-rules, .coordinate-converter,
+      .exp-calculator, .villager-trades, .potion-brewing,
+      .uuid-converter, .coord-card, .perm-card,
+      .method-card, .step-big, .command-card,
+      .type-card, .tip-card, .rule-card,
+      .step-item, .feature-card
+    `)
+
+    cards.forEach(card => {
+      if (!card.classList.contains('fade-in-up')) {
+        card.classList.add('fade-in-up')
+      }
+    })
+  }
+
+  applyAnimationClass()
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, index) => {
+      if (entry.isIntersecting) {
+        setTimeout(() => {
+          entry.target.classList.add('animate-visible')
+        }, index * 50)
+        observer.unobserve(entry.target)
+      }
+    })
+  }, {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  })
+
+  const observeElements = () => {
+    applyAnimationClass()
+    document.querySelectorAll('.fade-in-up, .fade-in-scale, .slide-in-left, .slide-in-right').forEach(el => {
+      if (!el.classList.contains('animate-visible')) {
+        observer.observe(el)
+      }
+    })
+  }
+
+  observeElements()
+
+  let timeout: NodeJS.Timeout
+  const observerConfig = new MutationObserver(() => {
+    clearTimeout(timeout)
+    timeout = setTimeout(observeElements, 100)
+  })
+
+  observerConfig.observe(document.body, {
+    childList: true,
+    subtree: true
+  })
+}
+
+function enableCard3DEffect() {
+  if (typeof window === 'undefined') return
+
+  const apply3DEffect = (e: MouseEvent) => {
+    const card = (e.target as HTMLElement).closest(`
+      .coord-card, .perm-card, .method-card,
+      .command-card, .type-card, .tip-card,
+      .rule-card, .feature-card, .step-item,
+      .VPLinkCard
+    `)
+    
+    if (!card) return
+
+    const rect = card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
+    const centerX = rect.width / 2
+    const centerY = rect.height / 2
+    const rotateX = (y - centerY) / centerY * -5
+    const rotateY = (x - centerX) / centerX * 5
+
+    card.style.setProperty('--rotateX', `${rotateX}deg`)
+    card.style.setProperty('--rotateY', `${rotateY}deg`)
+  }
+
+  const reset3DEffect = (e: MouseEvent) => {
+    const card = (e.target as HTMLElement).closest(`
+      .coord-card, .perm-card, .method-card,
+      .command-card, .type-card, .tip-card,
+      .rule-card, .feature-card, .step-item,
+      .VPLinkCard
+    `)
+    
+    if (!card) return
+
+    card.style.setProperty('--rotateX', '0deg')
+    card.style.setProperty('--rotateY', '0deg')
+  }
+
+  document.addEventListener('mousemove', apply3DEffect)
+  document.addEventListener('mouseleave', reset3DEffect, true)
+
+  const addCardClasses = () => {
+    document.querySelectorAll(`
+      .coord-card, .perm-card, .method-card,
+      .command-card, .type-card, .tip-card,
+      .rule-card, .feature-card, .step-item,
+      .VPLinkCard
+    `).forEach(card => {
+      if (!card.classList.contains('card-3d-hover')) {
+        card.classList.add('card-3d-hover')
+      }
+    })
+  }
+
+  addCardClasses()
+
+  let timeout: NodeJS.Timeout
+  const observer = new MutationObserver(() => {
+    clearTimeout(timeout)
+    timeout = setTimeout(addCardClasses, 100)
+  })
+
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
   })
 }

@@ -1,5 +1,14 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted } from 'vue'
+
+interface FavoriteCoord {
+  id: string
+  name: string
+  x: number
+  y: number
+  z: number
+  dimension: 'overworld' | 'nether' | 'end'
+}
 
 const direction = ref<'overworld' | 'nether'>('overworld')
 
@@ -25,9 +34,75 @@ const recommendedRange = computed(() => ({
   maxZ: portalOverworldZ.value + 16
 }))
 
+const favorites = ref<FavoriteCoord[]>([])
+const newFavName = ref('')
+const showAddFavorite = ref(false)
+
+const saveFavorites = () => {
+  localStorage.setItem('coord-favorites', JSON.stringify(favorites.value))
+}
+
+const loadFavorites = () => {
+  try {
+    const saved = localStorage.getItem('coord-favorites')
+    if (saved) {
+      favorites.value = JSON.parse(saved)
+    }
+  } catch (e) {
+    console.error('Failed to load favorites')
+  }
+}
+
+const addToFavorites = () => {
+  const currentX = direction.value === 'overworld' ? overworldX.value : portalNetherX.value
+  const currentZ = direction.value === 'overworld' ? overworldZ.value : portalNetherZ.value
+  const currentY = overworldY.value
+
+  const newFavorite: FavoriteCoord = {
+    id: Date.now().toString(),
+    name: newFavName.value || `${direction.value === 'overworld' ? '主世界' : '地狱'}坐标`,
+    x: currentX,
+    y: currentY,
+    z: currentZ,
+    dimension: direction.value
+  }
+
+  favorites.value.push(newFavorite)
+  saveFavorites()
+  newFavName.value = ''
+  showAddFavorite.value = false
+}
+
+const removeFavorite = (id: string) => {
+  favorites.value = favorites.value.filter(f => f.id !== id)
+  saveFavorites()
+}
+
+const loadFavorite = (fav: FavoriteCoord) => {
+  if (fav.dimension === 'overworld') {
+    direction.value = 'overworld'
+    overworldX.value = fav.x
+    overworldY.value = fav.y
+    overworldZ.value = fav.z
+  } else {
+    direction.value = 'nether'
+    portalNetherX.value = fav.x
+    portalNetherZ.value = fav.z
+    overworldY.value = fav.y
+  }
+}
+
 const copyToClipboard = (text: string) => {
   navigator.clipboard.writeText(text)
 }
+
+const copyFullCoord = (fav: FavoriteCoord) => {
+  copyToClipboard(`${fav.x} ${fav.y} ${fav.z}`)
+}
+
+onMounted(() => {
+  loadFavorites()
+})
 </script>
 
 <template>
@@ -169,6 +244,54 @@ const copyToClipboard = (text: string) => {
 
         <div class="formula">
           <code>地狱坐标 × 8 = 主世界坐标</code>
+        </div>
+      </div>
+
+      <div class="favorites-section">
+        <div class="favorites-header">
+          <span class="favorites-icon">⭐</span>
+          <span class="favorites-title">坐标收藏夹</span>
+          <button class="add-fav-btn" @click="showAddFavorite = !showAddFavorite">
+            {{ showAddFavorite ? '✕ 取消' : '+ 添加当前' }}
+          </button>
+        </div>
+
+        <div v-if="showAddFavorite" class="add-fav-form">
+          <input
+            v-model="newFavName"
+            type="text"
+            placeholder="输入坐标名称（如：家、地狱门、要塞）..."
+            @keyup.enter="addToFavorites"
+          >
+          <button class="confirm-btn" @click="addToFavorites">💾 保存</button>
+        </div>
+
+        <div v-if="favorites.length === 0" class="empty-fav">
+          <span class="empty-icon">📭</span>
+          <p>还没有收藏坐标，点击上方按钮保存常用坐标吧！</p>
+        </div>
+
+        <div v-else class="favorites-list">
+          <div
+            v-for="fav in favorites"
+            :key="fav.id"
+            class="favorite-item"
+          >
+            <div class="fav-info">
+              <span class="fav-name">{{ fav.name }}</span>
+              <span class="fav-coord">
+                <span class="dim-badge" :class="fav.dimension">
+                  {{ fav.dimension === 'overworld' ? '🌍' : '🔥' }}
+                </span>
+                {{ fav.x }}, {{ fav.y }}, {{ fav.z }}
+              </span>
+            </div>
+            <div class="fav-actions">
+              <button class="fav-btn" @click="loadFavorite(fav)" title="加载">📥</button>
+              <button class="fav-btn" @click="copyFullCoord(fav)" title="复制坐标">📋</button>
+              <button class="fav-btn delete" @click="removeFavorite(fav.id)" title="删除">🗑️</button>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -570,6 +693,201 @@ const copyToClipboard = (text: string) => {
     color: var(--fur-primary);
     font-family: inherit;
     border: 2px solid var(--fur-border);
+  }
+}
+
+.favorites-section {
+  background: var(--fur-bg-muted);
+  border: 4px solid var(--fur-border);
+  border-radius: 20px;
+  padding: 24px;
+  margin-bottom: 24px;
+}
+
+.favorites-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+
+  .favorites-icon {
+    font-size: 24px;
+  }
+
+  .favorites-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--fur-text);
+    flex: 1;
+  }
+
+  .add-fav-btn {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #8b5cf6, #3b82f6);
+    border: none;
+    border-radius: 12px;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      transform: scale(1.05);
+      box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
+    }
+  }
+}
+
+.add-fav-form {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding: 16px;
+  background: var(--fur-bg-card);
+  border-radius: 14px;
+  border: 2px dashed var(--fur-primary);
+
+  input {
+    flex: 1;
+    padding: 10px 16px;
+    border: 2px solid var(--fur-border);
+    border-radius: 10px;
+    background: var(--fur-bg-soft);
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--fur-text);
+    transition: all 0.2s ease;
+
+    &:focus {
+      outline: none;
+      border-color: var(--fur-primary);
+    }
+  }
+
+  .confirm-btn {
+    padding: 10px 20px;
+    background: #10b981;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+      background: #059669;
+      transform: scale(1.05);
+    }
+  }
+}
+
+.empty-fav {
+  text-align: center;
+  padding: 32px;
+  color: var(--fur-text-secondary);
+
+  .empty-icon {
+    display: block;
+    font-size: 40px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+  }
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 600;
+  }
+}
+
+.favorites-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.favorite-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 16px;
+  background: var(--fur-bg-card);
+  border-radius: 14px;
+  border: 2px solid var(--fur-border);
+  transition: all 0.2s ease;
+
+  &:hover {
+    border-color: var(--fur-primary);
+    transform: translateX(4px);
+  }
+}
+
+.fav-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fav-name {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--fur-text);
+}
+
+.fav-coord {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--fur-primary);
+
+  .dim-badge {
+    width: 22px;
+    height: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 12px;
+
+    &.overworld {
+      background: rgba(16, 185, 129, 0.2);
+    }
+
+    &.nether {
+      background: rgba(239, 68, 68, 0.2);
+    }
+  }
+}
+
+.fav-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.fav-btn {
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 10px;
+  background: var(--fur-bg-soft);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+
+  &:hover {
+    background: rgba(139, 92, 246, 0.2);
+    transform: scale(1.1);
+  }
+
+  &.delete:hover {
+    background: rgba(239, 68, 68, 0.2);
   }
 }
 

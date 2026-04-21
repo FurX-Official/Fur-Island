@@ -1,11 +1,18 @@
 <script setup lang="ts">
-import { ref, computed } from 'vue'
+import { ref, computed, watch, type Ref } from 'vue'
 
 const mode = ref<'levelToExp' | 'expToLevel'>('levelToExp')
 
 const fromLevel = ref(0)
 const toLevel = ref(30)
 const expInput = ref(0)
+
+const animatedRequiredExp = ref(0)
+const animatedBottles = ref(0)
+const animatedDragon = ref(0)
+const animatedZombie = ref(0)
+const animatedLevel = ref(0)
+const animatedProgress = ref(0)
 
 const expForLevel = (level: number): number => {
   if (level <= 16) return Math.floor(level * level + 2 * level)
@@ -45,6 +52,59 @@ const levelFromExp = computed(() => {
 const expBottles = computed(() => Math.ceil(requiredExp.value / 11))
 const enderDragonKills = computed(() => Math.ceil(requiredExp.value / 12000))
 const zombieKills = computed(() => Math.ceil(requiredExp.value / 5))
+
+const animateNumber = (targetRef: Ref<number>, target: number, duration = 600) => {
+  if (typeof window === 'undefined') {
+    targetRef.value = target
+    return
+  }
+  
+  const start = targetRef.value
+  const startTime = performance.now()
+  
+  const animate = (currentTime: number) => {
+    const elapsed = currentTime - startTime
+    const progress = Math.min(elapsed / duration, 1)
+    const easeProgress = 1 - Math.pow(1 - progress, 3)
+    targetRef.value = Math.round(start + (target - start) * easeProgress)
+    
+    if (progress < 1) {
+      requestAnimationFrame(animate)
+    }
+  }
+  
+  requestAnimationFrame(animate)
+}
+
+watch(requiredExp, (newVal) => {
+  if (typeof window === 'undefined') {
+    animatedRequiredExp.value = newVal
+    animatedBottles.value = Math.ceil(newVal / 11)
+    animatedDragon.value = Math.ceil(newVal / 12000)
+    animatedZombie.value = Math.ceil(newVal / 5)
+    return
+  }
+  animateNumber(animatedRequiredExp, newVal)
+  animateNumber(animatedBottles, Math.ceil(newVal / 11), 700)
+  animateNumber(animatedDragon, Math.ceil(newVal / 12000), 800)
+  animateNumber(animatedZombie, Math.ceil(newVal / 5), 750)
+}, { immediate: true })
+
+watch(() => levelFromExp.value.level, (newVal) => {
+  if (typeof window === 'undefined') {
+    animatedLevel.value = newVal
+    return
+  }
+  animateNumber(animatedLevel, newVal, 500)
+}, { immediate: true })
+
+watch(() => levelFromExp.value.progress, (newVal) => {
+  if (typeof window === 'undefined') {
+    animatedProgress.value = newVal
+    return
+  }
+  animateNumber(animatedProgress, newVal, 500)
+}, { immediate: true })
 
 const formatNumber = (num: number) => num.toLocaleString()
 </script>
@@ -98,7 +158,7 @@ const formatNumber = (num: number) => num.toLocaleString()
         </div>
 
         <div class="main-result">
-          <span class="result-value">{{ formatNumber(requiredExp) }}</span>
+          <span class="result-value number-roll">{{ formatNumber(animatedRequiredExp) }}</span>
           <span class="result-unit">EXP</span>
         </div>
 
@@ -106,17 +166,17 @@ const formatNumber = (num: number) => num.toLocaleString()
           <div class="resource-item">
             <span class="resource-icon">🍶</span>
             <span class="resource-name">经验瓶</span>
-            <span class="resource-count">× {{ formatNumber(expBottles) }}</span>
+            <span class="resource-count number-roll">× {{ formatNumber(animatedBottles) }}</span>
           </div>
           <div class="resource-item">
             <span class="resource-icon">🐉</span>
             <span class="resource-name">末影龙</span>
-            <span class="resource-count">× {{ enderDragonKills }}</span>
+            <span class="resource-count number-roll">× {{ animatedDragon }}</span>
           </div>
           <div class="resource-item">
             <span class="resource-icon">🧟</span>
             <span class="resource-name">僵尸</span>
-            <span class="resource-count">× {{ formatNumber(zombieKills) }}</span>
+            <span class="resource-count number-roll">× {{ formatNumber(animatedZombie) }}</span>
           </div>
         </div>
       </div>
@@ -149,8 +209,8 @@ const formatNumber = (num: number) => num.toLocaleString()
 
       <div v-if="expInput > 0" class="level-progress-section">
         <div class="progress-header">
-          <span class="progress-level">Lv.{{ levelFromExp.level }}</span>
-          <span class="progress-percent">{{ levelFromExp.progress }}%</span>
+          <span class="progress-level number-roll">Lv.{{ animatedLevel }}</span>
+          <span class="progress-percent number-roll">{{ animatedProgress }}%</span>
         </div>
         <div class="progress-bar-container">
           <div class="progress-bar-fill" :style="{ width: levelFromExp.progress + '%' }">

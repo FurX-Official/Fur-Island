@@ -48,16 +48,27 @@
 }
 
 html.dark {
-  --fur-bg-page: #0c0a09;
-  --fur-bg-soft: #1c1917;
-  --fur-bg-card: #292524;
-  --fur-bg-hover: #44403c;
-  --fur-border: #57534e;
-  --fur-text-primary: #f5f5f4;
-  --fur-text-secondary: #d6d3d1;
-  --fur-text-muted: #a8a29e;
+  --fur-bg-page: #0a0706;
+  --fur-bg-soft: #171412;
+  --fur-bg-card: #241f1d;
+  --fur-bg-hover: #3d3835;
+  --fur-border: #6b5d55;
+  --fur-text-primary: #fefefe;
+  --fur-text-secondary: #e7e5e4;
+  --fur-text-muted: #bab0ad;
+
+  --fur-primary: #f59e0b;
+  --fur-primary-light: #fbbf24;
+  --fur-primary-rgb: 245, 158, 11;
+  
+  --fur-secondary: #a78bfa;
+  --fur-secondary-light: #c4b5fd;
+  --fur-secondary-rgb: 167, 139, 250;
 
   --vp-c-bg: var(--fur-bg-page);
   --vp-c-bg-soft: var(--fur-bg-soft);
   --vp-c-bg-alt: var(--fur-bg-soft);
+
+  --vp-c-text-1: var(--fur-text-primary);
+  --vp-c-text-2: var(--fur-text-secondary);
 }

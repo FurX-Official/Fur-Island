@@ -60,9 +60,7 @@ const activeTab = ref(0)
             <div class="step-cards">
               <div class="method-card">
                 <h5>方式一：快捷选择</h5>
-                <div class="code-block">
-                  <code>/res select 20</code>
-                </div>
+                <CodeBlock code="/res select 20" />
                 <p>以你为中心，选择 20x20x20 的立方体区域</p>
                 <p class="tip">💡 推荐新手使用此方式</p>
               </div>
@@ -70,9 +68,7 @@ const activeTab = ref(0)
                 <h5>方式二：锄头选择</h5>
                 <p>手持 <strong>木棍</strong> 左键选择第一个点</p>
                 <p>右键选择第二个点</p>
-                <div class="code-block">
-                  <code>// 两点围成的矩形就是你的领地范围</code>
-                </div>
+                <p class="tip">// 两点围成的矩形就是你的领地范围</p>
               </div>
             </div>
           </div>
@@ -83,9 +79,7 @@ const activeTab = ref(0)
           <div class="step-content">
             <h4>确认并创建</h4>
             <p>选择后会显示选择的区域大小，输入命令创建：</p>
-            <div class="code-block large">
-              <code>/res create 我的家</code>
-            </div>
+            <CodeBlock code="/res create 我的家" :large="true" />
             <p class="success-text">✅ 创建成功！领地已受保护！</p>
           </div>
         </div>
@@ -95,9 +89,7 @@ const activeTab = ref(0)
           <div class="step-content">
             <h4>调整大小（可选）</h4>
             <p>面向要扩大的方向，输入：</p>
-            <div class="code-block large">
-              <code>/res expand 10</code>
-            </div>
+            <CodeBlock code="/res expand 10" :large="true" />
             <p>领地向你面向的方向扩大 10 格</p>
             <p class="tip">💡 也可以使用 <code>/res contract 5</code> 缩小领地</p>
           </div>
@@ -128,24 +120,18 @@ const activeTab = ref(0)
 
         <div class="perm-example">
           <h4>给好友权限</h4>
-          <div class="code-block large">
-            <code>/res pset 领地名称 玩家ID trusted true</code>
-          </div>
+          <CodeBlock code="/res pset 领地名称 玩家ID trusted true" :large="true" />
           <p class="perm-desc">这会给该玩家所有权限（建造、开箱等）</p>
         </div>
 
         <div class="perm-example">
           <h4>只允许开门和按钮</h4>
-          <div class="code-block large">
-            <code>/res pset 领地名称 玩家ID use true</code>
-          </div>
+          <CodeBlock code="/res pset 领地名称 玩家ID use true" :large="true" />
         </div>
 
         <div class="perm-example">
           <h4>移除玩家权限</h4>
-          <div class="code-block large">
-            <code>/res pset 领地名称 玩家ID trusted remove</code>
-          </div>
+          <CodeBlock code="/res pset 领地名称 玩家ID trusted remove" :large="true" />
         </div>
 
         <div class="tips-card">

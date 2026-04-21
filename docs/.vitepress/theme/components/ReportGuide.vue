@@ -62,9 +62,8 @@ const steps = ref([
             <div class="step-number">{{ index + 1 }}</div>
             <div class="step-content">
               <h4>{{ step.title }}</h4>
-              <div class="code-block">
-                <code>{{ step.cmd }}</code>
-              </div>
+              <CodeBlock :code="step.cmd" v-if="step.cmd.startsWith('/')" />
+              <p class="step-action" v-else>{{ step.cmd }}</p>
             </div>
           </div>
         </div>
