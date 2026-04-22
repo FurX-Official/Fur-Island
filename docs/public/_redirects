@@ -1,0 +1,16 @@
+# SPA 路由支持 - Vue Router history 模式
+/*    /index.html   200
+
+# 旧链接重定向
+/home    /    301
+/wiki/*    /guides/*    301
+
+# 工具页面短链接
+/coord    /tools/coord    301
+/exp      /tools/exp      301
+/uuid     /tools/uuid     301
+/enchant  /tools/enchant  301
+/potion   /tools/potion   301
+
+# 规范域名（Cloudflare 页面规则也需要配置）
+# https://fur-island.pages.dev/*    https://fur-island.asia/:splat    301!

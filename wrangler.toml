@@ -1,0 +1,16 @@
+# Cloudflare Pages Wrangler 配置文件
+# 用于使用 Wrangler CLI 部署
+
+name = "fur-island"
+compatibility_date = "2024-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+NODE_VERSION = "20"
+
+[env.production]
+name = "fur-island"
+route = "fur-island.asia/*"
+
+[env.preview]
+name = "fur-island-preview"
