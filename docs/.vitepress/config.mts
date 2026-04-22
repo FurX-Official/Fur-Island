@@ -1,6 +1,4 @@
 import { defineConfig } from 'vitepress'
-import fs from 'fs'
-import path from 'path'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
@@ -35,22 +33,6 @@ export default defineConfig({
 
   sitemap: {
     hostname: 'https://fur-island.asia'
-  },
-
-  vite: {},
-
-  buildEnd: async ({ outDir }) => {
-    const publicDir = path.resolve(__dirname, '../public')
-    const filesToCopy = ['_headers', '_redirects', 'robots.txt', 'manifest.webmanifest']
-    
-    filesToCopy.forEach(file => {
-      const src = path.join(publicDir, file)
-      const dest = path.join(outDir, file)
-      if (fs.existsSync(src)) {
-        fs.copyFileSync(src, dest)
-        console.log(`✓ Copied ${file} to output`)
-      }
-    })
   },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
