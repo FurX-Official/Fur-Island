@@ -2,38 +2,9 @@ import { defineConfig } from 'vitepress'
 
 // https://vitepress.dev/reference/site-config
 export default defineConfig({
-  cleanUrls: true,
+  cleanUrls:true,
   title: "Fur Island",
   description: "与毛毛一起共绘方块世界！",
-  lang: 'zh-CN',
-  base: '/',
-  
-  head: [
-    ['link', { rel: 'icon', type: 'image/png', href: '/pics/logo.png' }],
-    ['link', { rel: 'apple-touch-icon', href: '/pics/logo.png' }],
-    ['meta', { name: 'theme-color', content: '#e67e22' }],
-    ['meta', { property: 'og:title', content: 'Fur Island - 毛毛岛服务器' }],
-    ['meta', { property: 'og:description', content: '与毛毛一起共绘方块世界！' }],
-    ['meta', { property: 'og:site_name', content: 'Fur Island' }],
-    ['meta', { property: 'og:url', content: 'https://fur-island.asia' }],
-    ['meta', { property: 'og:type', content: 'website' }],
-    ['meta', { property: 'og:image', content: 'https://fur-island.asia/pics/logo.png' }],
-    ['meta', { name: 'twitter:card', content: 'summary_large_image' }],
-    ['meta', { name: 'twitter:image', content: 'https://fur-island.asia/pics/logo.png' }],
-    ['meta', { name: 'twitter:title', content: 'Fur Island - 毛毛岛服务器' }],
-    ['meta', { name: 'twitter:description', content: '与毛毛一起共绘方块世界！' }],
-    
-    ['meta', { name: 'robots', content: 'index, follow' }],
-    ['link', { rel: 'canonical', href: 'https://fur-island.asia' }],
-    
-    ['link', { rel: 'manifest', href: '/manifest.webmanifest' }],
-    ['meta', { name: 'apple-mobile-web-app-capable', content: 'yes' }],
-    ['meta', { name: 'apple-mobile-web-app-status-bar-style', content: 'default' }],
-  ],
-
-  sitemap: {
-    hostname: 'https://fur-island.asia'
-  },
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [

@@ -5,9 +5,6 @@ hero:
   name: "Fur Island"
   text: "与毛毛一起<br>共绘方块世界！"
   tagline: "生存 · 互动 · 创作"
-  image:
-    src: /pics/logo.png
-    alt: Fur Island Logo
   actions:
     - theme: brand
       text: 加入QQ群
