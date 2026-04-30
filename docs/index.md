@@ -24,7 +24,7 @@ features:
 
 <ParticlesBackground />
 
-<ServerStatus />
+<!-- <ServerStatus /> -->
 
 <ConnectGuide />
 
